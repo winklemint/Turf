@@ -4,4 +4,8 @@ import "turf/models"
 
 func SyncDB() {
 	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.Time_Slot{})
+	DB.AutoMigrate(&models.Turf_Bookings{})
+	DB.AutoMigrate(&models.Package{})
+	DB.AutoMigrate(&models.Package_slot_relationship{})
 }
