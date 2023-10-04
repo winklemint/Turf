@@ -292,8 +292,119 @@ func Login(c *gin.Context) {
 		"data":    user,
 	})
 }
+func Booking(c *gin.Context) {
+	var body struct {
+		Date      string
+		Day       string
+		Slot      int
+		StartSlot string
+		EndSlot   string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	AvailableSlot(body.Date)
+	var slot models.Slot
+	result := config.DB.Where("start_slot = ? AND end_slot >= ?", body.StartSlot, body.EndSlot).Find(&slot)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to find slot by start_slot",
+		})
+		return
+	}
 
+	booking := models.Booking{Date: body.Date, Day: body.Day, Slot: int(slot.ID)}
+	result = config.DB.Create(&booking)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Slot Allready Exist",
+			"data":   "null",
+		})
+		return
+	}
 
-func BookTurf(c *gin.Context){
-	
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "Admin Successfully Created",
+		"data":    booking,
+	})
+}
+
+// func AvailableSlot(date string) {
+// 	var slots []models.Booking
+// 	var bookSlots, AllSlot []int
+
+// 	var slot []models.Slot
+// 	result := config.DB.Find(&slot)
+// 	if result.Error != nil {
+// 		fmt.Println(result.Error)
+// 		return
+// 	}
+// 	result = config.DB.Where("date = ?", date).Find(&slots)
+// 	if result.Error != nil {
+// 		fmt.Println(result.Error)
+// 		return
+// 	}
+
+// 	for i := 0; i < len(slots); i++ {
+// 		bookSlots = append(bookSlots, slots[i].Slot)
+// 	}
+
+// 	for i := 0; i < len(slot); i++ {
+// 		AllSlot = append(AllSlot, int(slot[i].ID))
+// 	}
+// 	fmt.Println(bookSlots)
+// 	fmt.Println(AllSlot)
+
+// }
+func AvailableSlot(date string) {
+	var slots []models.Booking
+	var bookSlots, AllSlot []int
+	var slot []models.Slot
+	result := config.DB.Find(&slot)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return
+	}
+
+	result = config.DB.Where("date = ?", date).Find(&slots)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return
+	}
+
+	for _, s := range slots {
+		bookSlots = append(bookSlots, s.Slot)
+	}
+
+	for _, s := range slot {
+		AllSlot = append(AllSlot, int(s.ID))
+	}
+
+	availableSlots := []int{}
+	for _, s := range AllSlot {
+		if !contains(bookSlots, s) {
+			availableSlots = append(availableSlots, s)
+		}
+	}
+	fmt.Println(bookSlots)
+	fmt.Println(AllSlot)
+	fmt.Println(availableSlots)
+}
+
+func contains(slice []int, item int) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
+		}
+	}
+	return false
 }

@@ -174,3 +174,47 @@ func AdminLogin(c *gin.Context) {
 // 		"data":    bodys,
 // 	})
 // }
+func AddSlot(c *gin.Context) {
+	var body struct {
+		StartSlot string
+		EndSlot   string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	// startSlot, err := time.Parse("15:04", body.StartSlot)
+	// if err != nil {
+	// 	fmt.Println("StartSlot parivartan mein error:", err)
+	// 	return
+	// }
+
+	// endSlot, err := time.Parse("15:04", body.EndSlot)
+	// if err != nil {
+	// 	fmt.Println("EndSlot parivartan mein error:", err)
+	// 	return
+	// }
+	slot := models.Slot{StartSlot: body.StartSlot, EndSlot: body.EndSlot}
+	result := config.DB.Create(&slot)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Slot Allready Exist",
+			"data":   "null",
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "Admin Successfully Created",
+		"data":    slot,
+	})
+
+}

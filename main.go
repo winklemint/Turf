@@ -1,8 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"turf/config"
+	"turf/routes"
+	route "turf/routes"
+
+	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -13,5 +16,9 @@ func init() {
 }
 
 func main() {
-	fmt.Println("Helloworld")
+	r := gin.Default()
+	routes.RegisterAdminRoutes(r)
+	route.RegisterUserRoutes(r)
+
+	r.Run(":8080")
 }
