@@ -8,4 +8,5 @@ func SyncDB() {
 	DB.AutoMigrate(&models.Turf_Bookings{})
 	DB.AutoMigrate(&models.Package{})
 	DB.AutoMigrate(&models.Package_slot_relationship{})
+	DB.AutoMigrate(&models.Admin{})
 }
