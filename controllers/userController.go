@@ -21,6 +21,7 @@ func Signup(c *gin.Context) {
 	//huhdjhkejhk
 
 	var body struct {
+		Full_Name string
 		Email     string
 		Password  string
 		Contact   string
@@ -44,7 +45,7 @@ func Signup(c *gin.Context) {
 	}
 
 	//create the user
-	user := models.User{Email: body.Email, Password: string(hash), Contact: body.Contact, Is_active: 0}
+	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Is_active: 0}
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
@@ -442,8 +443,8 @@ func AvailableSlot(c *gin.Context) {
 			availableSlots = append(availableSlots, s)
 		}
 	}
-	availableSlots1 := []string{}
-	// fmt.Println(availableSlots)
+	var availableSlots1 []map[string]string
+	Data := make(map[string]string)
 
 	for _, s := range availableSlots {
 		var slt models.Time_Slot
@@ -456,8 +457,12 @@ func AvailableSlot(c *gin.Context) {
 			return
 
 		}
+		Data = map[string]string{
+			"start_time": slt.Start_time,
+			"end_time":   slt.End_time,
+		}
 
-		availableSlots1 = append(availableSlots1, slt.Start_time, slt.End_time, "\n")
+		availableSlots1 = append(availableSlots1, Data)
 
 	}
 
