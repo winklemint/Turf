@@ -442,8 +442,30 @@ func AvailableSlot(c *gin.Context) {
 			availableSlots = append(availableSlots, s)
 		}
 	}
+	availableSlots1 := []string{}
+	// fmt.Println(availableSlots)
 
-	fmt.Println(availableSlots)
+	for _, s := range availableSlots {
+		var slt models.Time_Slot
+		result := config.DB.Where("id = ? ", s).Find(&slt)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Failed to find slot by start_slot",
+			})
+			return
+
+		}
+
+		availableSlots1 = append(availableSlots1, slt.Start_time, slt.End_time, "\n")
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Get Available Slot Successfully ",
+		"data":    availableSlots1,
+	})
 }
 
 func contains(slice []int, item int) bool {
