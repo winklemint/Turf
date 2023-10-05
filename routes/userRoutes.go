@@ -15,6 +15,7 @@ func RegisterUserRoutes(router *gin.Engine) {
 		userRoutes.POST("/login", controllers.Login)
 		userRoutes.POST("/booking", middleware.RequireAuth, controllers.Booking)
 		userRoutes.POST("/available/slot", controllers.AvailableSlot)
+		userRoutes.PUT("/update", middleware.RequireAuth, controllers.UpdateUser)
 
 	}
 }

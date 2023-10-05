@@ -443,9 +443,9 @@ func AvailableSlot(c *gin.Context) {
 			availableSlots = append(availableSlots, s)
 		}
 	}
-	var availableSlots1 []map[string]string
-	Data := make(map[string]string)
-
+	var availableSlots1 []map[string]interface{}
+	// fmt.Println(availableSlots)
+	Data := make(map[string]interface{})
 	for _, s := range availableSlots {
 		var slt models.Time_Slot
 		result := config.DB.Where("id = ? ", s).Find(&slt)
@@ -457,11 +457,12 @@ func AvailableSlot(c *gin.Context) {
 			return
 
 		}
-		Data = map[string]string{
-			"start_time": slt.Start_time,
-			"end_time":   slt.End_time,
-		}
 
+		Data = map[string]interface{}{
+			"id":        slt.ID,
+			"starttime": slt.Start_time,
+			"endtime":   slt.End_time,
+		}
 		availableSlots1 = append(availableSlots1, Data)
 
 	}
@@ -480,4 +481,119 @@ func contains(slice []int, item int) bool {
 		}
 	}
 	return false
+}
+func UpdateUser(c *gin.Context) {
+	var body struct {
+		Full_Name   string
+		Email       string
+		OldPassword string
+		Password    string
+		Contact     string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	tokenString, err := c.Cookie("Authorization")
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+
+	// decode & validate the same
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(os.Getenv("SECRET")), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// check expiration
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		// find the user with token sub i.e user id
+		var user models.User
+		config.DB.First(&user, claims["sub"])
+
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
+		// OldPassword, err := bcrypt.GenerateFromPassword([]byte(body.OldPassword), 10)
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, gin.H{
+		// 		"error": "failed to hash password",
+		// 	})
+		// 	return
+		// }
+		result := config.DB.Find(&user).Where("id = ?", claims["sub"])
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "User Update UnSuccessfully",
+				"data":   "null",
+			})
+			return
+		}
+		if body.OldPassword != "" {
+			err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.OldPassword))
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "Invalid Email or Password",
+				})
+				return
+			}
+			Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "failed to hash password",
+				})
+				return
+			}
+
+			users := models.User{Full_Name: body.Full_Name, Email: body.Email, Contact: body.Contact, Password: string(Hash)}
+			result = config.DB.Model(&user).Where("id = ?", claims["sub"]).Updates(users)
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status": "400",
+					"error":  "User Update UnSuccessfully",
+					"data":   "null",
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"success": "User Update Successfully",
+				"data":    body,
+			})
+
+		} else {
+			users := models.User{Full_Name: body.Full_Name, Contact: body.Contact}
+			result = config.DB.Model(&user).Where("id = ?", claims["sub"]).Updates(users)
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status": "400",
+					"error":  "User Update UnSuccessfully",
+					"data":   "null",
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"success": "User Update Successfully",
+				"data":    body,
+			})
+		}
+
+	}
 }
