@@ -15,8 +15,3 @@ type Admin struct {
 	Role      int
 	LastLogin time.Time
 }
-type Slot struct {
-	gorm.Model
-	StartSlot string ` grom:"unique"`
-	EndSlot   string
-}

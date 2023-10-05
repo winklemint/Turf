@@ -10,11 +10,3 @@ type User struct {
 	Password  string
 	Is_active int
 }
-type Booking struct {
-	gorm.Model
-	Date      string
-	Day       string
-	Slot      int
-	StartSlot string
-	EndSlot   string
-}

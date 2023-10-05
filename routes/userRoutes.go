@@ -12,6 +12,7 @@ func RegisterUserRoutes(router *gin.Engine) {
 		userRoutes.POST("/signup", controllers.Signup)
 		userRoutes.POST("/login", controllers.Login)
 		userRoutes.POST("/booking", controllers.Booking)
+		userRoutes.POST("/available/slot", controllers.AvailableSlot)
 
 	}
 }

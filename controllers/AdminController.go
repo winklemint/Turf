@@ -199,7 +199,7 @@ func AddSlot(c *gin.Context) {
 	// 	fmt.Println("EndSlot parivartan mein error:", err)
 	// 	return
 	// }
-	slot := models.Slot{StartSlot: body.StartSlot, EndSlot: body.EndSlot}
+	slot := models.Time_Slot{Start_time: body.StartSlot, End_time: body.EndSlot}
 	result := config.DB.Create(&slot)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -213,8 +213,70 @@ func AddSlot(c *gin.Context) {
 	//Response
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  200,
-		"success": "Admin Successfully Created",
+		"success": "Slot Successfully Created",
 		"data":    slot,
 	})
 
+}
+func AddPackage(c *gin.Context) {
+	var body struct {
+		Name   string
+		Price  float64
+		Status bool
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
+	result := config.DB.Create(&packageModel)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "package Allready Exist",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "Package Successfully Created",
+		"data":    body,
+	})
+}
+func Package(c *gin.Context) {
+	var body struct {
+		Name   string
+		Price  float64
+		Status bool
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
+	result := config.DB.Create(&packageModel)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "package Allready Exist",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "Package Successfully Created",
+		"data":    body,
+	})
 }

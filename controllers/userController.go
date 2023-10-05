@@ -294,7 +294,7 @@ func Login(c *gin.Context) {
 }
 func Booking(c *gin.Context) {
 	var body struct {
-		Date      string
+		Date      time.Time
 		Day       string
 		Slot      int
 		StartSlot string
@@ -309,8 +309,8 @@ func Booking(c *gin.Context) {
 		})
 		return
 	}
-	AvailableSlot(body.Date)
-	var slot models.Slot
+	// AvailableSlot(body.Date)
+	var slot models.Time_Slot
 	result := config.DB.Where("start_slot = ? AND end_slot >= ?", body.StartSlot, body.EndSlot).Find(&slot)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -319,7 +319,7 @@ func Booking(c *gin.Context) {
 		return
 	}
 
-	booking := models.Booking{Date: body.Date, Day: body.Day, Slot: int(slot.ID)}
+	booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(slot.ID)}
 	result = config.DB.Create(&booking)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -365,24 +365,36 @@ func Booking(c *gin.Context) {
 // 	fmt.Println(AllSlot)
 
 // }
-func AvailableSlot(date string) {
-	var slots []models.Booking
+func AvailableSlot(c *gin.Context) {
+	var body struct {
+		Date string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	var slots []models.Turf_Bookings
 	var bookSlots, AllSlot []int
-	var slot []models.Slot
+	var slot []models.Time_Slot
 	result := config.DB.Find(&slot)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return
 	}
 
-	result = config.DB.Where("date = ?", date).Find(&slots)
+	result = config.DB.Where("date = ?", body.Date).Find(&slots)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return
 	}
 
 	for _, s := range slots {
-		bookSlots = append(bookSlots, s.Slot)
+		bookSlots = append(bookSlots, s.Slot_id)
 	}
 
 	for _, s := range slot {
@@ -395,8 +407,7 @@ func AvailableSlot(date string) {
 			availableSlots = append(availableSlots, s)
 		}
 	}
-	fmt.Println(bookSlots)
-	fmt.Println(AllSlot)
+
 	fmt.Println(availableSlots)
 }
 
