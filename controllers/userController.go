@@ -23,6 +23,7 @@ func Signup(c *gin.Context) {
 	var body struct {
 		Email     string
 		Password  string
+		Contact   string
 		Is_active string
 	}
 
@@ -43,15 +44,47 @@ func Signup(c *gin.Context) {
 	}
 
 	//create the user
-	user := models.User{Email: body.Email, Password: string(hash), Is_active: 0}
+	user := models.User{Email: body.Email, Password: string(hash), Contact: body.Contact, Is_active: 0}
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "failed to create user",
 		})
+
 		return
 	} else {
+		var user models.User
+		config.DB.First(&user, "email = ?", body.Email)
+		if user.ID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid Email or Password",
+			})
+			return
+		}
+		var err error
+		email := body.Email
+
+		// otpChannel := make(chan string)
+
+		otp := generateOTP()
+
+		go storeOTP(email, otp)
+
+		go func() {
+			err := sendOTPEmail(email, otp)
+			if err != nil {
+				// Handle the error (e.g., log it)
+			}
+		}()
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "failed to send the email",
+			})
+
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"status":  200,
 			"message": "user successfully created",
@@ -108,51 +141,45 @@ func sendOTPEmail(email, otp string) error {
 	return nil
 }
 
-func SendEmailOTP(c *gin.Context) {
-	var body struct {
-		Email string
-	}
+// func SendEmailOTP() {
 
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to read body",
-		})
-		return
-	}
+// 	var body struct {
+// 		Email string
+// 	}
 
-	var user models.User
-	config.DB.First(&user, "email = ?", body.Email)
+// 	var user models.User
+// 	config.DB.First(&user, "email = ?", body.Email)
 
-	if user.ID == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Email or Password",
-		})
-		return
-	}
-	var err error
-	email := body.Email
+// 	if user.ID == 0 {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "Invalid Email or Password",
+// 		})
+// 		return
+// 	}
+// 	var err error
+// 	email := body.Email
 
-	// otpChannel := make(chan string)
+// 	// otpChannel := make(chan string)
 
-	otp := generateOTP()
+// 	otp := generateOTP()
 
-	go storeOTP(email, otp)
+// 	go storeOTP(email, otp)
 
-	go func() {
-		err := sendOTPEmail(email, otp)
-		if err != nil {
-			// Handle the error (e.g., log it)
-		}
-	}()
+// 	go func() {
+// 		err := sendOTPEmail(email, otp)
+// 		if err != nil {
+// 			// Handle the error (e.g., log it)
+// 		}
+// 	}()
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to send the email",
-		})
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "failed to send the email",
+// 		})
 
-	}
+// 	}
 
-}
+// }
 
 func VerifyOTPhandler(c *gin.Context) {
 
@@ -183,31 +210,8 @@ func VerifyOTPhandler(c *gin.Context) {
 	}
 
 	if body.Otp == otpData.OTP && time.Now().Before(otpData.Expiration) {
-		// var err error
-		// p, _ := uuid.NewRandom()
-		// qrpid := "P" + p.String()
 
-		// formData := url.Values{}
-
-		// formData.Set("referralid", qrpid)
-
-		// baseURL := "https://mgcworld88.com/registration-player"
-		// fullURL := baseURL + "?" + formData.Encode()
-
-		// imageName := qrpid + ".png"
-
-		// imagePath := "uploads/playerQR"
-
-		// err = qrcode.WriteFile(fullURL, qrcode.Medium, 256, imagePath, imageName)
-		// if err == nil {
-		// 	c.JSON(http.StatusOK, gin.H{
-		// 		"message": "Failed to generate qr",
-		// 	})
-		// }
-
-		// fullpath := imagePath + imageName
-
-		// config.DB.Exec("UPDATE users SET user_qr=?, user_ref_id=?, is_active = 1 WHERE email = ?", fullpath, qrpid, body.Email)
+		config.DB.Exec("UPDATE users SET is_active = 1 WHERE email = ?", body.Email)
 
 		c.JSON(http.StatusOK, gin.H{
 			"status": 200,
@@ -294,7 +298,7 @@ func Login(c *gin.Context) {
 }
 func Booking(c *gin.Context) {
 	var body struct {
-		Date      time.Time
+		Date      string
 		Day       string
 		Slot      int
 		StartSlot string
@@ -311,31 +315,62 @@ func Booking(c *gin.Context) {
 	}
 	// AvailableSlot(body.Date)
 	var slot models.Time_Slot
-	result := config.DB.Where("start_slot = ? AND end_slot >= ?", body.StartSlot, body.EndSlot).Find(&slot)
+	result := config.DB.Where("start_time = ? AND end_time >= ?", body.StartSlot, body.EndSlot).Find(&slot)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to find slot by start_slot",
 		})
 		return
 	}
+	tokenString, err := c.Cookie("Authorization")
 
-	booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(slot.ID)}
-	result = config.DB.Create(&booking)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "400",
-			"error":  "Slot Allready Exist",
-			"data":   "null",
-		})
-		return
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
 	}
 
-	//Response
-	c.JSON(http.StatusCreated, gin.H{
-		"status":  200,
-		"success": "Admin Successfully Created",
-		"data":    booking,
+	// decode & validate the same
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(os.Getenv("SECRET")), nil
 	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// check expiration
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		// find the user with token sub i.e user id
+		var user models.User
+		config.DB.First(&user, claims["sub"])
+
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
+
+		booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(slot.ID), User_id: user.ID}
+		result = config.DB.Create(&booking)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "Slot Allready Exist",
+				"data":   "null",
+			})
+			return
+		}
+
+		//Response
+		c.JSON(http.StatusCreated, gin.H{
+			"status":  200,
+			"success": "slot reserved successfully",
+			"data":    booking,
+		})
+	}
 }
 
 // func AvailableSlot(date string) {

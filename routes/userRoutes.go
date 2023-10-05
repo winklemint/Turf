@@ -2,6 +2,7 @@ package routes
 
 import (
 	"turf/controllers"
+	"turf/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,8 +11,9 @@ func RegisterUserRoutes(router *gin.Engine) {
 	userRoutes := router.Group("/user")
 	{
 		userRoutes.POST("/signup", controllers.Signup)
+		userRoutes.POST("/verify/otp", controllers.VerifyOTPhandler)
 		userRoutes.POST("/login", controllers.Login)
-		userRoutes.POST("/booking", controllers.Booking)
+		userRoutes.POST("/booking", middleware.RequireAuth, controllers.Booking)
 		userRoutes.POST("/available/slot", controllers.AvailableSlot)
 
 	}

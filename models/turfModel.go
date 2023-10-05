@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -15,14 +13,14 @@ type Time_Slot struct {
 
 type Turf_Bookings struct {
 	gorm.Model
-	User_id                  int
+	User_id                  uint
 	Slot_id                  int
-	Date                     time.Time
+	Date                     string
 	Is_booked                bool
 	Package_slot_relation_id int
 	Package_id               int
-	Payment_ref_id           int
-	Payment_screenshort      int
+	Payment_ref_id           string
+	Payment_screenshot       string
 }
 
 type Package_slot_relationship struct {
@@ -37,10 +35,10 @@ type Package struct {
 	Price  float64
 	Status bool
 }
-type Conform_Booking_Table struct {
+type Confirm_Booking_Table struct {
 	gorm.Model
 	User_id          int
-	Date             time.Time
+	Date             string
 	Booking_order_id string
 	Slot_id          int
 	Booking_table_id int
