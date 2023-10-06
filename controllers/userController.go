@@ -299,11 +299,11 @@ func Login(c *gin.Context) {
 }
 func Booking(c *gin.Context) {
 	var body struct {
-		Date      string
-		Day       string
-		Slot      int
-		StartSlot string
-		EndSlot   string
+		Date string
+		Day  string
+		Slot []int
+		// StartSlot string
+		// EndSlot   string
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -314,63 +314,67 @@ func Booking(c *gin.Context) {
 		})
 		return
 	}
-	// AvailableSlot(body.Date)
-	var slot models.Time_Slot
-	result := config.DB.Where("start_time = ? AND end_time >= ?", body.StartSlot, body.EndSlot).Find(&slot)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to find slot by start_slot",
-		})
-		return
-	}
-	tokenString, err := c.Cookie("Authorization")
+	// // AvailableSlot(body.Date)
+	// var slot models.Time_Slot
+	// result := config.DB.Where("start_time = ? AND end_time >= ?", body.StartSlot, body.EndSlot).Find(&slot)
+	// if result.Error != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": "Failed to find slot by start_slot",
+	// 	})
+	// 	return
+	// }
+	for i := 0; i < len(body.Slot); i++ {
 
-	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-	}
+		tokenString, err := c.Cookie("Authorization")
 
-	// decode & validate the same
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-
-		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return []byte(os.Getenv("SECRET")), nil
-	})
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		// check expiration
-		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 
-		// find the user with token sub i.e user id
-		var user models.User
-		config.DB.First(&user, claims["sub"])
+		// decode & validate the same
 
-		if user.ID == 0 {
-			c.AbortWithStatus(http.StatusNotFound)
-		}
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			}
 
-		booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(slot.ID), User_id: user.ID}
-		result = config.DB.Create(&booking)
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": "400",
-				"error":  "Slot Allready Exist",
-				"data":   "null",
-			})
-			return
-		}
-
-		//Response
-		c.JSON(http.StatusCreated, gin.H{
-			"status":  200,
-			"success": "slot reserved successfully",
-			"data":    booking,
+			// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+			return []byte(os.Getenv("SECRET")), nil
 		})
+
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			// check expiration
+			if float64(time.Now().Unix()) > claims["exp"].(float64) {
+				c.AbortWithStatus(http.StatusUnauthorized)
+			}
+
+			// find the user with token sub i.e user id
+			var user models.User
+			config.DB.First(&user, claims["sub"])
+
+			if user.ID == 0 {
+				c.AbortWithStatus(http.StatusNotFound)
+			}
+
+			booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID}
+			result := config.DB.Create(&booking)
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status": "400",
+					"error":  "Slot Allready Exist",
+					"data":   "null",
+				})
+				return
+			}
+
+			//Response
+			c.JSON(http.StatusCreated, gin.H{
+				"status":  200,
+				"success": "slot reserved successfully",
+				"data":    booking,
+			})
+
+		}
 	}
 }
 
