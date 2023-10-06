@@ -10,8 +10,10 @@ import (
 	"turf/config"
 	"turf/models"
 
+	"github.com/dariubs/percent"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/gomail.v2"
 )
@@ -299,8 +301,7 @@ func Login(c *gin.Context) {
 }
 func Booking(c *gin.Context) {
 	var body struct {
-		Date string
-		Day  string
+		Date time.Time
 		Slot []int
 		// StartSlot string
 		// EndSlot   string
@@ -323,40 +324,59 @@ func Booking(c *gin.Context) {
 	// 	})
 	// 	return
 	// }
-	for i := 0; i < len(body.Slot); i++ {
 
-		tokenString, err := c.Cookie("Authorization")
+	tokenString, err := c.Cookie("Authorization")
 
-		if err != nil {
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+
+	// decode & validate the same
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(os.Getenv("SECRET")), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// check expiration
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 
-		// decode & validate the same
+		// find the user with token sub i.e user id
+		var user models.User
+		config.DB.First(&user, claims["sub"])
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-			}
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
 
-			// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-			return []byte(os.Getenv("SECRET")), nil
-		})
+		Booking_id, _ := uuid.NewRandom()
 
-		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			// check expiration
-			if float64(time.Now().Unix()) > claims["exp"].(float64) {
-				c.AbortWithStatus(http.StatusUnauthorized)
-			}
+		B_id := Booking_id.String()
 
-			// find the user with token sub i.e user id
-			var user models.User
-			config.DB.First(&user, claims["sub"])
+		for i := 0; i < len(body.Slot); i++ {
 
-			if user.ID == 0 {
-				c.AbortWithStatus(http.StatusNotFound)
-			}
+			//find the package_relationship_id and package id based on selected slot
 
-			booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID}
+			var psr models.Package_slot_relationship
+
+			config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
+
+			//fetch the price based on package id retrieved
+
+			var price models.Package
+
+			config.DB.Find(&price, "id=?", psr.Package_id)
+
+			price25 := percent.PercentFloat(25.0, price.Price)
+
+			booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
 			result := config.DB.Create(&booking)
 			if result.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
