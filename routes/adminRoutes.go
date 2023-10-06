@@ -11,8 +11,14 @@ func RegisterAdminRoutes(router *gin.Engine) {
 	{
 		adminRoutes.POST("/signup", controllers.AdminSignup)
 		adminRoutes.POST("/login", controllers.AdminLogin)
+		adminRoutes.PUT("update/admin", controllers.Package)
+		// Slot
 		adminRoutes.POST("add/slot", controllers.AddSlot)
+		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)
+		adminRoutes.GET("/get/slot", controllers.GetAllSlot)
+		//package
 		adminRoutes.POST("add/package", controllers.AddPackage)
-		adminRoutes.PUT("update/package", controllers.Package)
+		adminRoutes.POST("/update/package/:id", controllers.UpdatePackage)
+		adminRoutes.GET("/get/package", controllers.GetAllPackage)
 	}
 }

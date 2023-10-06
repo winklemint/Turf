@@ -280,3 +280,195 @@ func Package(c *gin.Context) {
 		"data":    body,
 	})
 }
+func UpdateAdmin(c *gin.Context) {
+	var body struct {
+		Name     string
+		Email    string
+		Password string
+		Contact  string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	tokenString, err := c.Cookie("Authorization")
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+
+	// decode & validate the same
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(os.Getenv("SECRET")), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// check expiration
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		// find the user with token sub i.e user id
+		var admin models.Admin
+		config.DB.First(&admin, claims["sub"])
+
+		if admin.ID == 0 {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
+
+		result := config.DB.Find(&admin).Where("id = ?", claims["sub"])
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "Admin Update UnSuccessfully",
+				"data":   "null",
+			})
+			return
+		}
+		Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to hash password",
+				"data":   "null",
+			})
+			return
+		}
+
+		admins := models.Admin{Name: body.Name, Email: body.Email, Contact: body.Contact, Password: string(Hash)}
+		result = config.DB.Model(&admin).Where("id = ?", claims["sub"]).Updates(admins)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "Admin Update UnSuccessfully",
+				"data":   "null",
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status":  200,
+			"success": "Admin Update Successfully",
+			"data":    body,
+		})
+
+	}
+}
+func UpdateSlot(c *gin.Context) {
+	Id := c.Param("id")
+	var body struct {
+		StartSlot string
+		EndSlot   string
+		Status    bool
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+
+	admin := models.Time_Slot{Start_time: body.StartSlot, End_time: body.EndSlot, Status: body.Status}
+	result := config.DB.Model(&admin).Where("id = ?", Id).Updates(admin)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Slot Update UnSuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Slot Update Successfully",
+		"data":    body,
+	})
+
+}
+func GetAllSlot(c *gin.Context) {
+	var slot []models.Time_Slot
+	result := config.DB.Find(&slot)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all slot",
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "slot details",
+		"data":    slot,
+	})
+
+}
+
+func UpdatePackage(c *gin.Context) {
+	Id := c.Param("id")
+	var body struct {
+		Name   string ` grom:"unique"`
+		Price  float64
+		Status bool
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	fmt.Println(body.Status)
+	admin := models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
+	result := config.DB.Model(&admin).Where("id = ?", Id).Updates(admin)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Package Update UnSuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Package Update Successfully",
+		"data":    body,
+	})
+
+}
+func GetAllPackage(c *gin.Context) {
+	var pkg []models.Package
+	result := config.DB.Find(&pkg)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all slot",
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "slot details",
+		"data":    pkg,
+	})
+}

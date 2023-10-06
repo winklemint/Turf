@@ -217,9 +217,9 @@ func VerifyOTPhandler(c *gin.Context) {
 		config.DB.Exec("UPDATE users SET is_active = 1 WHERE email = ?", body.Email)
 
 		c.JSON(http.StatusOK, gin.H{
-			"status": 200,
-			"sucess": "OTP verfication successful",
-			"data":   "null",
+			"status":  200,
+			"success": "OTP verfication successful",
+			"data":    "null",
 		})
 
 	} else {
@@ -505,6 +505,56 @@ func contains(slice []int, item int) bool {
 		}
 	}
 	return false
+}
+func GetAllDetail(c *gin.Context) {
+	tokenString, err := c.Cookie("Authorization")
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+
+	// decode & validate the same
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(os.Getenv("SECRET")), nil
+	})
+	var user models.User
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// check expiration
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		// find the user with token sub i.e user id
+
+		config.DB.First(&user, claims["sub"])
+
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
+
+		result := config.DB.Find(&user, claims["sub"])
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to fatch user detail",
+			})
+			return
+
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"status":  200,
+			"success": "fatch user detail successfully",
+			"data":    user,
+		})
+	}
 }
 func UpdateUser(c *gin.Context) {
 	var body struct {

@@ -10,7 +10,7 @@ type Time_Slot struct {
 	gorm.Model
 	Start_time string
 	End_time   string
-	Status     int
+	Status     bool
 }
 
 type Turf_Bookings struct {
