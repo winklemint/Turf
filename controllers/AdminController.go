@@ -435,7 +435,7 @@ func UpdatePackage(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println(body.Status)
+
 	admin := models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
 	result := config.DB.Model(&admin).Where("id = ?", Id).Updates(admin)
 	if result.Error != nil {
@@ -471,4 +471,98 @@ func GetAllPackage(c *gin.Context) {
 		"success": "slot details",
 		"data":    pkg,
 	})
+}
+func GetConfirmBooking(c *gin.Context) {
+	var Pkg []models.Confirm_Booking_Table
+	var slot_id []int
+	var Package []interface{}
+	result := config.DB.Find(&Pkg)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all booking details",
+		})
+		return
+	}
+
+	for i := 0; i < len(Pkg); i++ {
+		result := config.DB.Model(&models.Turf_Bookings{}).Where("order_id = ?", Pkg[i].Booking_order_id).Pluck("slot_id", &slot_id)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all detail",
+			})
+			return
+		}
+
+		var pkgSlots []interface{}
+
+		for _, s := range slot_id {
+			var slt models.Time_Slot
+			result := config.DB.Where("id = ? ", s).Find(&slt)
+
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "Failed to find slot by start_slot",
+				})
+				return
+			}
+
+			// Create a map for slot details
+			slotData := map[string]interface{}{
+				"starttime": slt.Start_time,
+				"endtime":   slt.End_time,
+			}
+			pkgSlots = append(pkgSlots, slotData)
+		}
+		Package = append(Package, Pkg[i], pkgSlots)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "confirmed booking details",
+		"data":    Package,
+	})
+}
+func UpdatecomfirmDetails(c *gin.Context) {
+	Id := c.Param("id")
+	var body struct {
+		Paid_amount             float64
+		Remaining_amount_to_pay float64
+		Booking_status          string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	var Status int
+	if body.Booking_status == "Confirm" {
+		Status = 3
+
+	} else {
+		Status = 0
+	}
+	confirm_booking := models.Confirm_Booking_Table{Paid_amount: body.Paid_amount, Remaining_amount_to_pay: body.Remaining_amount_to_pay, Booking_status: Status}
+	result := config.DB.Model(&confirm_booking).Where("id = ?", Id).Updates(confirm_booking)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "confirm table Update UnSuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "confirm table Update Successfully",
+		"data":    confirm_booking,
+	})
+
 }
