@@ -435,7 +435,7 @@ func Booking(c *gin.Context) {
 func Screenshot(c *gin.Context) {
 	var err error
 	var body struct {
-		Amunt float64
+		Amount float64
 	}
 
 	c.Bind(&body)
@@ -502,21 +502,34 @@ func Screenshot(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": "400",
-				"error":  "failed t insert",
+				"error":  "failed to insert",
 				"data":   "null",
 			})
 			return
+		} else {
+			changed_status := models.Confirm_Booking_Table{
+				Booking_status: 3,
+			}
+
+			status := config.DB.Model(&booking).Where("booking_order_id = ?", booking.Booking_order_id).Updates(changed_status)
+			if status.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status": "400",
+					"error":  "failed to insert",
+					"data":   "null",
+				})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"message": "Successfully upladed",
+				"data":    payment,
+			})
+
 		}
 
-		fmt.Println(booking)
-		c.JSON(http.StatusOK, gin.H{
-			"status":  200,
-			"message": "Successfully upladed",
-			"data":    payment,
-		})
-
 	}
-
 }
 
 func AvailableSlot(c *gin.Context) {
