@@ -10,5 +10,6 @@ func SyncDB() {
 	DB.AutoMigrate(&models.Package_slot_relationship{})
 	DB.AutoMigrate(&models.Admin{})
 	DB.AutoMigrate(&models.Confirm_Booking_Table{})
+	DB.AutoMigrate(models.Screenshot{})
 
 }

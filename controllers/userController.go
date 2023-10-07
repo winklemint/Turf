@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 	"turf/config"
@@ -301,7 +302,7 @@ func Login(c *gin.Context) {
 }
 func Booking(c *gin.Context) {
 	var body struct {
-		Date time.Time
+		Date string
 		Slot []int
 		// StartSlot string
 		// EndSlot   string
@@ -387,44 +388,127 @@ func Booking(c *gin.Context) {
 				return
 			}
 
-			//Response
-			c.JSON(http.StatusCreated, gin.H{
-				"status":  200,
-				"success": "slot reserved successfully",
-				"data":    booking,
-			})
-
 		}
+		var booking models.Turf_Bookings
+
+		//confirm booking table
+
+		config.DB.Find(&booking, "order_id = ?", B_id)
+
+		var totalPrice float64
+		var total_min_amount float64
+		for p := 0; p < len(body.Slot); p++ {
+			totalPrice += booking.Price
+			total_min_amount += booking.Minimum_amount_to_pay
+		}
+
+		confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 2}
+
+		result := config.DB.Create(&confirm_booking)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "Slot Allready Exist",
+				"data":   "null",
+			})
+			return
+		}
+
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  200,
+			"success": "Slot reserved successfully",
+			"data":    booking,
+		})
 	}
 }
 
-// func AvailableSlot(date string) {
-// 	var slots []models.Booking
-// 	var bookSlots, AllSlot []int
+func Screenshot(c *gin.Context) {
+	var err error
+	var body struct {
+		Amunt float64
+	}
 
-// 	var slot []models.Slot
-// 	result := config.DB.Find(&slot)
-// 	if result.Error != nil {
-// 		fmt.Println(result.Error)
-// 		return
-// 	}
-// 	result = config.DB.Where("date = ?", date).Find(&slots)
-// 	if result.Error != nil {
-// 		fmt.Println(result.Error)
-// 		return
-// 	}
+	c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	tokenString, err := c.Cookie("Authorization")
 
-// 	for i := 0; i < len(slots); i++ {
-// 		bookSlots = append(bookSlots, slots[i].Slot)
-// 	}
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
 
-// 	for i := 0; i < len(slot); i++ {
-// 		AllSlot = append(AllSlot, int(slot[i].ID))
-// 	}
-// 	fmt.Println(bookSlots)
-// 	fmt.Println(AllSlot)
+	// decode & validate the same
 
-// }
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(os.Getenv("SECRET")), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// check expiration
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		// find the user with token sub i.e user id
+		var user models.User
+		config.DB.First(&user, claims["sub"])
+
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
+
+		// img := c.Request.FormValue("image")
+
+		file, err := c.FormFile("file")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		// Define the path where the file will be saved
+		filePath := filepath.Join("./uploads", file.Filename)
+		// Save the file to the defined path
+		if err := c.SaveUploadedFile(file, filePath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+			return
+		}
+
+		var booking models.Confirm_Booking_Table
+
+		config.DB.Find(&booking, "user_id = ?", user.ID)
+
+		payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: booking.Booking_order_id}
+		result := config.DB.Create(&payment)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "failed t insert",
+				"data":   "null",
+			})
+			return
+		}
+
+		fmt.Println(booking)
+		c.JSON(http.StatusOK, gin.H{
+			"status":  200,
+			"message": "Successfully upladed",
+			"data":    payment,
+		})
+
+	}
+
+}
+
 func AvailableSlot(c *gin.Context) {
 	var body struct {
 		Date string
