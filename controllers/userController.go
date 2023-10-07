@@ -316,15 +316,6 @@ func Booking(c *gin.Context) {
 		})
 		return
 	}
-	// // AvailableSlot(body.Date)
-	// var slot models.Time_Slot
-	// result := config.DB.Where("start_time = ? AND end_time >= ?", body.StartSlot, body.EndSlot).Find(&slot)
-	// if result.Error != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": "Failed to find slot by start_slot",
-	// 	})
-	// 	return
-	// }
 
 	tokenString, err := c.Cookie("Authorization")
 
@@ -360,23 +351,21 @@ func Booking(c *gin.Context) {
 		Booking_id, _ := uuid.NewRandom()
 
 		B_id := Booking_id.String()
+		var reserved []models.Turf_Bookings
 
 		for i := 0; i < len(body.Slot); i++ {
 
-			//validation for slot insertion
 			var r models.Turf_Bookings
 
-			rows := config.DB.Find(&r, "date=? ", body.Date)
-			if rows.Error != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"status": 400,
-					"error":  "failed to read body",
-					"data":   "null",
-				})
-				return
-			}
+			config.DB.Find(&r, "slot_id=?", int(body.Slot[i]))
 
-			if r.ID == 0 {
+			fmt.Println(r.ID)
+
+			reserved = append(reserved, r)
+
+			fmt.Println(len(reserved))
+
+			if len(reserved) == 0 {
 
 				var psr models.Package_slot_relationship
 
@@ -401,9 +390,9 @@ func Booking(c *gin.Context) {
 					return
 				}
 			} else {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"status": "400",
-					"error":  "Slot is not available",
+				c.JSON(http.StatusOK, gin.H{
+					"status": 400,
+					"error":  "Slot Allready Exist",
 					"data":   "null",
 				})
 				return
@@ -533,6 +522,7 @@ func Screenshot(c *gin.Context) {
 func AvailableSlot(c *gin.Context) {
 
 	// slot go routine running
+	go Slot_go_rountine()
 
 	var body struct {
 		Date string
@@ -832,8 +822,10 @@ func UpdateUser(c *gin.Context) {
 }
 
 func Slot_go_rountine() {
-	config.DB.Exec("UPDATE confirm_booking_tables SET booking_status = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
-	config.DB.Exec("UPDATE turf_bookings SET is_booked = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
-	fmt.Println("goroutine running")
-	time.Sleep(5 * time.Minute)
+	for {
+		config.DB.Exec("UPDATE confirm_booking_tables SET booking_status = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
+		config.DB.Exec("UPDATE turf_bookings SET is_booked = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
+		fmt.Println("goroutine running")
+		time.Sleep(30 * time.Second)
+	}
 }
