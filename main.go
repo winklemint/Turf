@@ -2,6 +2,7 @@ package main
 
 import (
 	"turf/config"
+	"turf/controllers"
 	"turf/routes"
 	route "turf/routes"
 
@@ -16,6 +17,9 @@ func init() {
 }
 
 func main() {
+
+	go controllers.Slot_go_rountine()
+
 	r := gin.Default()
 	routes.RegisterAdminRoutes(r)
 	route.RegisterUserRoutes(r)

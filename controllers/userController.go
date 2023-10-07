@@ -363,32 +363,53 @@ func Booking(c *gin.Context) {
 
 		for i := 0; i < len(body.Slot); i++ {
 
-			//find the package_relationship_id and package id based on selected slot
+			//validation for slot insertion
+			var r models.Turf_Bookings
 
-			var psr models.Package_slot_relationship
-
-			config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
-
-			//fetch the price based on package id retrieved
-
-			var price models.Package
-
-			config.DB.Find(&price, "id=?", psr.Package_id)
-
-			price25 := percent.PercentFloat(25.0, price.Price)
-
-			booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
-			result := config.DB.Create(&booking)
-			if result.Error != nil {
+			rows := config.DB.Find(&r, "date=? ", body.Date)
+			if rows.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"status": "400",
-					"error":  "Slot Allready Exist",
+					"status": 400,
+					"error":  "failed to read body",
 					"data":   "null",
 				})
 				return
 			}
 
+			if r.ID == 0 {
+
+				var psr models.Package_slot_relationship
+
+				config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
+
+				//fetch the price based on package id retrieved
+
+				var price models.Package
+
+				config.DB.Find(&price, "id=?", psr.Package_id)
+
+				price25 := percent.PercentFloat(25.0, price.Price)
+
+				booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
+				result := config.DB.Create(&booking)
+				if result.Error != nil {
+					c.JSON(http.StatusOK, gin.H{
+						"status": 400,
+						"error":  "Slot Allready Exist",
+						"data":   "null",
+					})
+					return
+				}
+			} else {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status": "400",
+					"error":  "Slot is not available",
+					"data":   "null",
+				})
+				return
+			}
 		}
+
 		var booking models.Turf_Bookings
 
 		//confirm booking table
@@ -414,7 +435,7 @@ func Booking(c *gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status":  200,
 			"success": "Slot reserved successfully",
 			"data":    booking,
@@ -510,6 +531,9 @@ func Screenshot(c *gin.Context) {
 }
 
 func AvailableSlot(c *gin.Context) {
+
+	// slot go routine running
+
 	var body struct {
 		Date string
 	}
@@ -531,7 +555,7 @@ func AvailableSlot(c *gin.Context) {
 		return
 	}
 
-	result = config.DB.Where("date = ?", body.Date).Find(&slots)
+	result = config.DB.Where("date = ? AND is_booked = ?", body.Date, 0).Find(&slots)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return
@@ -805,4 +829,11 @@ func UpdateUser(c *gin.Context) {
 		}
 
 	}
+}
+
+func Slot_go_rountine() {
+	config.DB.Exec("UPDATE confirm_booking_tables SET booking_status = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
+	config.DB.Exec("UPDATE turf_bookings SET is_booked = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
+	fmt.Println("goroutine running")
+	time.Sleep(5 * time.Minute)
 }

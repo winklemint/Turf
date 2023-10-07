@@ -16,7 +16,7 @@ type Turf_Bookings struct {
 	User_id                  uint
 	Slot_id                  int
 	Date                     string
-	Is_booked                bool
+	Is_booked                int
 	Package_slot_relation_id int
 	Package_id               int
 	Price                    float64
