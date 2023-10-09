@@ -395,7 +395,7 @@ func Booking(c *gin.Context) {
 
 				price25 := percent.PercentFloat(25.0, price.Price)
 
-				booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
+				booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id, Is_booked: 1}
 				result := config.DB.Create(&booking)
 				if result.Error != nil {
 					c.JSON(http.StatusOK, gin.H{
@@ -421,7 +421,7 @@ func Booking(c *gin.Context) {
 				total_min_amount += booking.Minimum_amount_to_pay
 			}
 
-			confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 2}
+			confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 1}
 
 			result := config.DB.Create(&confirm_booking)
 			if result.Error != nil {
@@ -527,8 +527,21 @@ func Screenshot(c *gin.Context) {
 			changed_status := models.Confirm_Booking_Table{
 				Booking_status: 3,
 			}
-
 			status := config.DB.Model(&booking).Where("booking_order_id = ?", booking.Booking_order_id).Updates(changed_status)
+			if status.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status": "400",
+					"error":  "failed to insert",
+					"data":   "null",
+				})
+				return
+			}
+			var turf_book models.Turf_Bookings
+
+			is_booked := models.Turf_Bookings{
+				Is_booked: 3,
+			}
+			result = config.DB.Model(&turf_book).Where("order_id = ?", booking.Booking_order_id).Updates(is_booked)
 			if status.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
