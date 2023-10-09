@@ -2,11 +2,7 @@ package main
 
 import (
 	"turf/config"
-<<<<<<< Updated upstream
-=======
-	"turf/controllers"
 
->>>>>>> Stashed changes
 	"turf/routes"
 	route "turf/routes"
 
