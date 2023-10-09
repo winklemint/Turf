@@ -11,7 +11,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 	{
 		adminRoutes.POST("/signup", controllers.AdminSignup)
 		adminRoutes.POST("/login", controllers.AdminLogin)
-		adminRoutes.PUT("update/admin", controllers.Package)
+		adminRoutes.PUT("/update", controllers.UpdateAdmin)
 		// Slot
 		adminRoutes.POST("add/slot", controllers.AddSlot)
 		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)
@@ -21,9 +21,12 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/update/package/:id", controllers.UpdatePackage)
 		adminRoutes.GET("/get/package", controllers.GetAllPackage)
 		//booking
-		adminRoutes.GET("/get/conform/booking", controllers.GetConfirmBooking)
+		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
+		//user Details
+		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
+		adminRoutes.POST("/update/user/:id", controllers.UpdateUserDetails)
 
 	}
 }

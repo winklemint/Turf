@@ -6,9 +6,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Full_Name string
-	Email     string `gorm:"unique"`
-	Contact   string `gorm:"unique"`
-	Password  string
-	Is_active int
+	Full_Name      string
+	Email          string `gorm:"unique"`
+	Contact        string `gorm:"unique"`
+	Password       string
+	Account_Status int
 }

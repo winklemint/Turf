@@ -19,6 +19,8 @@ func AdminSignup(c *gin.Context) {
 		Contact  string
 		Password string
 		Email    string
+		Role     int
+		Status   string
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -38,11 +40,17 @@ func AdminSignup(c *gin.Context) {
 		})
 		return
 	}
+	if body.Status == "Super Admin" {
+		body.Role = 1
+	} else {
+		body.Role = 0
+	}
 	bodys := models.Admin{
 		Name:     body.Name,
 		Contact:  body.Contact,
 		Password: string(password),
 		Email:    body.Email,
+		Role:     body.Role,
 	}
 
 	result := config.DB.Create(&bodys)
@@ -260,7 +268,7 @@ func AddPackage(c *gin.Context) {
 	var body struct {
 		Name   string
 		Price  float64
-		Status bool
+		Status int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -287,43 +295,46 @@ func AddPackage(c *gin.Context) {
 		"data":    body,
 	})
 }
-func Package(c *gin.Context) {
-	var body struct {
-		Name   string
-		Price  float64
-		Status bool
-	}
-	err := c.Bind(&body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
-		})
-		return
-	}
-	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
-	result := config.DB.Create(&packageModel)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "400",
-			"error":  "package Allready Exist",
-			"data":   "null",
-		})
-		return
-	}
-	c.JSON(http.StatusCreated, gin.H{
-		"status":  200,
-		"success": "Package Successfully Created",
-		"data":    body,
-	})
-}
+
+// func Package(c *gin.Context) {
+// 	var body struct {
+// 		Name   string
+// 		Price  float64
+// 		Status bool
+// 	}
+// 	err := c.Bind(&body)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status": 400,
+// 			"error":  "failed to read body",
+// 			"data":   "null",
+// 		})
+// 		return
+// 	}
+// 	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
+// 	result := config.DB.Create(&packageModel)
+// 	if result.Error != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status": "400",
+// 			"error":  "package Allready Exist",
+// 			"data":   "null",
+// 		})
+// 		return
+// 	}
+// 	c.JSON(http.StatusCreated, gin.H{
+// 		"status":  200,
+// 		"success": "Package Successfully Created",
+// 		"data":    body,
+// 	})
+// }
 func UpdateAdmin(c *gin.Context) {
 	var body struct {
 		Name     string
 		Email    string
 		Password string
 		Contact  string
+		Role     string
+		Status   int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -383,9 +394,14 @@ func UpdateAdmin(c *gin.Context) {
 			})
 			return
 		}
-
-		admins := models.Admin{Name: body.Name, Email: body.Email, Contact: body.Contact, Password: string(Hash)}
-		result = config.DB.Model(&admin).Where("id = ?", claims["sub"]).Updates(admins)
+		if body.Role == "Super Admin" {
+			body.Status = 1
+		} else {
+			body.Status = 2
+		}
+		fmt.Println(admin.ID)
+		admins := models.Admin{Name: body.Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Role: body.Status}
+		result = config.DB.Model(&admin).Where("id = ?", admin.ID).Updates(admins)
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": "400",
@@ -407,7 +423,7 @@ func UpdateSlot(c *gin.Context) {
 	var body struct {
 		StartSlot string
 		EndSlot   string
-		Status    bool
+		Status    int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -462,7 +478,7 @@ func UpdatePackage(c *gin.Context) {
 	var body struct {
 		Name   string ` grom:"unique"`
 		Price  float64
-		Status bool
+		Status int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -581,13 +597,14 @@ func UpdatecomfirmDetails(c *gin.Context) {
 	}
 	var Status int
 	if body.Booking_status == "Confirm" {
-		Status = 3
+		Status = 4
 
 	} else {
-		Status = 0
+		Status = 1
 	}
 	confirm_booking := models.Confirm_Booking_Table{Paid_amount: body.Paid_amount, Remaining_amount_to_pay: body.Remaining_amount_to_pay, Booking_status: Status}
-	result := config.DB.Model(&confirm_booking).Where("id = ?", Id).Updates(confirm_booking)
+	result := config.DB.Model(&models.Confirm_Booking_Table{}).Where("id = ?", Id).Updates(&confirm_booking)
+	// result = config.DB.Exec(result)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
@@ -601,6 +618,80 @@ func UpdatecomfirmDetails(c *gin.Context) {
 		"status":  200,
 		"success": "confirm table Update Successfully",
 		"data":    confirm_booking,
+	})
+
+}
+func GetAllUsers(c *gin.Context) {
+	var users []models.User
+	result := config.DB.Find(&users)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to load user details",
+			"data":   "null",
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "success to load user details",
+		"data":    users,
+	})
+}
+func UpdateUserDetails(c *gin.Context) {
+	Id := c.Param("id")
+	var body struct {
+		Full_Name      string
+		Email          string
+		Password       string
+		Contact        string
+		Account_Status string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "failed to hash password",
+		})
+		return
+	}
+	var Account_Status int
+	switch {
+	case body.Account_Status == "Active":
+		Account_Status = 1
+	case body.Account_Status == "Hold":
+		Account_Status = 2
+	case body.Account_Status == "Block":
+		Account_Status = 3
+	default:
+		Account_Status = 0
+	}
+
+	users := models.User{Full_Name: body.Full_Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Account_Status: Account_Status}
+	result := config.DB.Model(&users).Where("id = ?", Id).Updates(users)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "User Update UnSuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "User Update Successfully",
+		"data":    body,
 	})
 
 }

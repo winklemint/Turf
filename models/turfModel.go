@@ -8,7 +8,7 @@ type Time_Slot struct {
 	gorm.Model
 	Start_time string
 	End_time   string
-	Status     bool
+	Status     int
 }
 
 type Turf_Bookings struct {
@@ -34,7 +34,7 @@ type Package struct {
 	gorm.Model
 	Name   string ` grom:"unique"`
 	Price  float64
-	Status bool
+	Status int
 }
 type Confirm_Booking_Table struct {
 	gorm.Model

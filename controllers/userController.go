@@ -48,7 +48,7 @@ func Signup(c *gin.Context) {
 	}
 
 	//create the user
-	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Is_active: 0}
+	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: 0}
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
@@ -257,7 +257,7 @@ func Login(c *gin.Context) {
 			"error": "Invalid Email or Password ",
 		})
 		return
-	} else if user.ID != 0 && user.Is_active == 0 {
+	} else if user.ID != 0 && user.Account_Status == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Kindly verify your email first",
 		})
@@ -349,7 +349,7 @@ func Booking(c *gin.Context) {
 			c.AbortWithStatus(http.StatusNotFound)
 		}
 		rows := config.DB.Model(&models.Turf_Bookings{}).Where("date = ?", body.Date).Pluck("slot_id", &Slots)
-		fmt.Println("total:", Slots)
+
 		if rows.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
@@ -359,24 +359,45 @@ func Booking(c *gin.Context) {
 			return
 		}
 		availableSlots := []int{}
-		for _, s := range Slots {
-			for _, s1 := range body.Slot {
+		for _, s := range body.Slot {
+			for _, s1 := range Slots {
 				if s == s1 {
 					availableSlots = append(availableSlots, int(s))
 				}
 			}
 		}
+		uniqueslots := make([]int, 0)
 
+		bMap := make(map[int]bool)
+		for _, val := range availableSlots {
+			bMap[val] = true
+
+		}
+		fmt.Println(bMap)
+
+		for _, val := range body.Slot {
+
+			if !bMap[val] {
+				uniqueslots = append(uniqueslots, val)
+				fmt.Println(uniqueslots)
+			}
+		}
+
+		fmt.Println("Unique Values in a that are not in b:", uniqueslots)
+
+		// availableSlots1 := []int{}
+		// for _, s := range body.Slot {
+		// 	for _, s1 := range availableSlots {
+		// 		if s != s1 {
+		// 			fmt.Println(s)
+		// 			availableSlots1 = append(availableSlots1, int(s))
+		// 		}
+		// 	}
+		// }
+		// fmt.Println("ava1", availableSlots1)
 		fmt.Println("ava:", availableSlots)
 		if len(availableSlots) == 0 {
-			availableSlots1 := []int{}
-			for _, s := range Slots {
-				for _, s1 := range availableSlots {
-					if s != s1 {
-						availableSlots1 = append(availableSlots1, int(s))
-					}
-				}
-			}
+
 			Booking_id, _ := uuid.NewRandom()
 
 			B_id := Booking_id.String()
@@ -395,7 +416,7 @@ func Booking(c *gin.Context) {
 
 				price25 := percent.PercentFloat(25.0, price.Price)
 
-				booking := models.Turf_Bookings{Date: body.Date, Slot_id: int(body.Slot[i]), User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id, Is_booked: 1}
+				booking := models.Turf_Bookings{Date: body.Date, Slot_id: body.Slot[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
 				result := config.DB.Create(&booking)
 				if result.Error != nil {
 					c.JSON(http.StatusOK, gin.H{
@@ -438,7 +459,71 @@ func Booking(c *gin.Context) {
 				"success": "Slot reserved successfully",
 				"data":    booking,
 			})
-			return
+
+		} else if len(availableSlots) != 0 && len(uniqueslots) != 0 {
+
+			Booking_id, _ := uuid.NewRandom()
+
+			B_id := Booking_id.String()
+
+			for i := 0; i < len(uniqueslots); i++ {
+
+				var psr models.Package_slot_relationship
+
+				config.DB.First(&psr, "slot_id=?", int(uniqueslots[i]))
+
+				//fetch the price based on package id retrieved
+
+				var price models.Package
+
+				config.DB.Find(&price, "id=?", psr.Package_id)
+
+				price25 := percent.PercentFloat(25.0, price.Price)
+
+				booking := models.Turf_Bookings{Date: body.Date, Slot_id: uniqueslots[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
+				result := config.DB.Create(&booking)
+				if result.Error != nil {
+					c.JSON(http.StatusOK, gin.H{
+						"status": 400,
+						"error":  "Slot Allready Exist",
+						"data":   "null",
+					})
+					return
+				}
+
+			}
+
+			var booking models.Turf_Bookings
+
+			//confirm booking table
+
+			config.DB.Find(&booking, "order_id = ?", B_id)
+
+			var totalPrice float64
+			var total_min_amount float64
+			for p := 0; p < len(uniqueslots); p++ {
+				totalPrice += booking.Price
+				total_min_amount += booking.Minimum_amount_to_pay
+			}
+
+			confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 2}
+
+			result := config.DB.Create(&confirm_booking)
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status": "400",
+					"error":  "Slot Allready Exist",
+					"data":   "null",
+				})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"success": "Slot reserved successfully",
+				"data":    booking,
+			})
+
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
@@ -728,7 +813,7 @@ func GetBookingDetail(c *gin.Context) {
 		if user.ID == 0 {
 			c.AbortWithStatus(http.StatusNotFound)
 		}
-		var booking []models.Turf_Bookings
+		var booking []models.Confirm_Booking_Table
 		result := config.DB.Find(&booking).Where("slot_id", claims["sub"])
 
 		if result.Error != nil {
