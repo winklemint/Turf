@@ -14,4 +14,7 @@ type Admin struct {
 	Password  string
 	Role      int
 	LastLogin time.Time
+	turf_branch_id int
+	
+
 }

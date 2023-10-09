@@ -23,6 +23,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//booking
 		adminRoutes.GET("/get/conform/booking", controllers.GetConfirmBooking)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
+		adminRoutes.POST("/add/branch", controllers.Add_Branch)
 
 	}
 }

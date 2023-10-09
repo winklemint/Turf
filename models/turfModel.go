@@ -54,3 +54,13 @@ type Screenshot struct {
 	Amount             float64
 	Payment_screenshot string
 }
+
+type Branch_info_management struct {
+	gorm.Model
+	Turf_name             string
+	Branch_name           string
+	Branch_address        string
+	Branch_email          string
+	Branch_contact_number string
+	GST_no                string
+}

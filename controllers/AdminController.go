@@ -58,7 +58,6 @@ func AdminSignup(c *gin.Context) {
 	//Response
 	c.JSON(http.StatusCreated, gin.H{
 		"status": 201,
-
 		"success": "Admin Successfully Created",
 		"data":    bodys,
 	})
@@ -170,10 +169,48 @@ func AdminLogin(c *gin.Context) {
 // 	c.JSON(http.StatusOK, gin.H{
 // 		"status": 200,
 
-// 		"success": "Admin Successfully Created",
-// 		"data":    bodys,
-// 	})
-// }
+//			"success": "Admin Successfully Created",
+//			"data":    bodys,
+//		})
+//	}
+func Add_Branch(c *gin.Context) {
+	var body struct {
+		Turf_name             string
+		Branch_name           string
+		Branch_address        string
+		Branch_email          string
+		Branch_contact_number string
+		GST_no                string
+	}
+
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no}
+	result := config.DB.Create(&branch)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Branch Already Exist",
+			"data":   "null",
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "Branch Successfully Created",
+		"data":    branch,
+	})
+}
+
 func AddSlot(c *gin.Context) {
 	var body struct {
 		StartSlot string
@@ -218,6 +255,7 @@ func AddSlot(c *gin.Context) {
 	})
 
 }
+
 func AddPackage(c *gin.Context) {
 	var body struct {
 		Name   string

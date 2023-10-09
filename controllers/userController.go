@@ -865,10 +865,17 @@ func UpdateUser(c *gin.Context) {
 }
 
 func Slot_go_rountine() {
+<<<<<<< Updated upstream
 	for {
 		config.DB.Exec("UPDATE confirm_booking_tables SET booking_status = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
 		config.DB.Exec("UPDATE turf_bookings SET is_booked = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
 		fmt.Println("goroutine running")
 		time.Sleep(30 * time.Second)
 	}
+=======
+	config.DB.Exec("UPDATE confirm_booking_tables SET booking_status = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
+	config.DB.Exec("UPDATE turf_bookings SET is_booked = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
+	fmt.Println("goroutine running")
+	time.Sleep(5 * time.Hour)
+>>>>>>> Stashed changes
 }
