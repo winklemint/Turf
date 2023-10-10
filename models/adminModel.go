@@ -8,13 +8,11 @@ import (
 
 type Admin struct {
 	gorm.Model
-	Name      string
-	Contact   string ` grom:"unique"`
-	Email     string `gorm:"unique"`
-	Password  string
-	Role      int
-	LastLogin time.Time
-	turf_branch_id int
-	
-
+	Name           string
+	Contact        string ` grom:"unique"`
+	Email          string `gorm:"unique"`
+	Password       string
+	Role           int
+	LastLogin      time.Time
+	Turf_branch_id uint
 }

@@ -15,12 +15,13 @@ import (
 
 func AdminSignup(c *gin.Context) {
 	var body struct {
-		Name     string
-		Contact  string
-		Password string
-		Email    string
-		Role     int
-		Status   string
+		Name        string
+		Contact     string
+		Password    string
+		Email       string
+		Role        int
+		Status      string
+		Branch_name string
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -42,18 +43,39 @@ func AdminSignup(c *gin.Context) {
 	}
 	if body.Status == "Super Admin" {
 		body.Role = 1
+	} else if body.Status == "Admin" {
+		body.Role = 2
+	} else if body.Status == "Staff" {
+		body.Role = 3
 	} else {
-		body.Role = 0
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Select a Valid Role",
+			"data":   "null",
+		})
+		return
 	}
-	bodys := models.Admin{
-		Name:     body.Name,
-		Contact:  body.Contact,
-		Password: string(password),
-		Email:    body.Email,
-		Role:     body.Role,
+	var branch models.Branch_info_management
+	result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Error finding branch id",
+			"data":   "null",
+		})
+		return
 	}
 
-	result := config.DB.Create(&bodys)
+	bodys := models.Admin{
+		Name:           body.Name,
+		Contact:        body.Contact,
+		Password:       string(password),
+		Email:          body.Email,
+		Role:           body.Role,
+		Turf_branch_id: branch.ID,
+	}
+
+	result = config.DB.Create(&bodys)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
@@ -65,7 +87,7 @@ func AdminSignup(c *gin.Context) {
 
 	//Response
 	c.JSON(http.StatusCreated, gin.H{
-		"status": 201,
+		"status":  201,
 		"success": "Admin Successfully Created",
 		"data":    bodys,
 	})
@@ -181,6 +203,26 @@ func AdminLogin(c *gin.Context) {
 //			"data":    bodys,
 //		})
 //	}
+func Select_branch(c *gin.Context) {
+	var branch models.Branch_info_management
+	result := config.DB.Select("branch_name").Find(&branch)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Failed to get branch",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Branch details",
+		"data":    branch.Branch_name,
+	})
+	return
+
+}
+
 func Add_Branch(c *gin.Context) {
 	var body struct {
 		Turf_name             string
@@ -296,37 +338,37 @@ func AddPackage(c *gin.Context) {
 	})
 }
 
-// func Package(c *gin.Context) {
-// 	var body struct {
-// 		Name   string
-// 		Price  float64
-// 		Status bool
-// 	}
-// 	err := c.Bind(&body)
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": 400,
-// 			"error":  "failed to read body",
-// 			"data":   "null",
-// 		})
-// 		return
-// 	}
-// 	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
-// 	result := config.DB.Create(&packageModel)
-// 	if result.Error != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": "400",
-// 			"error":  "package Allready Exist",
-// 			"data":   "null",
-// 		})
-// 		return
-// 	}
-// 	c.JSON(http.StatusCreated, gin.H{
-// 		"status":  200,
-// 		"success": "Package Successfully Created",
-// 		"data":    body,
-// 	})
-// }
+//	func Package(c *gin.Context) {
+//		var body struct {
+//			Name   string
+//			Price  float64
+//			Status bool
+//		}
+//		err := c.Bind(&body)
+//		if err != nil {
+//			c.JSON(http.StatusBadRequest, gin.H{
+//				"status": 400,
+//				"error":  "failed to read body",
+//				"data":   "null",
+//			})
+//			return
+//		}
+//		packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
+//		result := config.DB.Create(&packageModel)
+//		if result.Error != nil {
+//			c.JSON(http.StatusBadRequest, gin.H{
+//				"status": "400",
+//				"error":  "package Allready Exist",
+//				"data":   "null",
+//			})
+//			return
+//		}
+//		c.JSON(http.StatusCreated, gin.H{
+//			"status":  200,
+//			"success": "Package Successfully Created",
+//			"data":    body,
+//		})
+//	}
 func UpdateAdmin(c *gin.Context) {
 	var body struct {
 		Name     string
@@ -694,4 +736,28 @@ func UpdateUserDetails(c *gin.Context) {
 		"data":    body,
 	})
 
+}
+
+// func In_live_slot(c *gin.Context){
+// 	var slot models.Confirm_Booking_Table
+// 	config.DB.
+// }
+
+func getCurrentHourSlot() (time.Time, time.Time) {
+	currentTime := time.Now()
+	start := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), 0, 0, 0, currentTime.Location())
+	end := start.Add(time.Hour)
+
+	return start, end
+}
+
+func getOccupiedSlots(startTime, endTime time.Time) ([]models.Turf_Bookings, error) {
+	var occupiedSlots []models.Turf_Bookings
+
+	// Query the database to find occupied slots within the specified time range
+	if err := config.DB.Where("start_time >= ? AND end_time <= ?", startTime, endTime).Find(&occupiedSlots).Error; err != nil {
+		return nil, err
+	}
+
+	return occupiedSlots, nil
 }

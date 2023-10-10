@@ -26,7 +26,8 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
 		//user Details
 		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
-		adminRoutes.POST("/update/user/:id", controllers.UpdateUserDetails)
+		adminRoutes.POST("/get/user/:id", controllers.UpdateUserDetails)
+		adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 	}
 }
