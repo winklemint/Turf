@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 	"turf/config"
 	"turf/models"
@@ -760,4 +761,81 @@ func getOccupiedSlots(startTime, endTime time.Time) ([]models.Turf_Bookings, err
 	}
 
 	return occupiedSlots, nil
+func AdminAddScreenshot(c *gin.Context) {
+	id := c.Param("id")
+	var body struct {
+		Amount           float64
+		Booking_order_id string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Invalid Request",
+			"data":   "null",
+		})
+		return
+
+	}
+
+	var booking models.Confirm_Booking_Table
+	config.DB.Select("booking_order_id").Where("user_id = ?", id).Find(&booking)
+	bid := booking.Booking_order_id
+	fmt.Println(bid)
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/admin_uploads", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: bid}
+	result := config.DB.Create(&payment)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "failed to insert",
+			"data":   "null",
+		})
+		return
+	} else {
+		changed_status := models.Confirm_Booking_Table{
+			Booking_status: 3,
+		}
+		status := config.DB.Model(&booking).Where("booking_order_id = ?", booking.Booking_order_id).Updates(changed_status)
+		if status.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "failed to insert",
+				"data":   "null",
+			})
+			return
+		}
+		var turf_book models.Turf_Bookings
+
+		is_booked := models.Turf_Bookings{
+			Is_booked: 3,
+		}
+		result := config.DB.Model(&turf_book).Where("order_id = ?", booking.Booking_order_id).Updates(is_booked)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "failed to insert",
+				"data":   "null",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"status":  200,
+			"message": "Successfully upladed",
+			"data":    payment,
+		})
+
+	}
+
 }

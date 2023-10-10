@@ -627,7 +627,7 @@ func Screenshot(c *gin.Context) {
 				Is_booked: 3,
 			}
 			result = config.DB.Model(&turf_book).Where("order_id = ?", booking.Booking_order_id).Updates(is_booked)
-			if status.Error != nil {
+			if result.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
 					"error":  "failed to insert",

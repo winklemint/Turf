@@ -24,6 +24,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
+		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		//user Details
 		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
 		adminRoutes.POST("/get/user/:id", controllers.UpdateUserDetails)
