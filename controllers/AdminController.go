@@ -779,10 +779,6 @@ func AdminAddScreenshot(c *gin.Context) {
 		return
 
 	}
-	fmt.Println("id", id)
-	var booking models.Confirm_Booking_Table
-
-	config.DB.Find(&booking, "user_id", id)
 
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -796,7 +792,7 @@ func AdminAddScreenshot(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
 	}
-	payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: booking.Booking_order_id}
+	payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: id}
 	result := config.DB.Create(&payment)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -809,6 +805,7 @@ func AdminAddScreenshot(c *gin.Context) {
 		changed_status := models.Confirm_Booking_Table{
 			Booking_status: 3,
 		}
+		var booking models.Confirm_Booking_Table
 		status := config.DB.Model(&booking).Where("booking_order_id = ?", booking.Booking_order_id).Updates(changed_status)
 		if status.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
