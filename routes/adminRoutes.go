@@ -30,5 +30,8 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/get/user/:id", controllers.UpdateUserDetails)
 		adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
+		adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
+		adminRoutes.GET("/partial/payments", controllers.Partial_payment)
+
 	}
 }

@@ -250,7 +250,7 @@ func Login(c *gin.Context) {
 
 	//Look up for requested user
 	var user models.User
-	config.DB.First(&user, "email = ? AND is_active=1", body.Email)
+	config.DB.First(&user, "email = ? AND account_status = 1", body.Email)
 
 	if user.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -300,8 +300,10 @@ func Login(c *gin.Context) {
 		"data":    user,
 	})
 }
+
 func Booking(c *gin.Context) {
 	var body struct {
+		Day  string
 		Date string
 		Slot []int
 		// StartSlot string
@@ -403,16 +405,20 @@ func Booking(c *gin.Context) {
 			B_id := Booking_id.String()
 
 			for i := 0; i < len(body.Slot); i++ {
-
+				var price models.Package
 				var psr models.Package_slot_relationship
 
-				config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
+				if body.Day == "Saturday" || body.Day == "Sunday" {
 
-				//fetch the price based on package id retrieved
+					config.DB.Find(&price, "id=?", 3)
+				} else {
 
-				var price models.Package
+					config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
 
-				config.DB.Find(&price, "id=?", psr.Package_id)
+					//fetch the price based on package id retrieved
+
+					config.DB.Find(&price, "id=?", psr.Package_id)
+				}
 
 				price25 := percent.PercentFloat(25.0, price.Price)
 
@@ -653,7 +659,7 @@ func AvailableSlot(c *gin.Context) {
 	go Slot_go_rountine()
 
 	var body struct {
-		Date string
+		Date time.Time
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -672,8 +678,12 @@ func AvailableSlot(c *gin.Context) {
 		fmt.Println(result.Error)
 		return
 	}
+	currentTime := time.Now()
+	date := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), 0, currentTime.Location())
 
-	result = config.DB.Where("date = ? AND is_booked = ?", body.Date, 0).Find(&slots)
+	fmt.Println(date)
+
+	result = config.DB.Where("date = ? AND is_booked = ?", date, 0).Find(&slots)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return

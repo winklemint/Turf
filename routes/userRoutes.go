@@ -21,4 +21,6 @@ func RegisterUserRoutes(router *gin.Engine) {
 		userRoutes.GET("/get/booking/detail", controllers.GetBookingDetail)
 
 	}
+
+	
 }

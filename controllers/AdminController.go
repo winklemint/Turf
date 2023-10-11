@@ -744,9 +744,12 @@ func UpdateUserDetails(c *gin.Context) {
 // 	config.DB.
 // }
 
-func getCurrentHourSlot() (time.Time, time.Time) {
+func GetCurrentHourSlot() (time.Time, time.Time) {
 	currentTime := time.Now()
-	start := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), 0, 0, 0, currentTime.Location())
+	start := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), currentTime.Nanosecond(), currentTime.Location())
+	day := time.Now().Weekday()
+	fmt.Println(day)
+
 	end := start.Add(time.Hour)
 
 	return start, end
@@ -761,11 +764,11 @@ func getOccupiedSlots(startTime, endTime time.Time) ([]models.Turf_Bookings, err
 	}
 
 	return occupiedSlots, nil
+}
 func AdminAddScreenshot(c *gin.Context) {
 	id := c.Param("id")
 	var body struct {
-		Amount           float64
-		Booking_order_id string
+		Amount float64
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -776,11 +779,11 @@ func AdminAddScreenshot(c *gin.Context) {
 		return
 
 	}
-
+	fmt.Println("id", id)
 	var booking models.Confirm_Booking_Table
-	config.DB.Select("booking_order_id").Where("user_id = ?", id).Find(&booking)
-	bid := booking.Booking_order_id
-	fmt.Println(bid)
+
+	config.DB.Find(&booking, "user_id", id)
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -793,7 +796,7 @@ func AdminAddScreenshot(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
 	}
-	payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: bid}
+	payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: booking.Booking_order_id}
 	result := config.DB.Create(&payment)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -837,5 +840,27 @@ func AdminAddScreenshot(c *gin.Context) {
 		})
 
 	}
+
+}
+
+func Pending_bookings(c *gin.Context) {
+	var pending []models.Confirm_Booking_Table
+	config.DB.Find(&pending, "booking_status = ?", 2)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Successfully upladed",
+		"data":    pending,
+	})
+
+}
+
+func Partial_payment(c *gin.Context) {
+	var partial []models.Confirm_Booking_Table
+	config.DB.Find(&partial, "remaining_amount_to_pay > 0")
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Successfully upladed",
+		"data":    partial,
+	})
 
 }
