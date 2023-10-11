@@ -63,4 +63,5 @@ type Branch_info_management struct {
 	Branch_email          string
 	Branch_contact_number string
 	GST_no                string
+	Status                int
 }

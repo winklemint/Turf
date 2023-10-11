@@ -235,6 +235,7 @@ func Add_Branch(c *gin.Context) {
 		Branch_email          string
 		Branch_contact_number string
 		GST_no                string
+		Status                int
 	}
 
 	err := c.Bind(&body)
@@ -246,7 +247,7 @@ func Add_Branch(c *gin.Context) {
 		})
 		return
 	}
-	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no}
+	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: 1}
 	result := config.DB.Create(&branch)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -264,7 +265,63 @@ func Add_Branch(c *gin.Context) {
 		"data":    branch,
 	})
 }
+func Update_Branch(c *gin.Context) {
+	id := c.Param("id")
+	var body struct {
+		Turf_name             string
+		Branch_name           string
+		Branch_address        string
+		Branch_email          string
+		Branch_contact_number string
+		GST_no                string
+		Status                int
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
 
+	}
+
+	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status}
+	result := config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Branch Update unsuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "Branch Successfully Updated",
+		"data":    branch,
+	})
+}
+func GET_All_Branch(c *gin.Context) {
+	var branch []models.Branch_info_management
+	result := config.DB.Find(&branch)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "No Branch Found",
+			"data":   "null",
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "All Branch  Successfully",
+		"data":    branch,
+	})
+
+}
 func AddSlot(c *gin.Context) {
 	var body struct {
 		StartSlot string
