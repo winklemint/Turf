@@ -375,17 +375,14 @@ func Booking(c *gin.Context) {
 			bMap[val] = true
 
 		}
-		fmt.Println(bMap)
 
 		for _, val := range body.Slot {
 
 			if !bMap[val] {
 				uniqueslots = append(uniqueslots, val)
-				fmt.Println(uniqueslots)
+
 			}
 		}
-
-		fmt.Println("Unique Values in a that are not in b:", uniqueslots)
 
 		// availableSlots1 := []int{}
 		// for _, s := range body.Slot {

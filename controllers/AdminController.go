@@ -5,12 +5,15 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 	"turf/config"
 	"turf/models"
 
+	"github.com/dariubs/percent"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -858,6 +861,252 @@ func Partial_payment(c *gin.Context) {
 		"status":  200,
 		"message": "Successfully upladed",
 		"data":    partial,
+	})
+}
+func AddSlotForUser(c *gin.Context) {
+	Id := c.Param("id")
+	ID, _ := strconv.ParseUint(Id, 10, 64)
+	var body struct {
+		Date string
+		Slot []int
+		// StartSlot string
+		// EndSlot   string
+	}
+	var Slots []int
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+
+	rows := config.DB.Model(&models.Turf_Bookings{}).Where("date = ?", body.Date).Pluck("slot_id", &Slots)
+
+	if rows.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	availableSlots := []int{}
+	for _, s := range body.Slot {
+		for _, s1 := range Slots {
+			if s == s1 {
+				availableSlots = append(availableSlots, int(s))
+			}
+		}
+	}
+	uniqueslots := make([]int, 0)
+
+	bMap := make(map[int]bool)
+	for _, val := range availableSlots {
+		bMap[val] = true
+
+	}
+
+	for _, val := range body.Slot {
+
+		if !bMap[val] {
+			uniqueslots = append(uniqueslots, val)
+
+		}
+	}
+
+	// availableSlots1 := []int{}
+	// for _, s := range body.Slot {
+	// 	for _, s1 := range availableSlots {
+	// 		if s != s1 {
+	// 			fmt.Println(s)
+	// 			availableSlots1 = append(availableSlots1, int(s))
+	// 		}
+	// 	}
+	// }
+	// fmt.Println("ava1", availableSlots1)
+	fmt.Println("ava:", availableSlots)
+	if len(availableSlots) == 0 {
+
+		Booking_id, _ := uuid.NewRandom()
+
+		B_id := Booking_id.String()
+
+		for i := 0; i < len(body.Slot); i++ {
+
+			var psr models.Package_slot_relationship
+
+			config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
+
+			//fetch the price based on package id retrieved
+
+			var price models.Package
+
+			config.DB.Find(&price, "id=?", psr.Package_id)
+
+			price25 := percent.PercentFloat(25.0, price.Price)
+
+			booking := models.Turf_Bookings{Date: body.Date, Slot_id: body.Slot[i], User_id: uint(ID), Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
+			result := config.DB.Create(&booking)
+			if result.Error != nil {
+				c.JSON(http.StatusOK, gin.H{
+					"status": 400,
+					"error":  "Slot Allready Exist",
+					"data":   "null",
+				})
+				return
+			}
+
+		}
+
+		var booking models.Turf_Bookings
+
+		//confirm booking table
+
+		config.DB.Find(&booking, "order_id = ?", B_id)
+
+		var totalPrice float64
+		var total_min_amount float64
+		for p := 0; p < len(body.Slot); p++ {
+			totalPrice += booking.Price
+			total_min_amount += booking.Minimum_amount_to_pay
+		}
+
+		confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: uint(ID), Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 1}
+
+		result := config.DB.Create(&confirm_booking)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "Slot Allready Exist",
+				"data":   "null",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"status":  200,
+			"success": "Slot reserved successfully",
+			"data":    booking,
+		})
+
+	} else if len(availableSlots) != 0 && len(uniqueslots) != 0 {
+
+		Booking_id, _ := uuid.NewRandom()
+
+		B_id := Booking_id.String()
+
+		for i := 0; i < len(uniqueslots); i++ {
+
+			var psr models.Package_slot_relationship
+
+			config.DB.First(&psr, "slot_id=?", int(uniqueslots[i]))
+
+			//fetch the price based on package id retrieved
+
+			var price models.Package
+
+			config.DB.Find(&price, "id=?", psr.Package_id)
+
+			price25 := percent.PercentFloat(25.0, price.Price)
+
+			booking := models.Turf_Bookings{Date: body.Date, Slot_id: uniqueslots[i], User_id: uint(ID), Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
+			result := config.DB.Create(&booking)
+			if result.Error != nil {
+				c.JSON(http.StatusOK, gin.H{
+					"status": 400,
+					"error":  "Slot Allready Exist",
+					"data":   "null",
+				})
+				return
+			}
+
+		}
+
+		var booking models.Turf_Bookings
+
+		//confirm booking table
+
+		config.DB.Find(&booking, "order_id = ?", B_id)
+
+		var totalPrice float64
+		var total_min_amount float64
+		for p := 0; p < len(uniqueslots); p++ {
+			totalPrice += booking.Price
+			total_min_amount += booking.Minimum_amount_to_pay
+		}
+
+		confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: uint(ID), Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 2}
+
+		result := config.DB.Create(&confirm_booking)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "Slot Allready Exist",
+				"data":   "null",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"status":  200,
+			"success": "Slot reserved successfully",
+			"data":    booking,
+		})
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Slot is allready booked",
+			"data":   "null",
+		})
+	}
+}
+func LiveUser(c *gin.Context) {
+	var live []interface{}
+	now := time.Now()
+	date := now.Format("02:01:2006")
+	time := now.Format("15:04:05")
+	var slot models.Time_Slot
+	result := config.DB.Where("start_time <= ? AND end_time >= ?", time, time).Find(&slot)
+	if result.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"status": 400,
+			"error":  "slot is not found",
+			"data":   "null",
+		})
+		return
+	}
+
+	var booking models.Turf_Bookings
+	result = config.DB.Where("date=? AND slot_id=?", date, slot.ID).Find(&booking)
+	if result.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"status": 400,
+			"error":  "booking detail not found",
+			"data":   "null",
+		})
+		return
+	}
+
+	var user models.User
+	result = config.DB.Where("id", booking.User_id).Find(&user)
+	if result.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"status": 400,
+			"error":  "user  not found",
+			"data":   "null",
+		})
+		return
+	}
+
+	live = append(live, booking, user)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "user fetch successfully",
+		"data":    live,
 	})
 
 }
