@@ -33,7 +33,7 @@ type Turf_Bookings struct {
 type Package_slot_relationship struct {
 	gorm.Model
 	Package_id int
-	Slot_id    int
+	Slot_id    string
 }
 
 type Package struct {
