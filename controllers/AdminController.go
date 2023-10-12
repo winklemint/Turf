@@ -326,6 +326,8 @@ func AddSlot(c *gin.Context) {
 	var body struct {
 		StartSlot string
 		EndSlot   string
+		Day       string
+		Branch_id int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -336,18 +338,17 @@ func AddSlot(c *gin.Context) {
 		})
 		return
 	}
-	// startSlot, err := time.Parse("15:04", body.StartSlot)
-	// if err != nil {
-	// 	fmt.Println("StartSlot parivartan mein error:", err)
-	// 	return
-	// }
 
-	// endSlot, err := time.Parse("15:04", body.EndSlot)
-	// if err != nil {
-	// 	fmt.Println("EndSlot parivartan mein error:", err)
-	// 	return
-	// }
-	slot := models.Time_Slot{Start_time: body.StartSlot, End_time: body.EndSlot}
+	var branch models.Branch_info_management
+	config.DB.First(&branch, "id = ?", body.Branch_id)
+
+	fmt.Println(branch.ID)
+
+	First_three_initials := body.Day[:3]
+
+	usid := First_three_initials + "/" + body.StartSlot + "/" + body.EndSlot
+
+	slot := models.Time_Slot{Start_time: body.StartSlot, End_time: body.EndSlot, Day: body.Day, Branch_id: branch.ID, Unique_slot_id: usid}
 	result := config.DB.Create(&slot)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -369,9 +370,10 @@ func AddSlot(c *gin.Context) {
 
 func AddPackage(c *gin.Context) {
 	var body struct {
-		Name   string
-		Price  float64
-		Status int
+		Name      string
+		Price     float64
+		Status    int
+		Branch_id int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -382,7 +384,8 @@ func AddPackage(c *gin.Context) {
 		})
 		return
 	}
-	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
+
+	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status, Branch_id: body.Branch_id}
 	result := config.DB.Create(&packageModel)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -567,6 +570,46 @@ func GetAllSlot(c *gin.Context) {
 		return
 
 	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "slot details",
+		"data":    slot,
+	})
+
+}
+
+func Get_Slot_by_day(c *gin.Context) {
+	var body struct {
+		Day []string
+	}
+
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	var slot []models.Time_Slot
+
+	for i := 0; i < len(body.Day); i++ {
+		fmt.Println(body.Day)
+		result := config.DB.Find(&slot, "day = ?", body.Day[i])
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to get all slot",
+			})
+			return
+
+		}
+
+	}
+
+	// body.Day = append(body.Day, slot.)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -924,7 +967,7 @@ func AddSlotForUser(c *gin.Context) {
 	Id := c.Param("id")
 	ID, _ := strconv.ParseUint(Id, 10, 64)
 	var body struct {
-		Date string
+		Date time.Time
 		Slot []int
 		// StartSlot string
 		// EndSlot   string

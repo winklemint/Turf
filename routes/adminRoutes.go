@@ -40,5 +40,8 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
 		adminRoutes.POST("/update/branch/:id", controllers.Update_Branch)
 		adminRoutes.GET("/get/branch", controllers.GET_All_Branch)
+
+		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
+
 	}
 }

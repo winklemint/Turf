@@ -303,13 +303,12 @@ func Login(c *gin.Context) {
 
 func Booking(c *gin.Context) {
 	var body struct {
-		Day  string
-		Date string
-		Slot []int
-		// StartSlot string
-		// EndSlot   string
+		Day       string
+		Date      time.Time
+		Slot      []int
+		Branch_id int
 	}
-	var Slots []int
+
 	err := c.Bind(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -319,6 +318,22 @@ func Booking(c *gin.Context) {
 		})
 		return
 	}
+
+	location, err := time.LoadLocation("Asia/Kolkata")
+	fmt.Println(location)
+	if err != nil {
+		// Handle the error, e.g., log it or set a default time zone
+		location = time.UTC // Default to UTC in case of an error
+	}
+
+	body.Date = body.Date.In(location)
+
+	day := body.Date.Weekday()
+
+	fmt.Println(day)
+
+
+	var Slots []int
 
 	tokenString, err := c.Cookie("Authorization")
 
@@ -384,16 +399,6 @@ func Booking(c *gin.Context) {
 			}
 		}
 
-		// availableSlots1 := []int{}
-		// for _, s := range body.Slot {
-		// 	for _, s1 := range availableSlots {
-		// 		if s != s1 {
-		// 			fmt.Println(s)
-		// 			availableSlots1 = append(availableSlots1, int(s))
-		// 		}
-		// 	}
-		// }
-		// fmt.Println("ava1", availableSlots1)
 		fmt.Println("ava:", availableSlots)
 		if len(availableSlots) == 0 {
 
@@ -405,7 +410,9 @@ func Booking(c *gin.Context) {
 				var price models.Package
 				var psr models.Package_slot_relationship
 
-				if body.Day == "Saturday" || body.Day == "Sunday" {
+				if day == 0 || day == 6 || day == 5 {
+
+					config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
 
 					config.DB.Find(&price, "id=?", 3)
 				} else {
@@ -419,7 +426,7 @@ func Booking(c *gin.Context) {
 
 				price25 := percent.PercentFloat(25.0, price.Price)
 
-				booking := models.Turf_Bookings{Date: body.Date, Slot_id: body.Slot[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
+				booking := models.Turf_Bookings{Date: body.Date, Slot_id: body.Slot[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id, Is_booked: 2, Branch_id: body.Branch_id}
 				result := config.DB.Create(&booking)
 				if result.Error != nil {
 					c.JSON(http.StatusOK, gin.H{
@@ -445,7 +452,7 @@ func Booking(c *gin.Context) {
 				total_min_amount += booking.Minimum_amount_to_pay
 			}
 
-			confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 1}
+			confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 2, Branch_id: body.Branch_id}
 
 			result := config.DB.Create(&confirm_booking)
 			if result.Error != nil {
@@ -483,7 +490,7 @@ func Booking(c *gin.Context) {
 
 				price25 := percent.PercentFloat(25.0, price.Price)
 
-				booking := models.Turf_Bookings{Date: body.Date, Slot_id: uniqueslots[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
+				booking := models.Turf_Bookings{Date: body.Date, Slot_id: uniqueslots[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id, Is_booked: 2, Branch_id: body.Branch_id}
 				result := config.DB.Create(&booking)
 				if result.Error != nil {
 					c.JSON(http.StatusOK, gin.H{
@@ -509,7 +516,7 @@ func Booking(c *gin.Context) {
 				total_min_amount += booking.Minimum_amount_to_pay
 			}
 
-			confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 2}
+			confirm_booking := models.Confirm_Booking_Table{Date: body.Date, User_id: user.ID, Booking_order_id: B_id, Total_price: totalPrice, Total_min_amount_to_pay: total_min_amount, Booking_status: 2, Branch_id: body.Branch_id}
 
 			result := config.DB.Create(&confirm_booking)
 			if result.Error != nil {
@@ -535,6 +542,117 @@ func Booking(c *gin.Context) {
 			})
 		}
 	}
+}
+
+// func Final_booking(c *gin.Context) {
+// 	var body struct {
+// 		Day       string
+// 		Date      string
+// 		Slot      []int
+// 		Branch_id int
+// 	}
+
+// 	var Slots []int
+// 	err := c.Bind(&body)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status": 400,
+// 			"error":  "failed to read body",
+// 			"data":   "null",
+// 		})
+// 		return
+// 	}
+
+// 	tokenString, err := c.Cookie("Authorization")
+
+// 	if err != nil {
+// 		c.AbortWithStatus(http.StatusUnauthorized)
+// 	}
+
+// 	// decode & validate the same
+
+// 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+// 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+// 		}
+
+// 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+// 		return []byte(os.Getenv("SECRET")), nil
+// 	})
+
+// 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+// 		// check expiration
+// 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+// 			c.AbortWithStatus(http.StatusUnauthorized)
+// 		}
+
+// 		// find the user with token sub i.e user id
+// 		var user models.User
+// 		config.DB.First(&user, claims["sub"])
+
+// 		if user.ID == 0 {
+// 			c.AbortWithStatus(http.StatusNotFound)
+// 		}
+// 		rows := config.DB.Model(&models.Turf_Bookings{}).Where("date = ?", body.Date).Pluck("slot_id", &Slots)
+
+// 		if rows.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"status": 400,
+// 				"error":  "failed to read body",
+// 				"data":   "null",
+// 			})
+// 			return
+// 		}
+// 		availableSlots := []int{}
+// 		for _, s := range body.Slot {
+// 			for _, s1 := range Slots {
+// 				if s == s1 {
+// 					availableSlots = append(availableSlots, int(s))
+// 				}
+// 			}
+// 		}
+// 		uniqueslots := make([]int, 0)
+
+// 		bMap := make(map[int]bool)
+// 		for _, val := range availableSlots {
+// 			bMap[val] = true
+
+// 		}
+
+// 		for _, val := range body.Slot {
+
+// 			if !bMap[val] {
+// 				uniqueslots = append(uniqueslots, val)
+
+// 			}
+// 		}
+
+// 		if len(availableSlots) == 0 {
+
+// 			Booking_id, _ := uuid.NewRandom()
+
+// 			B_id := Booking_id.String()
+
+// 			for i := 0; i < len(body.Slot); i++ {
+// 				var price models.Package
+// 				var psr models.Package_slot_relationship
+
+// 			}
+// 		}
+// 	}
+
+// }
+
+func Get_avl_days(c *gin.Context) {
+	var pack models.Package
+
+	result := config.DB.Find(&pack, "id = 1")
+	if result.Error != nil {
+		fmt.Println("fdjhkdjhkd")
+	}
+
+	fmt.Println(pack.Avail_days)
+
 }
 
 func Screenshot(c *gin.Context) {
@@ -680,7 +798,7 @@ func AvailableSlot(c *gin.Context) {
 
 	fmt.Println(date)
 
-	result = config.DB.Where("date = ? AND is_booked = ?", date, 0).Find(&slots)
+	result = config.DB.Where("date = ? AND is_booked = ?", date, 1).Find(&slots)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return
@@ -958,9 +1076,12 @@ func UpdateUser(c *gin.Context) {
 
 func Slot_go_rountine() {
 	for {
-		config.DB.Exec("UPDATE confirm_booking_tables SET booking_status = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
-		config.DB.Exec("UPDATE turf_bookings SET is_booked = 0, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW()")
+		config.DB.Exec("UPDATE confirm_booking_tables SET booking_status = 1, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW() AND booking_status = 2")
+
+		config.DB.Exec("UPDATE turf_bookings SET is_booked = 1, deleted_at=NOW() WHERE DATE_ADD(created_at, INTERVAL 15 MINUTE ) < NOW() AND is_booked=2")
+
 		fmt.Println("goroutine running")
 		time.Sleep(30 * time.Second)
 	}
+
 }

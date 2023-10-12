@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"turf/config"
-	"turf/controllers"
 
 	"turf/routes"
 	route "turf/routes"
@@ -19,7 +18,8 @@ func init() {
 }
 
 func main() {
-	go controllers.MainCalendar()
+	//go controllers.Slot_go_rountine()
+	// go controllers.MainCalendar()
 	r := gin.Default()
 
 	routes.RegisterAdminRoutes(r)
