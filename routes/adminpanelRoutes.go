@@ -7,9 +7,9 @@ import (
 )
 
 func RegisterAdminPanelRoutes(router *gin.Engine) {
+
 	formGroup := router.Group("/panel")
-	{
-		// Serve files from the "form" directory with the "/form" path prefix
-		formGroup.StaticFS("/", http.Dir("templates"))
-	}
+
+	formGroup.StaticFS("/", http.Dir("templates")) // Serve all files first
+
 }
