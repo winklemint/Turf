@@ -48,7 +48,7 @@ func Signup(c *gin.Context) {
 	}
 
 	//create the user
-	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: 1}
+	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: 0}
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
@@ -237,11 +237,8 @@ func Login(c *gin.Context) {
 	// Get the email & pass off req body
 
 	var body struct {
-		Full_Name string
-		Email     string
-		Password  string
-		Contact   string
-		Is_active string
+		Email    string
+		Password string
 	}
 
 	if c.Bind(&body) != nil {
@@ -306,7 +303,7 @@ func Login(c *gin.Context) {
 
 func Booking(c *gin.Context) {
 	var body struct {
-		Day       string
+		Day       int
 		Date      string
 		Slot      []int
 		Branch_id int
@@ -322,12 +319,12 @@ func Booking(c *gin.Context) {
 		return
 	}
 
-	// location, err := time.LoadLocation("Asia/Kolkata")
-	// fmt.Println(location)
-	// if err != nil {
-	// 	// Handle the error, e.g., log it or set a default time zone
-	// 	location = time.UTC // Default to UTC in case of an error
-	// }
+	location, err := time.LoadLocation("Asia/Kolkata")
+	fmt.Println(location)
+	if err != nil {
+		// Handle the error, e.g., log it or set a default time zone
+		location = time.UTC // Default to UTC in case of an error
+	}
 
 	// body.Date = body.Date.In(location)
 
@@ -412,11 +409,19 @@ func Booking(c *gin.Context) {
 				var price models.Package
 				var psr models.Package_slot_relationship
 
-				config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
+				if body.Day == 0 || body.Day == 6 || body.Day == 5 {
 
-				//fetch the price based on package id retrieved
+					config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
 
-				config.DB.Find(&price, "id=?", psr.Package_id)
+					config.DB.Find(&price, "id=?", 3)
+				} else {
+
+					config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
+
+					//fetch the price based on package id retrieved
+
+					config.DB.Find(&price, "id=?", psr.Package_id)
+				}
 
 				price25 := percent.PercentFloat(25.0, price.Price)
 
@@ -531,7 +536,7 @@ func Booking(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Slot is already booked",
+				"error":  "Slot is allready booked",
 				"data":   "null",
 			})
 		}
@@ -765,10 +770,10 @@ func Screenshot(c *gin.Context) {
 func AvailableSlot(c *gin.Context) {
 
 	// slot go routine running
-	//go Slot_go_rountine()
+	go Slot_go_rountine()
 
 	var body struct {
-		Date string
+		Date time.Time
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -1006,6 +1011,7 @@ func UpdateUser(c *gin.Context) {
 		// 	})
 		// 	return
 		// }
+
 		result := config.DB.Find(&user).Where("id = ?", claims["sub"])
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -1078,4 +1084,24 @@ func Slot_go_rountine() {
 		time.Sleep(30 * time.Second)
 	}
 
+}
+func GetAllDetailbydate(c *gin.Context) {
+
+	startdate := c.PostForm("startdate")
+	enddate := c.PostForm("enddate")
+	var booking []models.Turf_Bookings
+	result := config.DB.Find(&booking).Where("date >= ? AND date <=?", startdate, enddate)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "fetch booking detail UnSuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "fetch booking detail Successfully",
+		"data":    booking,
+	})
 }

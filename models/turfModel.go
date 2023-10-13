@@ -71,4 +71,12 @@ type Branch_info_management struct {
 	Branch_contact_number string
 	GST_no                string
 	Status                int
+	Ground_Size           string
+}
+type Testi_Monial struct {
+	gorm.Model
+	Name        string
+	Designation string
+	Review      string
+	Image       string
 }
