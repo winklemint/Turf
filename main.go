@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/http"
 	"turf/config"
 
 	"turf/routes"
@@ -18,17 +17,19 @@ func init() {
 }
 
 func main() {
-	//go controllers.Slot_go_rountine()
-	// go controllers.MainCalendar()
 	r := gin.Default()
 
 	routes.RegisterAdminRoutes(r)
 	route.RegisterUserRoutes(r)
+	route.RegisterAdminPanelRoutes(r)
+	
 
-	// Define a route that responds with "Hello, World!" when accessed
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello, World!")
-	})
+	// Define a route that responds with the "login.html" template
+	//r.LoadHTMLGlob("./templates/*.html")
+
+	// r.GET("/", func(c *gin.Context) {
+	// 	c.HTML(http.StatusOK, "login.html", nil)
+	// })
 
 	r.Run(":8080")
 }

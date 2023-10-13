@@ -22,5 +22,4 @@ func RegisterUserRoutes(router *gin.Engine) {
 
 	}
 
-	
 }

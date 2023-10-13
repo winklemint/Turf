@@ -13,11 +13,11 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		// adminRoutes.POST("/login", controllers.AdminLogin)
 		// adminRoutes.PUT("/update", controllers.UpdateAdmin)
 		// Slot
-		adminRoutes.POST("add/slot", controllers.AddSlot)
+		adminRoutes.POST("/add/slot", controllers.AddSlot)
 		//adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)
 		adminRoutes.GET("/get/slot", controllers.GetAllSlot)
 		//package
-		adminRoutes.POST("add/package", controllers.AddPackage)
+		adminRoutes.POST("/add/package", controllers.AddPackage)
 		adminRoutes.POST("/update/package/:id", controllers.UpdatePackage)
 		//adminRoutes.GET("/get/package", controllers.GetAllPackage)
 		//booking
@@ -42,6 +42,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//adminRoutes.GET("/get/branch", controllers.GET_All_Branch)
 
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
+		adminRoutes.POST("/get/slot/:id", controllers.Get_Package)
 
 	}
 }

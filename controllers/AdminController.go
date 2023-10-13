@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"turf/config"
 	"turf/models"
 
@@ -401,7 +402,7 @@ func AddPackage(c *gin.Context) {
 
 	// var slots []interface{}
 	for i := 0; i < len(body.Slot_id); i++ {
-		psrmodel := models.Package_slot_relationship{Package_id: int(Last_insert_id), Slot_id: body.Slot_id[i]}
+		psrmodel := models.Package_slot_relationship{Package_id: Last_insert_id, Slot_id: body.Slot_id[i]}
 		result = config.DB.Create(&psrmodel)
 		// slots = append(slots, psrmodel.Slot_id)
 	}
@@ -617,18 +618,74 @@ func UpdatePackage(c *gin.Context) {
 	result := config.DB.Model(&admin).Where("id = ?", Id).Updates(admin)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "400",
-			"error":  "Package Update UnSuccessfully",
-			"data":   "null",
+			"status": 400,
+			"error":  "Package Update Unsuccessful",
+			"data":   "sry",
 		})
 		return
+	}
+	ID, _ := strconv.ParseUint(Id, 10, 0)
+
+	IDuint := uint(ID)
+	//var psr models.Package_slot_relationship
+
+	config.DB.Exec("DELETE FROM package_slot_relationships WHERE package_id = ? ", Id)
+
+	for i := 0; i < len(body.Slot_id); i++ {
+		psr := models.Package_slot_relationship{Package_id: IDuint, Slot_id: body.Slot_id[i]}
+		result := config.DB.Create(&psr)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": "400",
+				"error":  "Package Update UnSuccessfully",
+				"data":   "null",
+			})
+			return
+		}
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "Package Update Successfully",
-		"data":    body,
+		"data":    admin,
 	})
 
+}
+
+func Get_Package(c *gin.Context) {
+	id := c.Param("id")
+
+	var Slot_id []string
+	var psr []models.Package_slot_relationship
+
+	var pack []models.Package
+	config.DB.Where("id = ?", id).Find(&pack)
+	fmt.Println(pack)
+	config.DB.Where("package_id = ?", id).Find(&psr)
+
+	for i := 0; i < len(psr); i++ {
+		Slot_id = append(Slot_id, psr[i].Slot_id)
+	}
+
+	response := struct {
+		Status  int    `json:"status"`
+		Success string `json:"success"`
+		Data    struct {
+			Pack []models.Package `json:"pack"`
+			Slot []string         `json:"slot"`
+		} `json:"data"`
+	}{
+		Status:  200,
+		Success: "Data retrieved successfully",
+		Data: struct {
+			Pack []models.Package `json:"pack"`
+			Slot []string         `json:"slot"`
+		}{
+			Pack: pack,
+			Slot: Slot_id,
+		},
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // func GetAllPackage(c *gin.Context) {
