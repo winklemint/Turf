@@ -140,7 +140,7 @@ func AdminLogin(c *gin.Context) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": admin.ID,
-		"exp": time.Now().Add(time.Hour * 4).Unix(),
+		"exp": time.Now().Add(time.Minute * 2).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -157,7 +157,7 @@ func AdminLogin(c *gin.Context) {
 
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", tokenString, 3600*4, "", "", false, true)
+	c.SetCookie("Authorization", tokenString, 120, "", "", false, true)
 	admin.LastLogin = time.Now()
 	config.DB.Save(&admin)
 	c.JSON(http.StatusOK, gin.H{
@@ -919,8 +919,8 @@ func GetAllUsers(c *gin.Context) {
 // 		return nil, err
 // 	}
 
-// 	return occupiedSlots, nil
-// }
+//		return occupiedSlots, nil
+//	}
 func AdminAddScreenshot(c *gin.Context) {
 	id := c.Param("id")
 	var body struct {
@@ -1007,15 +1007,15 @@ func AdminAddScreenshot(c *gin.Context) {
 
 // }
 
-// func Partial_payment(c *gin.Context) {
-// 	var partial []models.Confirm_Booking_Table
-// 	config.DB.Find(&partial, "remaining_amount_to_pay > 0")
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  200,
-// 		"message": "Successfully upladed",
-// 		"data":    partial,
-// 	})
-// }
+//	func Partial_payment(c *gin.Context) {
+//		var partial []models.Confirm_Booking_Table
+//		config.DB.Find(&partial, "remaining_amount_to_pay > 0")
+//		c.JSON(http.StatusOK, gin.H{
+//			"status":  200,
+//			"message": "Successfully upladed",
+//			"data":    partial,
+//		})
+//	}
 func AddSlotForUser(c *gin.Context) {
 	Id := c.Param("id")
 	ID, _ := strconv.ParseUint(Id, 10, 64)
@@ -1392,4 +1392,17 @@ func AllTestimonials(c *gin.Context) {
 		"data":    testimonials,
 	})
 
+}
+
+func AdminLogout(c *gin.Context) {
+	// Clear the "Authorization" cookie to log out
+	c.SetCookie("Authorization", "", -1, "", "", false, true)
+
+	// You can also clear any other session-related data if needed
+	c.Set("UserID", "")
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Logged out successfully",
+	})
 }
