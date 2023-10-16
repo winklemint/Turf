@@ -140,7 +140,7 @@ func AdminLogin(c *gin.Context) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": admin.ID,
-		"exp": time.Now().Add(time.Minute * 2).Unix(),
+		"exp": time.Now().Add(time.Hour * 2).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -157,7 +157,7 @@ func AdminLogin(c *gin.Context) {
 
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", tokenString, 120, "", "", false, true)
+	c.SetCookie("Authorization", tokenString, 7200, "", "", false, true)
 	admin.LastLogin = time.Now()
 	config.DB.Save(&admin)
 	c.JSON(http.StatusOK, gin.H{
