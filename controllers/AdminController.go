@@ -310,26 +310,26 @@ func Update_Branch(c *gin.Context) {
 	})
 }
 
-// func GET_All_Branch(c *gin.Context) {
-// 	var branch []models.Branch_info_management
-// 	result := config.DB.Find(&branch)
-// 	if result.Error != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": 400,
-// 			"error":  "No Branch Found",
-// 			"data":   "null",
-// 		})
-// 		return
-// 	}
+func GET_All_Branch(c *gin.Context) {
+	var branch []models.Branch_info_management
+	result := config.DB.Find(&branch)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "No Branch Found",
+			"data":   "null",
+		})
+		return
+	}
 
-// 	//Response
-// 	c.JSON(http.StatusCreated, gin.H{
-// 		"status":  200,
-// 		"success": "All Branch  Successfully",
-// 		"data":    branch,
-// 	})
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "All Branch  Successfully",
+		"data":    branch,
+	})
 
-// }
+}
 func AddSlot(c *gin.Context) {
 	var body struct {
 		StartSlot string
@@ -424,12 +424,14 @@ func AddPackage(c *gin.Context) {
 
 func UpdateAdmin(c *gin.Context) {
 	var body struct {
-		Name     string
-		Email    string
-		Password string
-		Contact  string
-		Role     string
-		Status   int
+		Name      string
+		Email     string
+		Password  string
+		Contact   string
+		Role      string
+		Status    int
+		Branch_Id int
+		Branch    string
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -480,6 +482,7 @@ func UpdateAdmin(c *gin.Context) {
 			})
 			return
 		}
+
 		Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -489,12 +492,35 @@ func UpdateAdmin(c *gin.Context) {
 			})
 			return
 		}
+
 		if body.Role == "Super Admin" {
 			body.Status = 1
 		} else {
 			body.Status = 2
 		}
-		fmt.Println(admin.ID)
+		// if body.Branch != "" {
+		// 	if admin.Role == 1 {
+		// 		var branch models.Branch_info_management
+		// 		result := config.DB.Find(&branch).Where("id=?", body.Branch)
+		// 		if result.Error != nil {
+		// 			c.JSON(http.StatusBadRequest, gin.H{
+		// 				"status": 400,
+		// 				"error":  "failed to fetch brach detail",
+		// 				"data":   "null",
+		// 			})
+		// 			return
+		// 		}
+		// 	} else {
+		// 		c.JSON(http.StatusBadRequest, gin.H{
+		// 			"status": 400,
+		// 			"error":  "You are not authorised for update branch",
+		// 			"data":   "null",
+		// 		})
+		// 		return
+
+		// 	}
+		// }
+
 		admins := models.Admin{Name: body.Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Role: body.Status}
 		result = config.DB.Model(&admin).Where("id = ?", admin.ID).Updates(admins)
 		if result.Error != nil {
