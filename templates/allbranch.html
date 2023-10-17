@@ -1,0 +1,75 @@
+{{template "header.html"}}
+<div class="card-box pb-10">
+    <div class="h5 pd-20 mb-0" >Branchs</div>
+    <table   id="allbranchtable" class="data-table table nowrap">
+        <thead>
+            <tr>
+                <th>Branch Name</th>
+                <th>Branch Address</th>
+                <th>Branch Email</th>
+                <th>Branch Contact Number</th>
+                <th>Gst Number</th>
+                <th>Status</th>
+                <th>Ground Size</th>
+                
+            </tr>
+        </thead>
+        <tbody ></tbody>
+            
+    </table>
+</div>
+
+{{template "footer.html"}}
+<script>
+    $(document).ready(function() {
+        BranchTable();
+    });
+
+    function BranchTable() {
+        $.ajax({
+            url: "/admin/get/branch",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response && response.data) {
+                    
+                    displayadmin(response.data);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+    function displayadmin(branch) {
+        
+        var tableBody = $('#allbranchtable tbody');
+        tableBody.empty();
+
+        branch.forEach(function (branchs) {
+            var row = $('<tr></tr>');
+            row.append('<td>' + branchs.Branch_name + '</td>');
+            row.append('<td>' + branchs.Branch_address + '</td>');
+            row.append('<td>' + branchs.Branch_email + '</td>');
+            row.append('<td>' + branchs.Branch_contact_number + '</td>');
+            row.append('<td>' + branchs.GST_no + '</td>');
+            
+            
+            
+            
+            var bookingStatus = '';
+            if (branchs.Status === 1) {
+                bookingStatus = 'Enable';
+            } else{
+                bookingStatus = 'Disable';
+            }
+            row.append('<td>' + bookingStatus + '</td');
+            
+            row.append('<td>' + branchs.Ground_Size + '</td>');
+            tableBody.append(row);
+        });
+    }
+</script>
+
+</body>
+</html>

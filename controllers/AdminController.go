@@ -96,7 +96,58 @@ func AdminSignup(c *gin.Context) {
 		"data":    bodys,
 	})
 }
-
+func GetConfirmBookingTop5(c *gin.Context) {
+	var data []models.Confirm_Booking_Table
+	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get confirmed booking details",
+		})
+		return
+	}
+	var responseData []map[string]interface{}
+	for _, booking := range data {
+		var user models.User
+		result := config.DB.First(&user, booking.User_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to user name",
+			})
+			return
+		}
+		var branch models.Branch_info_management
+		result = config.DB.Find(&branch, booking.Branch_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to fetch  branch name",
+			})
+			return
+		}
+		bookingData := map[string]interface{}{
+			"ID":                      booking.ID,
+			"CreatedAt":               booking.CreatedAt,
+			"User_id":                 booking.User_id,
+			"User_name":               user.Full_Name,
+			"Date":                    booking.Date,
+			"Booking_order_id":        booking.Booking_order_id,
+			"Total_price":             booking.Total_price,
+			"Total_min_amount_to_pay": booking.Total_min_amount_to_pay,
+			"Paid_amount":             booking.Paid_amount,
+			"Remaining_amount_to_pay": booking.Remaining_amount_to_pay,
+			"Booking_status":          booking.Booking_status,
+			"Branch_name":             branch.Branch_name,
+		}
+		responseData = append(responseData, bookingData)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "confirmed booking details",
+		"data":    responseData,
+	})
+}
 func AdminLogin(c *gin.Context) {
 	var body struct {
 		Name     string
