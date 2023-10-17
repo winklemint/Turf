@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 	"turf/config"
 	"turf/models"
@@ -1411,29 +1413,29 @@ func Upadte_TestiMonilas(c *gin.Context) {
 		return
 
 	}
-	file, err := c.FormFile("file")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// file, err := c.FormFile("image")
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
-	filePath := filepath.Join("./uploads/testi_monials", file.Filename)
+	// filePath := filepath.Join("./uploads/testi_monials", file.Filename)
 
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-		return
-	}
+	// if err := c.SaveUploadedFile(file, filePath); err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+	// 	return
+	// }
 
-	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Upload the right file format (jpg or png)",
-			"data":   "null",
-		})
-		return
-	}
+	// if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"status": 400,
+	// 		"error":  "Upload the right file format (jpg or png)",
+	// 		"data":   "null",
+	// 	})
+	// 	return
+	// }
 
-	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: filePath}
+	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review}
 	result := config.DB.Model(&testimonial).Where("id=?", id).Updates(&testimonial)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1443,6 +1445,7 @@ func Upadte_TestiMonilas(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(testimonial)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -1451,6 +1454,59 @@ func Upadte_TestiMonilas(c *gin.Context) {
 	})
 
 }
+func UpdateImageForTestimonials(c *gin.Context) {
+	id := c.Param("id")
+	var body struct {
+		Image string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
+		})
+		return
+	}
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/testimonials", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Upload the right file format (jpg or png)",
+			"data":   nil,
+		})
+		return
+	}
+
+	testimonial := &models.Testi_Monial{Image: filePath}
+	result := config.DB.Model(&testimonial).Where("id = ?", id).Updates(&testimonial)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to update testimonials",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "testimonials updated successfully",
+		"data":    testimonial,
+	})
+}
+
 func AllTestimonials(c *gin.Context) {
 	var testimonials []models.Testi_Monial
 	result := config.DB.Find(&testimonials)
@@ -1469,6 +1525,111 @@ func AllTestimonials(c *gin.Context) {
 		"data":    testimonials,
 	})
 
+}
+func GETTestimonialsById(c *gin.Context) {
+	id := c.Param("id")
+
+	var testimonials models.Testi_Monial
+	result := config.DB.Find(&testimonials, "id=?", id)
+
+	fmt.Println(testimonials.Image)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to fetch testimonial",
+			"data":   "null",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "testimonial fetch successfully",
+		"data":    testimonials,
+	})
+
+}
+
+func GETTestimonialsimagesById(c *gin.Context) {
+	id := c.Param("id")
+
+	var testimonials models.Testi_Monial
+	result := config.DB.Find(&testimonials, "id=?", id)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to fetch testimonial",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Determine the file path based on the file format (you may need to store this information in your model)
+	var filePath string
+	if strings.HasSuffix(testimonials.Image, ".jpg") {
+		filePath = testimonials.Image
+		c.Header("Content-Type", "image/jpeg")
+	} else if strings.HasSuffix(testimonials.Image, ".png") {
+		filePath = testimonials.Image
+		c.Header("Content-Type", "image/png")
+	} else {
+		// Handle unsupported image formats
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsupported image format",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Read the image file
+	imageData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Println("Error reading the image file:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "internal server error",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Send the image data as the response
+	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
+}
+func DeleteTestimonials(c *gin.Context) {
+	id := c.Param("id")
+	var testimonial models.Testi_Monial
+	result := config.DB.Model(&testimonial).Where("id=?", id).Delete(&testimonial)
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsuccessfully Deleted Testimonial",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "successfully Deleted Testimonial",
+		"data":    "nill",
+	})
+}
+func readJPGFile(filePath string) ([]byte, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func AdminLogout(c *gin.Context) {

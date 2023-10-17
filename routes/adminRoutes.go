@@ -48,8 +48,12 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
 		//tetsimonials
 		adminRoutes.POST("/add/testimonials", controllers.Testimonials)
-		adminRoutes.PUT("/update/testimonials/:id", controllers.Upadte_TestiMonilas)
+		adminRoutes.PATCH("/update/testimonials/:id", controllers.Upadte_TestiMonilas)
+		adminRoutes.PATCH("/update/image/testimonials/:id", controllers.UpdateImageForTestimonials)
 		adminRoutes.GET("/get/testimonials", controllers.AllTestimonials)
+		adminRoutes.GET("/get/testimonial/:id", controllers.GETTestimonialsById)
+		adminRoutes.GET("/get/testimonial/image/:id", controllers.GETTestimonialsimagesById)
+		adminRoutes.DELETE("/delete/testimonial/:id", controllers.DeleteTestimonials)
 		adminRoutes.POST("/get/slot/:id", controllers.Get_Package)
 
 	}

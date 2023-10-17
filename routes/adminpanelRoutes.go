@@ -60,6 +60,27 @@ func RegisterAdminPanelAllBranch(router *gin.Engine) {
 		})
 	})
 }
+func RegisterAdminPanelAllTestiMonials(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/testimonials", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "alltestimonials.html", nil)
+	})
+
+}
+func RegisterAdminPanelUpdateTestiMonials(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/data/testimonials", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request URL
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "updatetestimonials.html", gin.H{"id": id})
+	})
+
+}
 
 func RegisterAdminPanelAllPackages(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")

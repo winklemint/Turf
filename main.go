@@ -31,6 +31,15 @@ func main() {
 	route.RegisterAdminPanelAllBranch(r)
 	route.RegisterAdminPanelAllPackages(r)
 	route.RegisterAdminPanelAddPackages(r)
+	route.RegisterAdminPanelAllTestiMonials(r)
+	route.RegisterAdminPanelUpdateTestiMonials(r)
+	// r.LoadHTMLGlob("templates/*.tmpl")
+	// // Define a route that uses the header and footer templates
+	// r.GET("/", func(c *gin.Context) {
+	// 	c.HTML(http.StatusOK, "main.tmpl", gin.H{
+	// 		// "title": "My Page",
+	// 	})
+	// })
 
 	r.Run(":8080")
 }

@@ -1,0 +1,91 @@
+{{template "header.html"}}
+<div class="card-box pb-10">
+    <div class="h5 pd-20 mb-0" >TestiMonial</div>
+    <table   id="allbranchtable" class="data-table table nowrap">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Review</th>
+                <th>Image</th>
+                <th class="datatable-nosort">Actions</th>
+                
+            </tr>
+        </thead>
+        <tbody ></tbody>
+            
+    </table>
+</div>
+
+{{template "footer.html"}}
+<script>
+    $(document).ready(function() {
+        
+        TestimonilasTable();
+    });
+
+    function TestimonilasTable() {
+        $.ajax({
+            url: "/admin/get/testimonials",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response && response.data) {
+                    
+                    displayadmin(response.data);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+    function displayadmin(TestiMonial) {
+        
+        var tableBody = $('#allbranchtable tbody');
+        tableBody.empty();
+
+        TestiMonial.forEach(function (testimonials) {
+            var row = $('<tr></tr>');
+            row.append('<td>' + testimonials.Name + '</td>');
+            row.append('<td>' +testimonials.Designation + '</td>');
+            row.append('<td>' + testimonials.Review + '</td>');
+            row.append('<td>' + testimonials.Image + '</td>');
+            row.append('<td><div class="table-actions"><a href="/data/testimonials?id=' + testimonials.ID + '" data-color="#265ed7"><i class="icon-copy dw dw-edit2"></i></a><a href="/testimonials" onclick="deleteTestimonial(' + testimonials.ID + ');" data-color="#e95959"><i class="icon-copy dw dw-delete-3"></i></a></div></td>');
+
+            
+            tableBody.append(row);
+        });
+    }
+   
+   
+    function deleteTestimonial(Id) {
+        var row_id = Id;
+        
+        
+        $.ajax({
+            url: "/admin/delete/testimonial/" + Id,
+            method: "DELETE",
+            success: function (response) {
+                var rowid = 'rowN' + row_id;
+                alert(rowid);
+                var rowElement = document.getElementById(rowid);
+                if (rowElement) {
+                    rowElement.style.display = 'none';
+                    alert("Testimonial with ID: " + Id + " deleted successfully");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("Error deleting testimonial with ID: " + Id);
+            }
+        });
+    }
+    
+   
+   
+    
+</script>
+
+</body>
+</html>
