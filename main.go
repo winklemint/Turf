@@ -27,6 +27,7 @@ func main() {
 	route.RegisterUserRoutes(r)
 	route.RegisterAdminPanelRoutes(r)
 	route.RegisterAdminPanelDashboard(r)
+	route.RegisterAdminPanelCreateBranch(r)
 
 	// r.LoadHTMLGlob("templates/*.tmpl")
 	// // Define a route that uses the header and footer templates
