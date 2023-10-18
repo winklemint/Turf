@@ -1644,3 +1644,84 @@ func AdminLogout(c *gin.Context) {
 		"message": "Logged out successfully",
 	})
 }
+func AddContent(c *gin.Context) {
+	var body struct {
+		Heading    string
+		SubHeading string
+		Button     string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to read body",
+			"data":   "nill",
+		})
+		return
+	}
+	content := &models.Content{Heading: body.SubHeading, SubHeading: body.SubHeading, Button: body.Button}
+	result := config.DB.Create(&content)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to create content",
+			"data":   "nill",
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"status": 201,
+		"error":  "Success to create content",
+		"data":   content,
+	})
+
+}
+func GETContent(c *gin.Context) {
+	var content models.Content
+	result := config.DB.First(&content)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to get content",
+			"data":   "nill",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"error":  "Success to get content",
+		"data":   content,
+	})
+
+}
+func UpdateContent(c *gin.Context) {
+	Id := c.Param("id")
+	var body struct {
+		Heading    string
+		SubHeading string
+		Button     string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to read body",
+			"data":   "nill",
+		})
+		return
+	}
+	content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button}
+	result := config.DB.Model(&content).Where("id=?", Id).Updates(&content)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to update content",
+			"data":   "nill",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"error":  "Success to update content",
+		"data":   content,
+	})
+
+}

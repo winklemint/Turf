@@ -16,3 +16,9 @@ type Admin struct {
 	LastLogin      time.Time
 	Turf_branch_id uint
 }
+type Content struct {
+	gorm.Model
+	Heading    string
+	SubHeading string
+	Button     string
+}
