@@ -642,17 +642,17 @@ func Booking(c *gin.Context) {
 
 // }
 
-func Get_avl_days(c *gin.Context) {
-	var pack models.Package
+// func Get_avl_days(c *gin.Context) {
+// 	var pack models.Package
 
-	result := config.DB.Find(&pack, "id = 1")
-	if result.Error != nil {
-		fmt.Println("fdjhkdjhkd")
-	}
+// 	result := config.DB.Find(&pack, "id = 1")
+// 	if result.Error != nil {
+// 		fmt.Println("fdjhkdjhkd")
+// 	}
 
-	fmt.Println(pack.Avail_days)
+// 	fmt.Println(pack.Avail_days)
 
-}
+// }
 
 func Screenshot(c *gin.Context) {
 	var err error
