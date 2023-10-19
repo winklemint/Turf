@@ -662,23 +662,22 @@ func Get_Slot_by_day(c *gin.Context) {
 		})
 		return
 	}
-	var slot []models.Time_Slot
 
-	var days []interface{}
+	// Create a map to group time slots by day
+	days := make(map[string][]models.Time_Slot)
 
 	for i := 0; i < len(body.Day); i++ {
-
+		var slot []models.Time_Slot
 		result := config.DB.Find(&slot, "day = ?", body.Day[i])
-
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "failed to get all slot",
+				"error":  "failed to get slots for " + body.Day[i],
+				"data":   "null",
 			})
 			return
-
 		}
-		days = append(days, slot)
+		days[body.Day[i]] = slot
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -686,7 +685,6 @@ func Get_Slot_by_day(c *gin.Context) {
 		"success": "slot details",
 		"data":    days,
 	})
-
 }
 
 func UpdatePackage(c *gin.Context) {
