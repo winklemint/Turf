@@ -400,10 +400,15 @@ func AddSlot(c *gin.Context) {
 		return
 	}
 
-	var branch models.Branch_info_management
-	config.DB.First(&branch, "id = ?", body.Branch_id)
+	fmt.Println(body.Branch_id)
 
-	fmt.Println(branch.ID)
+	var slots models.Time_Slot
+	config.DB.Find(&slots)
+
+	fmt.Println(slots)
+
+	var branch models.Branch_info_management
+	config.DB.Find(&branch, "id = ?", body.Branch_id)
 
 	First_three_initials := body.Day[:3]
 
@@ -666,9 +671,19 @@ func Get_Slot_by_day(c *gin.Context) {
 	// Create a map to group time slots by day
 	days := make(map[string][]models.Time_Slot)
 
+	// Assuming you have a database connection configured in config.DB
 	for i := 0; i < len(body.Day); i++ {
+
 		var slot []models.Time_Slot
-		result := config.DB.Find(&slot, "day = ?", body.Day[i])
+
+		//var psr_ID int
+
+		result := config.DB.Debug().Model(&models.Time_Slot{}).
+			Select("time_slots.id, time_slots.start_time, time_slots.end_time, time_slots.day, time_slots.unique_slot_id, time_slots.branch_id, package_slot_relationships.id as psr_id").
+			Joins("LEFT JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
+			Where("time_slots.day = ?", body.Day[i]).
+			Scan(&slot)
+
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
@@ -677,6 +692,8 @@ func Get_Slot_by_day(c *gin.Context) {
 			})
 			return
 		}
+
+		fmt.Println(slot)
 		days[body.Day[i]] = slot
 	}
 
@@ -1963,5 +1980,27 @@ func DeleteCarousel(c *gin.Context) {
 		"status":  200,
 		"success": "successfully Deleted Testimonial",
 		"data":    "nill",
+	})
+}
+
+//package slot relationship retrieval for slot management in packages
+
+func PSR_slots(c *gin.Context) {
+	//var slot_ids []string
+	var slots []models.Package_slot_relationship // Assuming there are multiple slots
+
+	result := config.DB.Find(&slots)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch package slots",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "slot ids",
+		"data":    slots,
 	})
 }

@@ -241,9 +241,9 @@
             // Now you have an array containing all the data-values of checked checkboxes
     
             var formData = {
-                startslot: $("#start_slot").val(),
-                endslot: $("#end_slot").val(),
-                day: $("#branch_id").val(),
+                startslot:  convertTo24HourFormat($("#start_slot").val()),
+                endslot: convertTo24HourFormat($("#end_slot").val()),
+                day: $("#day").val(),
                 branch_id: parseInt($("#branch_id").val()) // Include the selected slot data, including ID
             };
     
@@ -252,7 +252,7 @@
     
             $.ajax({
                 type: "POST",
-                url: "/admin/add/package",
+                url: "/admin/add/slot",
                 data: JSON.stringify(formData),
                 contentType: "application/json", // Set the content type to JSON
                 dataType: "json",

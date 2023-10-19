@@ -54,28 +54,31 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Package Name</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="name" class="form-control" type="text" placeholder="Package Name Here" required onkeyup="checkNameLength()"/>
-                        
+                        <input id="name" class="form-control" type="text" placeholder="Package Name Here" required
+                            onkeyup="checkNameLength()" />
+
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Price</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="price" class="form-control" placeholder="Branch Name Here" type="text" required  onkeyup="checkPriceLength()"/>
+                        <input id="price" class="form-control" placeholder="Branch Name Here" type="text" required
+                            onkeyup="checkPriceLength()" />
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="branch_status" class="form-control" type="number" placeholder="Branch status" required/>
+                        <input id="branch_status" class="form-control" type="number" placeholder="Branch status"
+                            required />
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Branch ID</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="branch_id" class="form-control" type="text" placeholder="Branch ID here" required/>
+                        <input id="branch_id" class="form-control" type="text" placeholder="Branch ID here" required />
                     </div>
                 </div>
 
@@ -218,7 +221,7 @@
     function checkNameLength() {
         var nameInput = document.getElementById('name');
         var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
-    
+
         if (nameValue.length > 3) {
             // The name is valid
             nameInput.classList.remove('form-control-danger'); // Remove danger class
@@ -229,13 +232,13 @@
             nameInput.classList.add('form-control-danger'); // Add danger class
         }
     }
-    </script>
+</script>
 
 <script>
     function checkPriceLength() {
         var priceInput = document.getElementById('price');
         var priceValue = priceInput.value.trim(); // Trim to remove leading/trailing spaces
-    
+
         if (/^\d+$/.test(priceValue)) {
             // The input is a valid integer
             priceInput.classList.remove('form-control-danger'); // Remove danger class
@@ -246,10 +249,24 @@
             priceInput.classList.add('form-control-danger'); // Add danger class
         }
     }
-    </script>
+</script>
 
 <script>
     $(document).ready(function () {
+
+        // $.ajax({
+        //     url: 'http://localhost:8080/admin/get/slot/relationship',
+        //     method: 'GET',
+        //     dataType: 'json',
+        //     success: function (response) {
+        //     },
+        //     error: function (error) {
+        //         console.error('Error fetching data: ' + error);
+        //     }
+        // });
+    
+
+
         // Function to close all slots for a specific day
         function closeAllSlots(day) {
             $("#slot_div_" + day).html(''); // Clear the slots for the specified day
@@ -321,6 +338,7 @@
             $.ajax({
                 type: 'POST',
                 url: '/admin/get/slot/by/day',
+                
                 data: JSON.stringify(payload),
                 contentType: 'application/json',
                 success: function (response) {
@@ -333,57 +351,58 @@
                         var current_day_slot_data = data[day];
                         for (let j = 0; j < current_day_slot_data.length; j++) {
                             var slotData = current_day_slot_data[j];
-                            var current_cb = "<div class='custom-control custom-checkbox d-inline'><input data-value= '"+ slotData.ID +"' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "'><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
+                            var current_cb = "<div class='custom-control custom-checkbox d-inline'><input data-value= '" + slotData.ID + "' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "'><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
                             slot_div.append(current_cb);
                         }
                     }
                 },
                 error: function (error) {
-                    
+
                 }
             });
         }
     });
 </script>
 <script>
-$(document).ready(function () {
-    $("#package_form").submit(function (event) {
-        event.preventDefault();
+    $(document).ready(function () {
+        $("#package_form").submit(function (event) {
+            event.preventDefault();
 
-        // Get the selected slot data-values
-        var selectedDataValues = [];
-        $('.packageDays:checked').each(function () {
-            var checkbox = $(this);
-            var dataValue = checkbox.data('value');
-            if (dataValue) {
-                selectedDataValues.push(JSON.stringify(dataValue));
-            }
-        });
+            // Get the selected slot data-values
+            var selectedDataValues = [];
+            $('.packageDays:checked').each(function () {
+                var checkbox = $(this);
+                var dataValue = checkbox.data('value');
+                if (dataValue) {
+                    selectedDataValues.push(JSON.stringify(dataValue));
+                }
+            });
 
-        // Now you have an array containing all the data-values of checked checkboxes
-        console.log('Selected Data Values:', selectedDataValues);
+            // Now you have an array containing all the data-values of checked checkboxes
+            console.log('Selected Data Values:', selectedDataValues);
 
-        var formData = {
-            name: $("#name").val(),
-            price: parseFloat($("#price").val()),
-            branch_id: parseInt($("#branch_id").val()),
-            status: parseInt($("#branch_status").val()),
-            slot_id: selectedDataValues // Include the selected slot data, including ID
-        };
+            var formData = {
+                name: $("#name").val(),
+                price: parseFloat($("#price").val()),
+                branch_id: parseInt($("#branch_id").val()),
+                status: parseInt($("#branch_status").val()),
+                slot_id: selectedDataValues // Include the selected slot data, including ID
+            };
 
-        // Now you have access to the selected slot IDs and their data
-        console.log('Selected Slots:', formData);
+            // Now you have access to the selected slot IDs and their data
+            console.log('Selected Slots:', formData);
 
-        $.ajax({
-            type: "POST",
-            url: "/admin/add/package",
-            data: JSON.stringify(formData),
-            contentType: "application/json", // Set the content type to JSON
-            dataType: "json",
-        }).done(function (data) {
-            
-            console.log(data);
+            $.ajax({
+                type: "POST",
+                url: "/admin/add/package",
+                data: JSON.stringify(formData),
+                contentType: "application/json", // Set the content type to JSON
+                dataType: "json",
+            }).done(function (data) {
+
+                console.log(data);
+            });
         });
     });
-});
 </script>
+

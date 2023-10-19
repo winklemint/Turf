@@ -12,6 +12,7 @@ type Time_Slot struct {
 	Unique_slot_id string
 	Status         int
 	Branch_id      uint
+	PSR_id         uint
 }
 
 type Turf_Bookings struct {
