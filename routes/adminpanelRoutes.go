@@ -12,7 +12,7 @@ func RegisterAdminPanelRoutes(router *gin.Engine) {
 
 	router.LoadHTMLGlob("templates/*.html")
 
-	formGroup := router.Group("/panel")
+	formGroup := router.Group("/admin/login")
 	formGroup.Use(IsAuthenticated())
 
 	formGroup.StaticFS("/", http.Dir("templates")) // Serve all files first
@@ -25,7 +25,7 @@ func RegisterAdminPanelDashboard(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
-	router.GET("/login", func(c *gin.Context) {
+	router.GET("/dashboard", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
 			// You can pass data to the template if needed
 			//"data": "helloworld.html",
@@ -148,6 +148,30 @@ func RegisterAdminPanelAddPackages(router *gin.Engine) {
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/add/package", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "add_package.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
+func RegisterAdminPanelAllSlots(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/slot", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "allslot.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
+func RegisterAdminPanelCreateSlots(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/create/slot", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "create_slot.html", gin.H{
 			// You can pass data to the template if needed
 			//"data": "helloworld.html",
 		})

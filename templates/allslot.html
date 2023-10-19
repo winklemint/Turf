@@ -7,11 +7,11 @@
             <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
         </div>
         <div class="pb-20">
-            <table class="table hover multiple-select-row data-table-export nowrap" id="allpackagetable">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="allslottable">
                 <thead>
                     <tr>
                         <th>Sn.</th>
-                        <th class="table-plus datatable-nosort">Slot ID</th>
+                        <th class="table-plus datatable-nosort">Unique Slot ID</th>
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Day</th>
@@ -19,8 +19,65 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="allpackagetableBody">
-                </tbody>
+               
             </table>
         </div>
     </div>
+    {{template "footer.html"}}
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable
+            var table = $('#allslottable').DataTable();
+            // Make an AJAX request to fetch data from the URL
+            $.ajax({
+                url: 'http://localhost:8080/admin/get/slot',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    // Iterate through the data and append it to the table
+                    $.each(response.data, function (index, slots) {
+                        // Determine the button content based on the "Status"
+                        var button;
+                        if (slots.Status === 1) {
+                            button = "<button type='button' class='btn btn-outline-success'>Active</button>";
+                        } else {
+                            button = "<button type='button' class='btn btn-outline-danger'>Hold</button>";
+                        }
+                        var action = '<div class="dropdown">' +
+                            '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + slots.ID + '" role="button" data-toggle="dropdown">' +
+                            '<i class="dw dw-more"></i>' +
+                            '</a>' +
+                            '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                            '<a class="dropdown-item" href="#' + slots.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                            '<a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>' +
+                            '</div>' +
+                            '</div>'
+
+                           
+                        // Create a new row and append it to the table
+                        table.row.add([
+                            index + 1, // Sn.
+                            slots.Unique_slot_id, // P
+                            slots.Start_time, // Charges
+                            slots.End_time, // Branch ID
+                            slots.Day,
+                            button, // Status button
+                            action, // Status
+
+                        ]);
+                    });
+
+                    // Refresh the table to apply the changes
+                    table.draw();
+                },
+                error: function (error) {
+                    console.error('Error fetching data: ' + error);
+                }
+            });
+        });
+    </script>
+
+
+    </body>
+
+    </html>

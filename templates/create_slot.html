@@ -1,0 +1,265 @@
+{{template "header.html"}}
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            January 2018
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Export List</a>
+                            <a class="dropdown-item" href="#">Policies</a>
+                            <a class="dropdown-item" href="#">View Assets</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+        <div class="pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">Default Basic Forms</h4>
+                    <p class="mb-30">All bootstrap element classies</p>
+                </div>
+                <!-- <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> -->
+            </div>
+            <form id="slot_form">
+                <div class="row-md-3 row-sm-12">
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input
+                            id="start_slot"
+                            class="form-control time-picker"
+                            placeholder="time"
+                            type="text"
+                        />
+                    </div>
+                </div>
+                <div class="row-md-3 row-sm-12">
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input
+                            id="end_slot"
+                            class="form-control time-picker"
+                            placeholder="time"
+                            type="text"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Day</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="day">
+                            <option selected="">Choose...</option>
+                            <option value="sunday">Sunday</option>
+                            <option value="monday">Monday</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                            <option value="saturday">Saturday</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch ID</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="branch_id" class="form-control" type="text" placeholder="Branch ID here" required/>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12">
+                            <option selected="">Choose...</option>
+                            <option value="1">Enable</option>
+                            <option value="2">Disable</option>
+
+                        </select>
+                    </div>
+
+
+                </div> -->
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Days</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-around">
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">All Days</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck2">
+                            <label class="custom-control-label" for="customCheck2">Sunday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck3">
+                            <label class="custom-control-label" for="customCheck3">Monday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck4">
+                            <label class="custom-control-label" for="customCheck4">Tuesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                            <label class="custom-control-label" for="customCheck5">Wednesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck6">
+                            <label class="custom-control-label" for="customCheck6">Thursday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck7">
+                            <label class="custom-control-label" for="customCheck7">Friday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck8">
+                            <label class="custom-control-label" for="customCheck8">Saturday</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_sunday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Sunday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_sunday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_monday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Monday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_monday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_tuesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Tuesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_tuesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_wednesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Wednesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_wednesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_thursday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Thursday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_thursday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_friday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Friday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_friday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_saturday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Saturday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_saturday"></div>
+                </div> -->
+
+
+                <div>
+
+                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+
+                </div>
+
+            </form>
+            <div class="collapse collapse-box" id="basic-form1">
+                <div class="code-box">
+                    <div class="clearfix">
+                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                    </div>
+                    <pre><code class="xml copy-pre" id="copy-pre"></code></pre>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms End -->
+    </div>
+    <div class="footer-wrap pd-20 mb-20 card-box">
+        DeskApp - Bootstrap 4 Admin Template By
+        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
+</div>
+
+
+
+{{template "footer.html"}}
+
+<script>
+    $(document).ready(function () {
+        $("#slot_form").submit(function (event) {
+            event.preventDefault();
+
+            // Now you have an array containing all the data-values of checked checkboxes
+    
+            var formData = {
+                startslot: $("#start_slot").val(),
+                endslot: $("#end_slot").val(),
+                day: $("#branch_id").val(),
+                branch_id: parseInt($("#branch_id").val()) // Include the selected slot data, including ID
+            };
+    
+            // Now you have access to the selected slot IDs and their data
+            console.log('Selected Slots:', formData);
+    
+            $.ajax({
+                type: "POST",
+                url: "/admin/add/package",
+                data: JSON.stringify(formData),
+                contentType: "application/json", // Set the content type to JSON
+                dataType: "json",
+            }).done(function (data) {
+                
+                console.log(data);
+            });
+        });
+    });
+    </script>
