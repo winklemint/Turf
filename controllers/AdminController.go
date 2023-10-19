@@ -1357,13 +1357,13 @@ func Testimonials(c *gin.Context) {
 		return
 
 	}
-	file, err := c.FormFile("file")
+	file, err := c.FormFile("image")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	filePath := filepath.Join("./uploads/testi_monials", file.Filename)
+	filePath := filepath.Join("./uploads/testimonials", file.Filename)
 
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
@@ -1377,7 +1377,8 @@ func Testimonials(c *gin.Context) {
 		})
 		return
 	}
-	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: filePath}
+
+	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: body.Image}
 	result := config.DB.Create(&testimonial)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1387,7 +1388,7 @@ func Testimonials(c *gin.Context) {
 		})
 		return
 	}
-
+	//c.Header("Content-Type", "multipart/mixed; boundary=myboundary")
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "testimonials create successfully",
@@ -1504,7 +1505,68 @@ func UpdateImageForTestimonials(c *gin.Context) {
 		"data":    testimonial,
 	})
 }
+func UpdateImageForTestimonials2(c *gin.Context) {
 
+	var body struct {
+		Image string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
+		})
+		return
+	}
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/testimonials", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Upload the right file format (jpg or png)",
+			"data":   nil,
+		})
+		return
+	}
+	var testimonials models.Testi_Monial
+	result := config.DB.Find(&testimonials)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to update testimonials",
+			"data":   nil,
+		})
+		return
+	}
+	fmt.Println(testimonials.ID)
+	testimonial := &models.Testi_Monial{Image: filePath}
+	result = config.DB.Model(&testimonial).Where("id = ?", testimonials.ID).Updates(&testimonial)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to update testimonials",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "testimonials updated successfully",
+		"data":    testimonial,
+	})
+}
 func AllTestimonials(c *gin.Context) {
 	var testimonials []models.Testi_Monial
 	result := config.DB.Find(&testimonials)
@@ -1692,7 +1754,7 @@ func GETContent(c *gin.Context) {
 
 }
 func UpdateContent(c *gin.Context) {
-	Id := c.Param("id")
+	Id := c.Param("1")
 	var body struct {
 		Heading    string
 		SubHeading string
@@ -1722,4 +1784,184 @@ func UpdateContent(c *gin.Context) {
 		"data":   content,
 	})
 
+}
+func AddImageForCarousel(c *gin.Context) {
+	var body struct {
+		Image string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to read body",
+			"data":   "nill",
+		})
+		return
+	}
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/carousel", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Upload the right file format (jpg or png)",
+			"data":   "null",
+		})
+		return
+	}
+	carousel := &models.Carousel{Image: filePath, Status: "1"}
+	result := config.DB.Create(&carousel)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to create content",
+			"data":   "nill",
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"status": 201,
+		"error":  "Success to create content",
+		"data":   carousel,
+	})
+}
+func GetAllImageCarousel(c *gin.Context) {
+	var carousel []models.Carousel
+	result := config.DB.Find(&carousel)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to get content",
+			"data":   "nill",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"error":  "Success to get content",
+		"data":   carousel,
+	})
+
+}
+func Upadtecarousel(c *gin.Context) {
+	id := c.Param("id")
+	var body struct {
+		Status string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to read body",
+			"data":   "nill",
+		})
+		return
+	}
+	carousel := models.Carousel{Status: body.Status}
+	result := config.DB.Model(&carousel).Where("id=?", id).Updates(&carousel)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to update carousel",
+			"data":   "nill",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"error":  "Success to update content",
+		"data":   carousel,
+	})
+
+}
+func UpadtecarouselImage(c *gin.Context) {
+	id := c.Param("id")
+	var body struct {
+		Image string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
+		})
+		return
+	}
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var carousels models.Carousel
+	result := config.DB.Find(&carousels).Where("id = ?", id).Updates(&carousels)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to update testimonials",
+			"data":   nil,
+		})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/carousel", file.Filename)
+	newImageContent, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Upload the right file format (jpg or png)",
+			"data":   nil,
+		})
+		return
+	}
+	err = ioutil.WriteFile(carousels.Image, newImageContent, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	// newFile, err := os.Create(filePath)
+	// File, err = io.Copy(newFile, file)
+	carousel := &models.Carousel{Image: filePath}
+	result = config.DB.Model(&carousel).Where("id = ?", id).Updates(&carousel)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to update testimonials",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "testimonials updated successfully",
+		"data":    carousel,
+	})
+}
+func DeleteCarousel(c *gin.Context) {
+	id := c.Param("id")
+	var carousel models.Carousel
+	result := config.DB.Model(&carousel).Where("id=?", id).Delete(&carousel)
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsuccessfully Deleted Testimonial",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "successfully Deleted Testimonial",
+		"data":    "nill",
+	})
 }

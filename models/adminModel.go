@@ -22,3 +22,8 @@ type Content struct {
 	SubHeading string
 	Button     string
 }
+type Carousel struct {
+	gorm.Model
+	Image  string
+	Status string
+}

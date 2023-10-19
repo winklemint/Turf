@@ -81,7 +81,34 @@ func RegisterAdminPanelUpdateTestiMonials(router *gin.Engine) {
 	})
 
 }
+func RegisterAdminPanelUpdateContent(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/content", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request URL
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
 
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "updatecontent.html", gin.H{"id": id})
+	})
+
+}
+func RegisterAdminPanelUpdatecarousel(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("update/carousel", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request URL
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "updatecarousel.html", gin.H{"id": id})
+	})
+
+}
 func RegisterAdminPanelAllPackages(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
 
@@ -93,7 +120,28 @@ func RegisterAdminPanelAllPackages(router *gin.Engine) {
 		})
 	})
 }
+func RegisterAdminPanelAddCarousel(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
 
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/carousel", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "carousel.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+func RegisterAdminPanelAddTestimonials(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/add/testimonial", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "addtestimonial.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
 func RegisterAdminPanelAddPackages(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
 

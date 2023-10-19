@@ -1,0 +1,244 @@
+{{template "header.html"}}
+        <div class="pd-ltr-20 xs-pd-20-10">
+            <div class="min-height-200px">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="title">
+                                <h4>Form</h4>
+                            </div>
+                            <nav aria-label="breadcrumb" role="navigation">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/login">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        Form Basic
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right">
+                            <div class="dropdown">
+                                <a
+                                    class="btn btn-secondary dropdown-toggle"
+                                    href="#"
+                                    role="button"
+                                    data-toggle="dropdown"
+                                >
+                                    January 2018
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">Export List</a>
+                                    <a class="dropdown-item" href="#">Policies</a>
+                                    <a class="dropdown-item" href="#">View Assets</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms Start -->
+                <div class="pd-20 card-box mb-30">
+                    <div class="clearfix">
+                        <div class="pull-left">
+                            <h4 class="text-blue h4">Content</h4>
+                            
+                        </div>
+                        <!-- <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> -->
+                    </div>
+                    <form  id = "branch_form">
+                        
+                        
+                        
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                    id="image"
+                                    class="form-control"
+                                    placeholder="Image Here"
+                                    type="file" 
+                                />
+                            </div>
+                        </div>
+        
+                       
+
+                        <div>
+                           
+                            <button type="submit" class="btn btn-primary"  id="submit">Submit</button>
+                                
+                        </div>
+                       
+                    </form>
+                    <div class="card-box pb-10">
+                        <!-- Export Datatable start -->
+                        <div class="card-box mb-30">
+                            <div class="pd-20">
+                                <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
+                            </div>
+                            <div class="pb-20">
+                                <table class="table hover multiple-select-row data-table-export nowrap" id="image">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th>Image</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <div class="collapse collapse-box" id="basic-form1">
+                        <div class="code-box">
+                            <div class="clearfix">
+                                <a
+                                    href="javascript:;"
+                                    class="btn btn-primary btn-sm code-copy pull-left"
+                                    data-clipboard-target="#copy-pre"
+                                    ><i class="fa fa-clipboard"></i> Copy Code</a
+                                >
+                                <a
+                                    href="#basic-form1"
+                                    class="btn btn-primary btn-sm pull-right"
+                                    rel="content-y"
+                                    data-toggle="collapse"
+                                    role="button"
+                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
+                                >
+                            </div>
+                            <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms End -->
+            </div>
+            <div class="footer-wrap pd-20 mb-20 card-box">
+                DeskApp - Bootstrap 4 Admin Template By
+                <a href="https://github.com/dropways" target="_blank"
+                    >Ankit Hingarajiya</a
+                >
+            </div>
+        </div>
+
+
+   
+    {{template "footer.html"}}
+
+    <script>
+        $(document).ready(function() {
+          $("#branch_form").submit(function(event) {
+            event.preventDefault();
+      
+            var formData = new FormData();
+            var imageInput = $('#image')[0];
+            if (imageInput.files.length > 0) {
+              formData.append("image", imageInput.files[0]);
+            }
+      
+            $.ajax({
+              type: "POST",
+              url: "/admin/carousel/add",
+              data: formData,
+              contentType: false,
+              processData: false, // Set processData to false to prevent jQuery from transforming the data into a query string
+            }).done(function(data) {
+                window.location.href = "/carousel";
+            });
+          });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            
+            CarouselTable();
+        });
+    
+        function CarouselTable() {
+            $.ajax({
+                url: "/admin/carousel/get",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (response && response.data) {
+                        
+                        displayadmin(response.data);
+
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+        function displayadmin(carousel) {
+          
+            var tableBody = $('#image tbody');
+            tableBody.empty();
+    
+            carousel.forEach(function (carousels) {
+                var row = $('<tr></tr>');
+                row.append('<td>' + carousels.Image + '</td>');
+                var Status = '';
+                if (carousels.Status === 1) {
+                    Status = 'Enable';
+                } else{
+                    Status = 'Disable';
+                }
+                row.append('<td>' + Status + '</td');
+               
+                row.append('<td><div class="table-actions"><a href="/update/carousel?id=' + carousels.ID + '" data-color="#265ed7"><i class="icon-copy dw dw-edit2"></i></a><a href="/testimonials" onclick="deleteCarousel(' + carousels.ID + ');" data-color="#e95959"><i class="icon-copy dw dw-delete-3"></i></a></div></td>');
+    
+                
+                tableBody.append(row);
+            });
+        }
+        function deleteCarousel(Id) {
+            var row_id = Id;
+            
+            
+            $.ajax({
+                url: "/admin/delete/carousel/" + Id,
+                method: "DELETE",
+                success: function (response) {
+                    var rowid = 'rowN' + row_id;
+                    alert(rowid);
+                    var rowElement = document.getElementById(rowid);
+                    if (rowElement) {
+                        rowElement.style.display = 'none';
+                        alert("Carousel with ID: " + Id + " deleted successfully");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    alert("Error deleting Carousel with ID: " + Id);
+                }
+            });
+        }
+        
+       
+      
+       
+       
+        
+    </script>  
+      
+
+</body>
+</html>
+
+    

@@ -50,6 +50,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/add/testimonials", controllers.Testimonials)
 		adminRoutes.PATCH("/update/testimonials/:id", controllers.Upadte_TestiMonilas)
 		adminRoutes.PATCH("/update/image/testimonials/:id", controllers.UpdateImageForTestimonials)
+		adminRoutes.PATCH("/update/image/last/testimonials", controllers.UpdateImageForTestimonials2)
 		adminRoutes.GET("/get/testimonials", controllers.AllTestimonials)
 		adminRoutes.GET("/get/testimonial/:id", controllers.GETTestimonialsById)
 		adminRoutes.GET("/get/testimonial/image/:id", controllers.GETTestimonialsimagesById)
@@ -58,7 +59,12 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//Content
 		adminRoutes.POST("/content/add", controllers.AddContent)
 		adminRoutes.GET("/content/get", controllers.GETContent)
-		adminRoutes.PATCH("/content/update/:id", controllers.UpdateContent)
-
+		adminRoutes.PATCH("/content/update/1", controllers.UpdateContent)
+		//Carousel
+		adminRoutes.POST("/carousel/add", controllers.AddImageForCarousel)
+		adminRoutes.GET("/carousel/get", controllers.GetAllImageCarousel)
+		adminRoutes.PATCH("/carousel/upadte/:id", controllers.Upadtecarousel)
+		adminRoutes.PATCH("/carousel/image/upadte/:id", controllers.UpadtecarouselImage)
+		adminRoutes.DELETE("/delete/carousel/:id", controllers.DeleteCarousel)
 	}
 }

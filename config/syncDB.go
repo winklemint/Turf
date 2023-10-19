@@ -14,5 +14,6 @@ func SyncDB() {
 	DB.AutoMigrate(models.Branch_info_management{})
 	DB.AutoMigrate(models.Testi_Monial{})
 	DB.AutoMigrate(&models.Content{})
+	DB.AutoMigrate(&models.Carousel{})
 
 }

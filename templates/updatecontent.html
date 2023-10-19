@@ -1,0 +1,245 @@
+{{template "header.html"}}
+        <div class="pd-ltr-20 xs-pd-20-10">
+            <div class="min-height-200px">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="title">
+                                <h4>Form</h4>
+                            </div>
+                            <nav aria-label="breadcrumb" role="navigation">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/login">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        Form Basic
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right">
+                            <div class="dropdown">
+                                <a
+                                    class="btn btn-secondary dropdown-toggle"
+                                    href="#"
+                                    role="button"
+                                    data-toggle="dropdown"
+                                >
+                                    January 2018
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">Export List</a>
+                                    <a class="dropdown-item" href="#">Policies</a>
+                                    <a class="dropdown-item" href="#">View Assets</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms Start -->
+                <div class="pd-20 card-box mb-30">
+                    <div class="clearfix">
+                        <div class="pull-left">
+                            <h4 class="text-blue h4">Content</h4>
+                            
+                        </div>
+                        <!-- <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> -->
+                    </div>
+                    <form  id = "branch_form">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Heading</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="heading"
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="Heading Here"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">SubHeading</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id = "subheading"
+                                    class="form-control"
+                                    placeholder="SubHeading Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">button</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="button"
+                                    class="form-control"
+                                    placeholder="Button Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                       
+                        
+                        
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+        
+                       
+
+                        <div>
+                           
+                            <button type="submit" class="btn btn-primary"  id="update">Update</button>
+                                
+                        </div>
+                       
+                    </form>
+                    <div class="collapse collapse-box" id="basic-form1">
+                        <div class="code-box">
+                            <div class="clearfix">
+                                <a
+                                    href="javascript:;"
+                                    class="btn btn-primary btn-sm code-copy pull-left"
+                                    data-clipboard-target="#copy-pre"
+                                    ><i class="fa fa-clipboard"></i> Copy Code</a
+                                >
+                                <a
+                                    href="#basic-form1"
+                                    class="btn btn-primary btn-sm pull-right"
+                                    rel="content-y"
+                                    data-toggle="collapse"
+                                    role="button"
+                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
+                                >
+                            </div>
+                            <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms End -->
+            </div>
+            <div class="footer-wrap pd-20 mb-20 card-box">
+                DeskApp - Bootstrap 4 Admin Template By
+                <a href="https://github.com/dropways" target="_blank"
+                    >Ankit Hingarajiya</a
+                >
+            </div>
+        </div>
+
+
+   
+    {{template "footer.html"}}
+<script>
+   $(document).ready(function() {
+    // Retrieve the testimonial ID from the query parameter
+    var Id = new URLSearchParams(window.location.search).get('id');
+    if (Id) {
+        testimonialsDetails(Id);
+    }
+});
+
+function testimonialsDetails(id) {
+    $.ajax({
+        url: "/admin/get/testimonial/" + id,
+        method: "GET",
+        dataType: "json",
+        success: function(response) {
+            var testimonial = response.data;
+            if (testimonial) {
+                $('#name').val(testimonial.Name);
+                $('#designation').val(testimonial.Designation);
+                $('#review').val(testimonial.Review);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+}
+
+$('#branch_form').submit(function(event) {
+    event.preventDefault();
+
+    var form_data = {
+        "name": $('#name').val(),
+        "designation": $('#designation').val(),
+        "review": $('#review').val(),
+    };
+
+    var form_image = new FormData();
+    var imageInput = $('#image')[0];
+    if (imageInput.files.length > 0) {
+        form_image.append("image", imageInput.files[0]);
+    }
+
+    // Retrieve the testimonial ID from the query parameter
+    var Id = new URLSearchParams(window.location.search).get('id');
+
+    // Create a promise for the text fields update API
+    var updateTextFieldsPromise = $.ajax({
+        url: "/admin/update/testimonials/" + Id,
+        method: "PATCH",
+        data: JSON.stringify(form_data),
+        contentType: 'application/json',
+    });
+
+    // Check if an image is specified, and create a promise for the image update API
+    var updateImagePromise = null;
+    if (form_image.get("image")) {
+        updateImagePromise = $.ajax({
+            url: "/admin/update/image/testimonials/" + Id,
+            method: "PATCH",
+            data: form_image,
+            contentType: false,
+            processData: false,
+        });
+    }
+
+    // Use Promise.all to execute both requests if needed
+    if (updateImagePromise) {
+        Promise.all([updateTextFieldsPromise, updateImagePromise])
+            .then(function(responses) {
+                // Handle both responses here
+                var textFieldsResponse = responses[0];
+                var imageResponse = responses[1];
+
+                alert("Testimonials updated successfully!");
+                window.location.href = "/testimonials";
+            })
+            .catch(function(errors) {
+                console.error(errors);
+            });
+    } else {
+        // Only execute the text fields update if no image is selected
+        updateTextFieldsPromise.then(function(response) {
+            alert("Testimonials updated successfully!");
+            window.location.href = "/testimonials";
+        }).catch(function(error) {
+            console.error(error);
+        });
+    }
+});
+
+</script>    
+      
+
+</body>
+</html>
+
+    
