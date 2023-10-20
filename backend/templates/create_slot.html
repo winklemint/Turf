@@ -54,31 +54,21 @@
                 <div class="row-md-3 row-sm-12">
                     <div class="form-group">
                         <label>Start Time</label>
-                        <input
-                            id="start_slot"
-                            class="form-control time-picker"
-                            placeholder="time"
-                            type="text"
-                        />
+                        <input id="start_slot" class="form-control time-picker" placeholder="time" type="text" />
                     </div>
                 </div>
                 <div class="row-md-3 row-sm-12">
                     <div class="form-group">
                         <label>End Time</label>
-                        <input
-                            id="end_slot"
-                            class="form-control time-picker"
-                            placeholder="time"
-                            type="text"
-                        />
+                        <input id="end_slot" class="form-control time-picker" placeholder="time" type="text" />
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Day</label>
                     <div class="col-sm-12 col-md-10">
-                        <select class="custom-select col-12" id="day">
-                            <option selected="">Choose...</option>
+                        <select class="custom-select col-12" id="day" required>
+                            <option selected="" selected disabled>Choose...</option>
                             <option value="sunday">Sunday</option>
                             <option value="monday">Monday</option>
                             <option value="tuesday">Tuesday</option>
@@ -93,7 +83,9 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Branch ID</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="branch_id" class="form-control" type="text" placeholder="Branch ID here" required/>
+                        <select class="custom-select col-12" id="branchSelect" required>
+                           
+                        </select>
                     </div>
                 </div>
 
@@ -227,6 +219,7 @@
         DeskApp - Bootstrap 4 Admin Template By
         <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
     </div>
+
 </div>
 
 
@@ -235,21 +228,55 @@
 
 <script>
     $(document).ready(function () {
+
+        
+
+        $.ajax({
+            url: '/admin/get/branch',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                // The "data" variable contains the data received from the server
+                // You can now append the data to the <select> element
+                    
+                $("#branchSelect").html('');
+                appendDataToSelect(response.data);
+            },
+            error: function () {
+                console.error('Failed to retrieve data from the server');
+            }
+        });
+
+
+        function appendDataToSelect(data) 
+        {
+            console.log(data);
+            const element = "<option value=''>Select Branch</option>";
+            $("#branchSelect").append(element);
+            for (let index = 0; index < data.length; index++) 
+            {
+                // var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+                var element_other = `<option value='${data[index].ID}'>${data[index].Branch_name}</option>`;
+
+                $("#branchSelect").append(element_other);
+                console.log(element_other);
+            }
+        }
         $("#slot_form").submit(function (event) {
             event.preventDefault();
 
             // Now you have an array containing all the data-values of checked checkboxes
-    
+
             var formData = {
-                startslot:  convertTo24HourFormat($("#start_slot").val()),
+                startslot: convertTo24HourFormat($("#start_slot").val()),
                 endslot: convertTo24HourFormat($("#end_slot").val()),
                 day: $("#day").val(),
-                branch_id: parseInt($("#branch_id").val()) // Include the selected slot data, including ID
+                branch_id: parseInt($("#branchSelect").val()) // Include the selected slot data, including ID
             };
-    
+
             // Now you have access to the selected slot IDs and their data
             console.log('Selected Slots:', formData);
-    
+
             $.ajax({
                 type: "POST",
                 url: "/admin/add/slot",
@@ -257,9 +284,10 @@
                 contentType: "application/json", // Set the content type to JSON
                 dataType: "json",
             }).done(function (data) {
-                
+
                 console.log(data);
+
             });
         });
     });
-    </script>
+</script>

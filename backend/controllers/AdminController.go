@@ -400,12 +400,20 @@ func AddSlot(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(body.Branch_id)
+	// Check if a slot with the same attributes already exists
+	var existingSlot models.Time_Slot
+	result := config.DB.Where("start_time = ? AND end_time = ? AND day = ? AND branch_id = ?", body.StartSlot, body.EndSlot, body.Day, body.Branch_id).First(&existingSlot)
+	if result.Error == nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Slot already exists",
+			"data":   "null",
+		})
+		return
+	}
 
 	var slots models.Time_Slot
 	config.DB.Find(&slots)
-
-	fmt.Println(slots)
 
 	var branch models.Branch_info_management
 	config.DB.Find(&branch, "id = ?", body.Branch_id)
@@ -415,7 +423,7 @@ func AddSlot(c *gin.Context) {
 	usid := First_three_initials + "/" + body.StartSlot + "/" + body.EndSlot
 
 	slot := models.Time_Slot{Start_time: body.StartSlot, End_time: body.EndSlot, Day: body.Day, Branch_id: branch.ID, Unique_slot_id: usid, Status: 1}
-	result := config.DB.Create(&slot)
+	result = config.DB.Create(&slot)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
