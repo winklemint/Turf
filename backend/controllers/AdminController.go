@@ -108,7 +108,7 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		})
 		return
 	}
-	var responseData []map[string]interface{}
+	var responseData []folder[string]interface{}
 	for _, booking := range data {
 		var user models.User
 		result := config.DB.First(&user, booking.User_id)
@@ -383,6 +383,45 @@ func GET_All_Branch(c *gin.Context) {
 	})
 
 }
+func GET_All_Branch_Id(c *gin.Context) {
+	Id := c.Param("id")
+	var branch models.Branch_info_management
+	result := config.DB.Find(&branch).Where("id=?", Id)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "No Branch Found",
+			"data":   "null",
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "All Branch  Successfully",
+		"data":    branch,
+	})
+
+}
+func Delete_Branch(c *gin.Context) {
+	Id := c.Param("id")
+	var branch models.Branch_info_management
+	result := config.DB.Model(&branch).Where("id=?", Id).Delete(&branch)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsuccessfully Deleted Branch",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "successfully Deleted Branch",
+		"data":    nil,
+	})
+}
 func AddSlot(c *gin.Context) {
 	var body struct {
 		StartSlot string
@@ -447,7 +486,7 @@ func AddPackage(c *gin.Context) {
 	var body struct {
 		Name      string
 		Price     float64
-		Status    int
+		Status    string
 		Branch_id int
 		Slot_id   []string
 	}
@@ -717,7 +756,7 @@ func UpdatePackage(c *gin.Context) {
 	var body struct {
 		Name      string ` grom:"unique"`
 		Price     float64
-		Status    int
+		Status    string
 		Branch_id int
 		Slot_id   []string
 	}
@@ -804,7 +843,24 @@ func Get_Package(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
-
+func DeleteSlot(c *gin.Context) {
+	id := c.Param("id")
+	var slot models.Time_Slot
+	result := config.DB.Model(&slot).Where("id=?", id).Delete(&slot)
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsuccessfully Deleted Slot",
+			"data":   nil,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "successfully Deleted Slot",
+		"data":    nil,
+	})
+}
 func GetAllPackage(c *gin.Context) {
 	var pkg []models.Package
 	result := config.DB.Find(&pkg)
@@ -824,7 +880,48 @@ func GetAllPackage(c *gin.Context) {
 		"data":    pkg,
 	})
 }
+func GetAllPackageById(c *gin.Context) {
+	Id := c.Param("id")
+	var pkg models.Package
+	result := config.DB.Find(&pkg).Where("id=?", Id)
 
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get package",
+			"data":   nil,
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Package details",
+		"data":    pkg,
+	})
+}
+func DeletePackage(c *gin.Context) {
+	Id := c.Param("id")
+	var packages models.Package
+	result := config.DB.Model(&packages).Where("id=?", Id).Delete(&packages)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to Delete package",
+			"data":   nil,
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Delete Package Successfully",
+		"data":    packages,
+	})
+
+}
 func GetConfirmBooking(c *gin.Context) {
 	var Pkg []models.Confirm_Booking_Table
 	var slot_id []int
@@ -1699,7 +1796,7 @@ func DeleteTestimonials(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "successfully Deleted Testimonial",
-		"data":    "nill",
+		"data":    nil,
 	})
 }
 func readJPGFile(filePath string) ([]byte, error) {
@@ -1739,7 +1836,7 @@ func AddContent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to read body",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1749,7 +1846,7 @@ func AddContent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to create content",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1767,7 +1864,7 @@ func GETContent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to get content",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1789,7 +1886,7 @@ func UpdateContent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to read body",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1799,7 +1896,7 @@ func UpdateContent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to update content",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1810,6 +1907,43 @@ func UpdateContent(c *gin.Context) {
 	})
 
 }
+func GetContentById(c *gin.Context) {
+	Id := c.Param("id")
+	var content models.Content
+	result := config.DB.Find(&content).Where("id=?", Id)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to get content",
+			"data":   nil,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"error":  "Success to get content",
+		"data":   content,
+	})
+
+}
+func DeleteContent(c *gin.Context) {
+	id := c.Param("id")
+	var content models.Content
+	result := config.DB.Model(&content).Where("id=?", id).Delete(&content)
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsuccessfully Deleted content",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "successfully Deleted content",
+		"data":    nil,
+	})
+}
 func AddImageForCarousel(c *gin.Context) {
 	var body struct {
 		Image string
@@ -1818,7 +1952,7 @@ func AddImageForCarousel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to read body",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1848,7 +1982,7 @@ func AddImageForCarousel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to create content",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1865,7 +1999,7 @@ func GetAllImageCarousel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to get content",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1885,7 +2019,7 @@ func Upadtecarousel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to read body",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1895,7 +2029,7 @@ func Upadtecarousel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to update carousel",
-			"data":   "nill",
+			"data":   nil,
 		})
 		return
 	}
@@ -1987,7 +2121,7 @@ func DeleteCarousel(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "successfully Deleted Testimonial",
-		"data":    "nill",
+		"data":    nil,
 	})
 }
 

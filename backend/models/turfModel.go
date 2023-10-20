@@ -39,7 +39,7 @@ type Package struct {
 	gorm.Model
 	Name      string ` grom:"unique"`
 	Price     float64
-	Status    int
+	Status    string
 	Branch_id int
 }
 type Confirm_Booking_Table struct {

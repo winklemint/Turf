@@ -18,10 +18,13 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)
 		adminRoutes.GET("/get/slot", controllers.GetAllSlot)
 		adminRoutes.POST("/get/slot/:id", controllers.Get_Package)
+		adminRoutes.DELETE("/delete/slot/:id", controllers.DeleteSlot)
 		//package
 		adminRoutes.POST("/add/package", controllers.AddPackage)
-		adminRoutes.POST("/update/package/:id", controllers.UpdatePackage)
+		adminRoutes.PATCH("/update/package/:id", controllers.UpdatePackage)
 		adminRoutes.GET("/get/package", controllers.GetAllPackage)
+		adminRoutes.GET("/get/package/:id", controllers.GetAllPackageById)
+		adminRoutes.DELETE("/delete/package/:id", controllers.DeletePackage)
 		//booking
 		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)

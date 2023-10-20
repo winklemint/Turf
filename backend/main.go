@@ -25,7 +25,8 @@ func main() {
 
 	routes.RegisterAdminRoutes(r)
 	route.RegisterUserRoutes(r)
-
+	route.RegisterAdminPanelAllPackages(r)
+	route.RegisterAdminPanelAddPackages(r)
 	route.RegisterAdminPanelRoutes(r)
 	route.RegisterAdminPanelDashboard(r)
 	route.RegisterAdminPanelCreateBranch(r)
@@ -46,6 +47,11 @@ func main() {
 	route.RegisterAdminPanelUpdatecarousel(r)
 	route.RegisterAdminPanelAddCarousel(r)
 	route.RegisterAdminPanelAddTestimonials(r)
+	route.RegisterAdminPanelUpdateContent(r)
+	// Update Branch
+	route.RegisterAdminPanelUpdatebranchs(r)
+	//Update Package
+	route.RegisterAdminPanelUpdatepackage(r)
 	route.RegisterAdminPanelAllSlots(r)
 	route.RegisterAdminPanelCreateSlots(r)
 	r.Run(":8080")
