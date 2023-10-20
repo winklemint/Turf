@@ -48,7 +48,7 @@ func Signup(c *gin.Context) {
 	}
 
 	//create the user
-	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: 0}
+	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: "0"}
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
@@ -257,7 +257,7 @@ func Login(c *gin.Context) {
 			"error": "Invalid Email or Password ",
 		})
 		return
-	} else if user.ID != 0 && user.Account_Status == 0 {
+	} else if user.ID != 0 && user.Account_Status == "0" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Kindly verify your email first",
 		})

@@ -95,7 +95,18 @@
                             </div>
                         </div> -->
         
-                       
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <select class="custom-select col-12" id="status">
+                                    
+                                    <option value="1">Active</option>
+                                    <option value="2">Hold</option>
+                                    <option value="3">Block</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
 
                         <div>
                            
@@ -150,19 +161,23 @@
               Email: $("#email").val(),
               Contact: $("#contact").val(),
               Password: $("#password").val(),
-             
+              Account_Status: $("#status").val(),
               
             };
       
             $.ajax({
-                type: "POST",
-                url: "/admin/add/user",
-                data: formData,
-                dataType: "json",
-              //   encode: true,
-              }).done(function(data) {
-                window.location.href = "/dashboard";
-              });
+                url: "/admin/update/user/" ,
+                method: "PATCH", // Use PATCH method for updating
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    alert("User Details updated successfully!");
+                    window.location.href = "/user";
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
           });
         });
     

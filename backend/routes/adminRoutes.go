@@ -35,14 +35,17 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/booking/date", controllers.GetAllDetailbydate)
 
 		//user Details
-		//adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
-		//adminRoutes.POST("/get/user/:id", controllers.UpdateUserDetails)
+		adminRoutes.POST("/add/user", controllers.AddUser)
+		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
+		adminRoutes.PATCH("/update/user/:id", controllers.UpdateUserDetails)
+		adminRoutes.GET("/get/user/:id", controllers.GetAllUsersById)
+		adminRoutes.DELETE("/delete/user/:id", controllers.DeleteUser)
 		// adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 		//adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
 		//adminRoutes.GET("/partial/payments", controllers.Partial_payment)
 		//adminRoutes.POST("/update/user/:id", controllers.UpdateUserDetails)
-		//adminRoutes.POST("/get/live/data", controllers.LiveUser)
+		adminRoutes.POST("/get/live/data", controllers.LiveUser)
 		//Branch
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
 		adminRoutes.POST("/update/branch/:id", controllers.Update_Branch)

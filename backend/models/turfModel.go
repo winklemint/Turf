@@ -72,6 +72,7 @@ type Branch_info_management struct {
 	GST_no                string
 	Status                int
 	Ground_Size           string
+	Image                 string
 }
 type Testi_Monial struct {
 	gorm.Model

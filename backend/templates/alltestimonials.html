@@ -6,63 +6,71 @@
             <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
         </div>
         <div class="pb-20">
-    <table   id="allbranchtable" class="data-table table nowrap">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Designation</th>
-                <th>Review</th>
-                <th>Image</th>
-                <th class="datatable-nosort">Actions</th>
-                
-            </tr>
-        </thead>
-        <tbody ></tbody>
-            
-    </table>
+            <table class="table hover multiple-select-row data-table-export nowrap" id="allbranchtable">
+                <thead>
+                    <tr>
+                        <th>Sn.</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Review</th>
+                        <th>Image</th>
+                        <th >Actions</th>
+                    </tr>
+                </thead>
+               
+            </table>
+        </div>
+    </div>
 </div>
 
 {{template "footer.html"}}
 <script>
-    $(document).ready(function() {
-        
-        TestimonilasTable();
-    });
-
-    function TestimonilasTable() {
+    $(document).ready(function () {
+        // Initialize DataTable
+        var table = $('#allbranchtable').DataTable();
+        // Make an AJAX request to fetch data from the URL
         $.ajax({
-            url: "/admin/get/testimonials",
-            method: "GET",
-            dataType: "json",
+            url: 'http://localhost:8080/admin/get/testimonials',
+            method: 'GET',
+            dataType: 'json',
             success: function (response) {
-                if (response && response.data) {
+                // Iterate through the data and append it to the table
+                $.each(response.data, function (index, testimonials) {
+                    // Determine the button content based on the "Status"
                     
-                    displayadmin(response.data);
-                }
+                    var action = '<div class="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + testimonials.ID + '" role="button" data-toggle="dropdown">' +
+                        '<i class="dw dw-more"></i>' +
+                        '</a>' +
+                        '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                        '<a class="dropdown-item" href="/data/testimonials?id=' + testimonials.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/testimonials" onclick="deleteTestimonial(' +  testimonials.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '</div>' +
+                        '</div>'
+
+                       
+                    // Create a new row and append it to the table
+                    table.row.add([
+                        index + 1, // Sn.
+                        testimonials.Name, // P
+                        testimonials.Designation, // Charges
+                        testimonials.Review, // Branch ID
+                        testimonials.Image,
+                      
+                        action, // Status
+
+                    ]);
+                });
+
+                // Refresh the table to apply the changes
+                table.draw();
             },
-            error: function(xhr, status, error) {
-                console.error(error);
+            error: function (error) {
+                console.error('Error fetching data: ' + error);
             }
         });
-    }
-    function displayadmin(TestiMonial) {
-        
-        var tableBody = $('#allbranchtable tbody');
-        tableBody.empty();
-
-        TestiMonial.forEach(function (testimonials) {
-            var row = $('<tr></tr>');
-            row.append('<td>' + testimonials.Name + '</td>');
-            row.append('<td>' +testimonials.Designation + '</td>');
-            row.append('<td>' + testimonials.Review + '</td>');
-            row.append('<td>' + testimonials.Image + '</td>');
-            row.append('<td><div class="table-actions"><a href="/data/testimonials?id=' + testimonials.ID + '" data-color="#265ed7"><i class="icon-copy dw dw-edit2"></i></a><a href="/testimonials" onclick="deleteTestimonial(' + testimonials.ID + ');" data-color="#e95959"><i class="icon-copy dw dw-delete-3"></i></a></div></td>');
-
-            
-            tableBody.append(row);
-        });
-    }
-   
+    });
+    
    
     function deleteTestimonial(Id) {
         var row_id = Id;
@@ -87,7 +95,7 @@
         });
     }
     
-   
+  
    
     
 </script>

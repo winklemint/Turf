@@ -108,7 +108,7 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		})
 		return
 	}
-	var responseData []folder[string]interface{}
+	var responseData []interface{}
 	for _, booking := range data {
 		var user models.User
 		result := config.DB.First(&user, booking.User_id)
@@ -296,6 +296,7 @@ func Add_Branch(c *gin.Context) {
 		GST_no                string
 		Status                int
 		Ground_Size           string
+		Image                 string
 	}
 
 	err := c.Bind(&body)
@@ -307,7 +308,27 @@ func Add_Branch(c *gin.Context) {
 		})
 		return
 	}
-	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: 1, Ground_Size: body.Ground_Size}
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/branch", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Upload the right file format (jpg or png)",
+			"data":   "null",
+		})
+		return
+	}
+	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status, Ground_Size: body.Ground_Size, Image: filePath}
 	result := config.DB.Create(&branch)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -334,7 +355,8 @@ func Update_Branch(c *gin.Context) {
 		Branch_email          string
 		Branch_contact_number string
 		GST_no                string
-		Status                int
+		Status                string
+		Image                 string
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -345,8 +367,27 @@ func Update_Branch(c *gin.Context) {
 		return
 
 	}
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status}
+	filePath := filepath.Join("./uploads/branch", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Upload the right file format (jpg or png)",
+			"data":   "null",
+		})
+		return
+	}
+	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status, Image: filePath}
 	result := config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1038,61 +1079,132 @@ func GetAllUsers(c *gin.Context) {
 		"data":    users,
 	})
 }
+func GetAllUsersById(c *gin.Context) {
+	Id := c.Param("id")
+	var users models.User
+	result := config.DB.Find(&users).Where("id=?", Id)
 
-// func UpdateUserDetails(c *gin.Context) {
-// 	Id := c.Param("id")
-// 	var body struct {
-// 		Full_Name      string
-// 		Email          string
-// 		Password       string
-// 		Contact        string
-// 		Account_Status string
-// 	}
-// 	err := c.Bind(&body)
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": 400,
-// 			"error":  "failed to read body",
-// 			"data":   "null",
-// 		})
-// 		return
-// 	}
-// 	Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"error": "failed to hash password",
-// 		})
-// 		return
-// 	}
-// 	var Account_Status int
-// 	switch {
-// 	case body.Account_Status == "Active":
-// 		Account_Status = 1
-// 	case body.Account_Status == "Hold":
-// 		Account_Status = 2
-// 	case body.Account_Status == "Block":
-// 		Account_Status = 3
-// 	default:
-// 		Account_Status = 0
-// 	}
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to load user details",
+			"data":   "null",
+		})
+		return
 
-// 	users := models.User{Full_Name: body.Full_Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Account_Status: Account_Status}
-// 	result := config.DB.Model(&users).Where("id = ?", Id).Updates(users)
-// 	if result.Error != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": 400,
-// 			"error":  "User Update UnSuccessfully",
-// 			"data":   "null",
-// 		})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  200,
-// 		"success": "User Update Successfully",
-// 		"data":    body,
-// 	})
+	}
 
-// }
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "success to load user details",
+		"data":    users,
+	})
+}
+func DeleteUser(c *gin.Context) {
+	Id := c.Param("id")
+	var users models.User
+	result := config.DB.Model(&users).Where("id=?", Id).Delete(&users)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "User Delete UnSuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "User Delete Successfully",
+		"data":    nil,
+	})
+
+}
+func AddUser(c *gin.Context) {
+	var body struct {
+		Full_Name string
+		Email     string
+		Password  string
+		Contact   string
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "failed to read body",
+		})
+		return
+	}
+
+	//Hashing password
+	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "failed to hash password",
+		})
+		return
+	}
+
+	//create the user
+	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: "1"}
+
+	result := config.DB.Create(&user)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "failed to create user",
+		})
+
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "user successfully created",
+		"data":    user,
+	})
+
+}
+
+func UpdateUserDetails(c *gin.Context) {
+	Id := c.Param("id")
+	var body struct {
+		Full_Name      string
+		Email          string
+		Password       string
+		Contact        string
+		Account_Status string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+	Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "failed to hash password",
+		})
+		return
+	}
+
+	users := models.User{Full_Name: body.Full_Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Account_Status: body.Account_Status}
+	result := config.DB.Model(&users).Where("id = ?", Id).Updates(users)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "User Update UnSuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "User Update Successfully",
+		"data":    body,
+	})
+
+}
 
 // func In_live_slot(c *gin.Context){
 // 	var slot models.Confirm_Booking_Table

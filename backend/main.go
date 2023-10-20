@@ -25,8 +25,7 @@ func main() {
 
 	routes.RegisterAdminRoutes(r)
 	route.RegisterUserRoutes(r)
-	route.RegisterAdminPanelAllPackages(r)
-	route.RegisterAdminPanelAddPackages(r)
+
 	route.RegisterAdminPanelRoutes(r)
 	route.RegisterAdminPanelDashboard(r)
 	route.RegisterAdminPanelCreateBranch(r)
@@ -36,6 +35,7 @@ func main() {
 	route.RegisterAdminPanelAllTestiMonials(r)
 	route.RegisterAdminPanelUpdateTestiMonials(r)
 	route.RegisterAdminPanelUpdateContent(r)
+
 	// r.LoadHTMLGlob("templates/*.tmpl")
 	// // Define a route that uses the header and footer templates
 	// r.GET("/", func(c *gin.Context) {
@@ -44,14 +44,29 @@ func main() {
 	// 	})
 	// })
 
+	//Carousel
 	route.RegisterAdminPanelUpdatecarousel(r)
 	route.RegisterAdminPanelAddCarousel(r)
+	//Testimonial
 	route.RegisterAdminPanelAddTestimonials(r)
+	route.RegisterAdminPanelAllTestiMonials(r)
+	route.RegisterAdminPanelUpdateTestiMonials(r)
+	//Content
 	route.RegisterAdminPanelUpdateContent(r)
-	// Update Branch
+	route.RegisterAdminPaneladdContent(r)
+	// Branchs
 	route.RegisterAdminPanelUpdatebranchs(r)
-	//Update Package
+	route.RegisterAdminPanelAllBranch(r)
+	route.RegisterAdminPanelCreateBranch(r)
+	//Packages
 	route.RegisterAdminPanelUpdatepackage(r)
+	route.RegisterAdminPanelAddPackages(r)
+	route.RegisterAdminPanelAllPackages(r)
+	//Users
+	route.RegisterAdminPanelAllUser(r)
+	route.RegisterAdminPanelUpdateUser(r)
+	route.RegisterAdminPanelAddUser(r)
+	//Slots
 	route.RegisterAdminPanelAllSlots(r)
 	route.RegisterAdminPanelCreateSlots(r)
 	r.Run(":8080")
