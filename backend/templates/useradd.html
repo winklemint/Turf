@@ -1,0 +1,173 @@
+{{template "header.html"}}
+        <div class="pd-ltr-20 xs-pd-20-10">
+            <div class="min-height-200px">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="title">
+                                <h4>Form</h4>
+                            </div>
+                            <nav aria-label="breadcrumb" role="navigation">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/login">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        Form Basic
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right">
+                            <div class="dropdown">
+                                <a
+                                    class="btn btn-secondary dropdown-toggle"
+                                    href="#"
+                                    role="button"
+                                    data-toggle="dropdown"
+                                >
+                                    January 2018
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">Export List</a>
+                                    <a class="dropdown-item" href="#">Policies</a>
+                                    <a class="dropdown-item" href="#">View Assets</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms Start -->
+                <div class="pd-20 card-box mb-30">
+                   
+                    <form  id = "update_form">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Name</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="name"
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="User Name Here"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Email</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id = "email"
+                                    class="form-control"
+                                    placeholder="bootstrap@example.com"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Contact</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="contact"
+                                    class="form-control"
+                                    placeholder="1-(111)-111-1111"
+                                    type="number"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Password</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="password"
+                                    class="form-control"
+                                    placeholder="*********"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                      
+                        
+                        
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+        
+                       
+
+                        <div>
+                           
+                            <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                            
+                        </div>
+                       
+                    </form>
+                    <div class="collapse collapse-box" id="basic-form1">
+                        <div class="code-box">
+                            <div class="clearfix">
+                                <a
+                                    href="javascript:;"
+                                    class="btn btn-primary btn-sm code-copy pull-left"
+                                    data-clipboard-target="#copy-pre"
+                                    ><i class="fa fa-clipboard"></i> Copy Code</a
+                                >
+                                <a
+                                    href="#basic-form1"
+                                    class="btn btn-primary btn-sm pull-right"
+                                    rel="content-y"
+                                    data-toggle="collapse"
+                                    role="button"
+                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
+                                >
+                            </div>
+                            <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms End -->
+            </div>
+            <div class="footer-wrap pd-20 mb-20 card-box">
+                DeskApp - Bootstrap 4 Admin Template By
+                <a href="https://github.com/dropways" target="_blank"
+                    >Ankit Hingarajiya</a
+                >
+            </div>
+        </div>
+
+
+   
+    {{template "footer.html"}}
+<script>
+    $(document).ready(function() {
+      $("#update_form").submit(function(event) { 
+            event.preventDefault();
+            var formData = {
+              Full_name: $("#name").val(),
+              Email: $("#email").val(),
+              Contact: $("#contact").val(),
+              Password: $("#password").val(),
+             
+              
+            };
+      
+            $.ajax({
+                type: "POST",
+                url: "/admin/add/user",
+                data: formData,
+                dataType: "json",
+              //   encode: true,
+              }).done(function(data) {
+                window.location.href = "/dashboard";
+              });
+          });
+        });
+    
+</script>   
+</body>
+</html>
+
+    
