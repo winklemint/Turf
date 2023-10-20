@@ -1149,7 +1149,9 @@ func AddUser(c *gin.Context) {
 	result := config.DB.Create(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to create user",
+			"status":  400,
+			"message": "user Unsuccessfully created",
+			"data":    nil,
 		})
 
 		return
