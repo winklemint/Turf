@@ -319,18 +319,12 @@ func Booking(c *gin.Context) {
 		return
 	}
 
-	location, err := time.LoadLocation("Asia/Kolkata")
-	fmt.Println(location)
-	if err != nil {
-		// Handle the error, e.g., log it or set a default time zone
-		location = time.UTC // Default to UTC in case of an error
-	}
-
-	// body.Date = body.Date.In(location)
-
-	// day := body.Date.Weekday()
-
-	// fmt.Println(day)
+	// location, err := time.LoadLocation("Asia/Kolkata")
+	// fmt.Println(location)
+	// if err != nil {
+	// 	// Handle the error, e.g., log it or set a default time zone
+	// 	location = time.UTC // Default to UTC in case of an error
+	// }
 
 	var Slots []int
 
@@ -409,19 +403,11 @@ func Booking(c *gin.Context) {
 				var price models.Package
 				var psr models.Package_slot_relationship
 
-				if body.Day == 0 || body.Day == 6 || body.Day == 5 {
+				config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
 
-					config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
+				//fetch the price based on package id retrieved
 
-					config.DB.Find(&price, "id=?", 3)
-				} else {
-
-					config.DB.First(&psr, "slot_id=?", int(body.Slot[i]))
-
-					//fetch the price based on package id retrieved
-
-					config.DB.Find(&price, "id=?", psr.Package_id)
-				}
+				config.DB.Find(&price, "id=?, status=1", psr.Package_id)
 
 				price25 := percent.PercentFloat(25.0, price.Price)
 
@@ -430,7 +416,7 @@ func Booking(c *gin.Context) {
 				if result.Error != nil {
 					c.JSON(http.StatusOK, gin.H{
 						"status": 400,
-						"error":  "Slot Allready Exist",
+						"error":  "Slot Already Exist",
 						"data":   "null",
 					})
 					return

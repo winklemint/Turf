@@ -189,6 +189,7 @@ func RegisterAdminPanelAddCarousel(router *gin.Engine) {
 		})
 	})
 }
+
 func RegisterAdminPanelAddUser(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
 
@@ -252,6 +253,18 @@ func RegisterAdminPanelAllUser(router *gin.Engine) {
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/user", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "user.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
+func RegisterAdminPanelPSR(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/psr", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "package_slot.html", gin.H{
 			// You can pass data to the template if needed
 			//"data": "helloworld.html",
 		})

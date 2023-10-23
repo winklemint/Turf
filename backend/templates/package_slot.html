@@ -1,0 +1,82 @@
+{{template "header.html"}}
+
+<div class="card-box pb-10">
+    <!-- Export Datatable start -->
+    <div class="card-box mb-30">
+        <div class="pd-20">
+            <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
+        </div>
+        <div class="pb-20">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="psrTable">
+                <thead>
+                    <tr>
+                         <th>Sn.</th>
+                        <th class="table-plus datatable-nosort">Package Name</th>
+                        <th>Slot Day</th>
+                        <th>Slot Time</th>
+                        <th>End Time</th>
+                        <th>Branch Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Export Datatable End -->
+
+    {{template "footer.html"}}
+    <script>
+        $(document).ready(function () {
+            // Check if DataTable is already initialized
+            if ($.fn.DataTable.isDataTable('#psrTable')) {
+                // If it's already initialized, destroy the existing instance
+                $('#psrTable').DataTable().destroy();
+            }
+    
+            // Initialize DataTable with column definitions
+            var table = $('#psrTable').DataTable({
+                columns: [
+                    // Define column structure for Serial Number
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    // Define column structure for Package Name
+                    { data: 'Name' },
+                    // Define column structure for Slot Day
+                    { data: 'Day' },
+                    // Define column structure for Slot Time
+                    { data: 'Start_time' },
+                    // Define column structure for End Time
+                    { data: 'End_time' },
+                    // Define column structure for Branch Name
+                    { data: 'Branch_name' }
+                ]
+            });
+    
+            // Make an AJAX request to fetch data from the URL
+            $.ajax({
+                url: '/admin/get/slot/relationship',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    // Iterate through the data and append it to the table
+                    $.each(response.data.Data, function (index, item) {
+                        table.row.add(item);
+                    });
+    
+                    // Refresh the table to apply the changes
+                    table.draw();
+                },
+                error: function (error) {
+                    console.error('Error fetching data: ' + error);
+                }
+            });
+        });
+    </script>
+    </body>
+
+    </html>

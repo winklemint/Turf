@@ -58,6 +58,8 @@ func main() {
 	//Slots
 	route.RegisterAdminPanelAllSlots(r)
 	route.RegisterAdminPanelCreateSlots(r)
+	//PSR
+	route.RegisterAdminPanelPSR(r)
 
 	r.Run(":8080")
 }

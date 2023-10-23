@@ -73,9 +73,10 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.PATCH("/carousel/image/upadte/:id", controllers.UpadtecarouselImage)
 		adminRoutes.DELETE("/delete/carousel/:id", controllers.DeleteCarousel)
 
-		// adminRoutes.GET("/get/slot/relationship", controllers.PSR_slots)
+		adminRoutes.GET("/get/slot/relationship", controllers.PSR_slots)
 
 		//admin logout
 		adminRoutes.POST("/logout", controllers.AdminLogout)
+
 	}
 }

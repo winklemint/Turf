@@ -1383,16 +1383,6 @@ func AddSlotForUser(c *gin.Context) {
 		}
 	}
 
-	// availableSlots1 := []int{}
-	// for _, s := range body.Slot {
-	// 	for _, s1 := range availableSlots {
-	// 		if s != s1 {
-	// 			fmt.Println(s)
-	// 			availableSlots1 = append(availableSlots1, int(s))
-	// 		}
-	// 	}
-	// }
-	// fmt.Println("ava1", availableSlots1)
 	fmt.Println("ava:", availableSlots)
 	if len(availableSlots) == 0 {
 
@@ -1648,27 +1638,6 @@ func Upadte_TestiMonilas(c *gin.Context) {
 		return
 
 	}
-	// file, err := c.FormFile("image")
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// filePath := filepath.Join("./uploads/testi_monials", file.Filename)
-
-	// if err := c.SaveUploadedFile(file, filePath); err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-	// 	return
-	// }
-
-	// if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"status": 400,
-	// 		"error":  "Upload the right file format (jpg or png)",
-	// 		"data":   "null",
-	// 	})
-	// 	return
-	// }
 
 	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review}
 	result := config.DB.Model(&testimonial).Where("id=?", id).Updates(&testimonial)
@@ -2241,11 +2210,93 @@ func DeleteCarousel(c *gin.Context) {
 
 //package slot relationship retrieval for slot management in packages
 
-func PSR_slots(c *gin.Context) {
-	//var slot_ids []string
-	var slots []models.Package_slot_relationship // Assuming there are multiple slots
+// func PSR_slots(c *gin.Context) {
 
-	result := config.DB.Find(&slots)
+// 	var package_name []models.Package
+
+// 	//var psr_ID int
+
+// 	result := config.DB.Debug().Model(&models.Package{}).
+// 		Select("packages.name").
+// 		Joins("LEFT JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
+// 		Scan(&package_name)
+// 	if result.Error != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"error":   result.Error.Error(),
+// 			"message": "Failed to fetch package slots",
+// 		})
+// 		return
+// 	}
+// 	var slot []models.Time_Slot
+// 	result = config.DB.Debug().Model(&models.Time_Slot{}).
+// 		Select("time_slots.id, time_slots.start_time, time_slots.end_time, time_slots.day time_slots.branch_id, package_slot_relationships.id as psr_id").
+// 		Joins("LEFT JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
+// 		Scan(&slot)
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  200,
+// 		"success": "package names",
+// 		"data":    package_name,
+// 	})
+// }
+
+// func PSR_slots(c *gin.Context) {
+// 	var response struct {
+// 		PackageName []models.Package
+// 		Slot        []models.Time_Slot
+// 	}
+
+// 	result := config.DB.Debug().Model(&models.Package{}).
+// 		Select("packages.id, packages.name").
+// 		Joins("LEFT JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
+// 		Scan(&response.PackageName)
+// 	if result.Error != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"error":   result.Error.Error(),
+// 			"message": "Failed to fetch package slots",
+// 		})
+// 		return
+// 	}
+
+// 	result = config.DB.Debug().Model(&models.Time_Slot{}).
+// 		Select("time_slots.id, time_slots.start_time, time_slots.end_time, time_slots.day, time_slots.branch_id, package_slot_relationships.id as psr_id").
+// 		Joins("LEFT JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
+// 		Scan(&response.Slot)
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  200,
+// 		"success": "package names and slots",
+// 		"data":    response,
+// 	})
+// }
+
+func PSR_slots(c *gin.Context) {
+	var response struct {
+		Data []interface{}
+	}
+
+	var packages []models.Package
+	// var slots []models.Time_Slot
+
+	result := config.DB.Debug().Raw(`
+    SELECT
+        p.id as ID,
+        p.name as Name,
+        p.price as Price,
+        p.status as Status,
+        p.branch_id as Branch_id,
+        ts.start_time as Start_time,
+        ts.end_time as End_time,
+        ts.day as Day,
+        ts.branch_id as Slot_Branch_id,
+        psr.id as PSR_id,
+        bim.branch_name as Branch_name
+    FROM packages p
+    LEFT JOIN package_slot_relationships psr ON p.id = psr.package_id
+    LEFT JOIN time_slots ts ON psr.slot_id = ts.id
+    LEFT JOIN branch_info_managements bim ON ts.branch_id = bim.id
+`).Scan(&packages)
+
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   result.Error.Error(),
@@ -2253,10 +2304,14 @@ func PSR_slots(c *gin.Context) {
 		})
 		return
 	}
+	// Combine the "Package" and "Slot" data into a single array
+	for _, packageData := range packages {
+		response.Data = append(response.Data, packageData)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "slot ids",
-		"data":    slots,
+		"success": "package names and slots",
+		"data":    response,
 	})
 }
