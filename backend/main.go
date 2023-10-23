@@ -7,7 +7,7 @@ import (
 	"turf/routes"
 	route "turf/routes"
 
-	//frontend "./turf/frontend"
+	frontend "turf/proxy"
 
 	"github.com/gin-gonic/gin"
 )

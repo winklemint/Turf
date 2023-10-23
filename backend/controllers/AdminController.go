@@ -165,13 +165,9 @@ func AdminLogin(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(body.Name)
-	fmt.Println(body.Password)
-
 	var admin models.Admin
 	config.DB.Table("admins").Select("id", "name", "password").Where("name", body.Name).Scan(&admin)
-	fmt.Println(admin)
-	fmt.Println(admin.ID)
+
 	if admin.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -210,7 +206,8 @@ func AdminLogin(c *gin.Context) {
 
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", tokenString, 7200, "", "", false, true)
+	c.SetCookie("Authorization", tokenString, 7200, "", "", true, true)
+
 	admin.LastLogin = time.Now()
 	config.DB.Save(&admin)
 	c.JSON(http.StatusOK, gin.H{
@@ -405,6 +402,7 @@ func Update_Branch(c *gin.Context) {
 }
 
 func GET_All_Branch(c *gin.Context) {
+
 	var branch []models.Branch_info_management
 	result := config.DB.Find(&branch)
 	if result.Error != nil {
@@ -422,6 +420,24 @@ func GET_All_Branch(c *gin.Context) {
 		"success": "All Branch  Successfully",
 		"data":    branch,
 	})
+
+}
+func Get_IdBy_Branch_NAme(c *gin.Context) {
+	var body struct {
+		Branch_Name string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Invalid Request Body ",
+			"data":   nil,
+		})
+	}
+
+	var branches models.Branch_info_management
+	config.DB.Find(&branches, "branch_name=?", body.Branch_Name)
+	Id := strconv.FormatUint(uint64(branches.ID), 10)
+	c.SetCookie("Branch_Id", Id, 3600*4, "/", "", false, true)
 
 }
 func GET_All_Branch_Id(c *gin.Context) {
