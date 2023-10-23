@@ -355,7 +355,7 @@ func Update_Branch(c *gin.Context) {
 		Branch_email          string
 		Branch_contact_number string
 		GST_no                string
-		Status                string
+		Status                int
 		Image                 string
 	}
 	if c.Bind(&body) != nil {

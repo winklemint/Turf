@@ -22,6 +22,35 @@
 <script src="https://dropways.github.io/deskapp/vendors/scripts/datatable-setting.js"></script>
 
 <script>
+
+$(document).ready(function () {
+    // Add a click event handler to the logout button
+    $("#logout").on("click", function (event) {
+        event.preventDefault();
+
+        // Send an AJAX request to the logout endpoint on your server
+        $.ajax({
+            type: "POST", // You may use GET or POST depending on your server implementation
+            url: "/admin/logout", // Replace with the actual logout URL
+            success: function (data) {
+                // Clear any local session-related data if needed
+                // For example: localStorage.removeItem("userToken");
+
+                // Redirect the user to a login page or perform any other actions
+                // You can replace "your-login-page.html" with the actual URL of your login page
+                window.location.href = "/admin/login";
+            },
+            error: function (error) {
+                // Handle any errors that may occur during the logout process
+                console.error("Logout failed: " + error.statusText);
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
 	function convertTo24HourFormat(time12h) {
 		const date = new Date("2000-01-01 " + time12h); // Use a common date for all times to ensure consistency
 		const options = { hour: '2-digit', minute: '2-digit', hour12: false };
