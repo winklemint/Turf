@@ -91,7 +91,7 @@ func RegisterAdminPaneladdContent(router *gin.Engine) {
 		// For example, you can use it to fetch data related to this ID.
 
 		// Render your HTML template (updatetestimonials.html) with the data
-		c.HTML(http.StatusOK, "updatecontent.html", gin.H{"id": id})
+		c.HTML(http.StatusOK, "content.html", gin.H{"id": id})
 	})
 
 }
@@ -265,6 +265,18 @@ func RegisterAdminPanelPSR(router *gin.Engine) {
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/psr", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "package_slot.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
+func RegisterAdminPanelAll_bookings(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/all/bookings", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "all_bookings.html", gin.H{
 			// You can pass data to the template if needed
 			//"data": "helloworld.html",
 		})

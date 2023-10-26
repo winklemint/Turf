@@ -32,7 +32,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
-		adminRoutes.GET("/get/booking/date", controllers.GetAllDetailbydate)
+		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
 
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
