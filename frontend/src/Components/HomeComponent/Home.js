@@ -27,9 +27,11 @@ const Home = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('proxy?url=http://localhost:8080/admin/content/get/1');
+      const response = await fetch(`proxy?url=http://localhost:8080/admin/content/get/1`);
+      console.log('Response:', response)
       if (response.status === 200) {
-        const responseData = await response.json();
+        const responseData =  await response.json();
+        console.log(responseData)
         setData({
           heading: responseData.data.Heading,
           subheading: responseData.data.SubHeading,
@@ -39,6 +41,7 @@ const Home = () => {
         throw new Error('Network response was not ok');
       }
     } catch (error) {
+      console.log("jhfkjfkjkr")
       console.error('Error fetching content: ' + error.message);
     }
   };
