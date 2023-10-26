@@ -27,9 +27,10 @@ const Home = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('proxy?url=http://localhost:8080/admin/content/get/1');
+      const response = await fetch(`http://localhost:8080/admin/content/get/1`);
       if (response.status === 200) {
         const responseData = await response.json();
+        console.log('API response data:', responseData);
         setData({
           heading: responseData.data.Heading,
           subheading: responseData.data.SubHeading,
@@ -42,6 +43,13 @@ const Home = () => {
       console.error('Error fetching content: ' + error.message);
     }
   };
+  //By adding console logs, you can inspect the response data and any error messages in your browser's developer console, which can help you identify the issue and resolve it.
+  
+  
+  
+  
+  
+  
 
   useEffect(() => {
     fetchData();
