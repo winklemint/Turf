@@ -1223,6 +1223,47 @@ func UpdateUserDetails(c *gin.Context) {
 	})
 
 }
+func CountUser(c *gin.Context) {
+	var user models.User
+	var count int64
+	result := config.DB.Model(&user).Count(&count)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Total User Count Unsuccessfully",
+			"data":   "null",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Total User Count Successfully",
+		"data":    count,
+	})
+}
+func Today_Total_Booking(c *gin.Context) {
+	now := time.Now()
+	date := now.Format("02-01-2006")
+	var booking models.Confirm_Booking_Table
+	var count int64
+	result := config.DB.Model(&booking).Where("date=? AND booking_status=3", date).Count(&count)
+	if result.Error != nil || count == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Today Total  Booking Unsuccessfully",
+			"data":   0,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Today Total  Booking Successfully",
+		"data":    count,
+	})
+}
 
 // func In_live_slot(c *gin.Context){
 // 	var slot models.Confirm_Booking_Table
@@ -1538,51 +1579,98 @@ func AddSlotForUser(c *gin.Context) {
 }
 
 func LiveUser(c *gin.Context) {
-	var live []interface{}
-	now := time.Now()
-	date := now.Format("02:01:2006")
-	time := now.Format("15:04:05")
-	var slot models.Time_Slot
-	result := config.DB.Where("start_time <= ? AND end_time >= ?", time, time).Find(&slot)
-	if result.Error != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status": 400,
-			"error":  "slot is not found",
-			"data":   "null",
-		})
+	// Check for the Authorization cookie
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
-	var booking models.Turf_Bookings
-	result = config.DB.Where("date=? AND slot_id=?", date, slot.ID).Find(&booking)
-	if result.Error != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status": 400,
-			"error":  "booking detail not found",
-			"data":   "null",
-		})
-		return
-	}
-
-	var user models.User
-	result = config.DB.Where("id", booking.User_id).Find(&user)
-	if result.Error != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status": 400,
-			"error":  "user  not found",
-			"data":   "null",
-		})
-		return
-	}
-
-	live = append(live, booking, user)
-	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"success": "user fetch successfully",
-		"data":    live,
+	// Parse and validate the token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("SECRET")), nil
 	})
 
+	if err != nil || !token.Valid {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	// Check for token expiration
+	expirationTime := time.Unix(int64(claims["exp"].(float64)), 0)
+	if time.Now().After(expirationTime) {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	var admin models.Admin
+	config.DB.Find(&admin, claims["sub"])
+
+	if admin.ID == 0 {
+		c.AbortWithStatus(http.StatusNotFound)
+	}
+
+	// Get the current date and time
+	now := time.Now()
+	date := now.Format("02-01-2006")
+
+	currentTime := now.Format("15:04")
+
+	// Find the time slot for the current time
+	var slot models.Time_Slot
+	if result := config.DB.Where("start_time <= ? AND end_time >= ? AND branch_id = ? ", currentTime, currentTime, admin.Turf_branch_id).First(&slot); result.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"status": 400,
+			"error":  "Slot is not found",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Find the booking details for the current date and time slot
+	var booking models.Turf_Bookings
+	if result := config.DB.Where("date = ? AND slot_id = ? AND branch_id = ? ", date, slot.ID, admin.Turf_branch_id).First(&booking); result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Booking details not found",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Find the user associated with the booking
+	var user models.User
+	if result := config.DB.Where("id = ?", booking.User_id).First(&user); result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "User not found",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Create a response containing booking and user information
+	live := map[string]interface{}{
+		"Full_Name":  user.Full_Name,
+		"Contact":    user.Contact,
+		"start_time": slot.Start_time,
+		"End_time":   slot.End_time,
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "User fetched successfully",
+		"data":    live,
+	})
 }
+
 func Testimonials(c *gin.Context) {
 	var body struct {
 		Name        string
@@ -2018,7 +2106,8 @@ func GetContentById(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var content models.Content
-	result := config.DB.Find(&content).Where("id=?", Id)
+	result := config.DB.Find(&content, "id=?", Id)
+
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -2027,13 +2116,34 @@ func GetContentById(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
-		"error":  "Success to get content",
-		"data":   content,
-	})
 
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Success to get content",
+		"data":    content,
+	})
 }
+func ActiveContent(c *gin.Context) {
+
+	var content models.Content
+	result := config.DB.Find(&content, "status=1")
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to get content",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Success to get content",
+		"data":    content,
+	})
+}
+
 func DeleteContent(c *gin.Context) {
 	id := c.Param("id")
 	var content models.Content
