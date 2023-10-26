@@ -2,7 +2,6 @@ package main
 
 import (
 	"turf/config"
-	frontend "turf/proxy"
 
 	"turf/routes"
 	route "turf/routes"
