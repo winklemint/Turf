@@ -12,22 +12,12 @@ const Home = () => {
     button: '',
   });
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [carouselImages, setCarouselImages] = useState([]);
 
-  const images = [
-    'assets/images/birthdayparties2.jpg',
-    'assets/images/DSC00867.jpg',
-    'assets/images/sixer-zon.jpg',
-  ];
-
-  const updateSlider = () => {
-    const nextIndex = (currentIndex + 1) % images.length;
-    setCurrentIndex(nextIndex);
-  };
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/admin/content/get/1`);
+      const response = await fetch(`http://localhost:8080/admin/content/get/2`);
       if (response.status === 200) {
         const responseData = await response.json();
         console.log('API response data:', responseData);
@@ -40,37 +30,59 @@ const Home = () => {
         throw new Error('Network response was not ok');
       }
     } catch (error) {
-      console.log("jhfkjfkjkr")
       console.error('Error fetching content: ' + error.message);
     }
   };
-  //By adding console logs, you can inspect the response data and any error messages in your browser's developer console, which can help you identify the issue and resolve it.
+  
+  const fetchCarouselImages = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/admin/carousel/get/4');
+      if (response.status === 200) {
+        const responseData = await response.json();
+        console.log('Carousel API response data:', responseData);
+        setCarouselImages(responseData.data);
+      } else {
+        throw new Error('Network response was not ok for carousel images');
+      }
+    } catch (error) {
+      console.error('Error fetching carousel images: ' + error.message);
+    }
+  };
   
   
-  
-  
-  
-  
-
-  useEffect(() => {
+ useEffect(() => {
+   const slider = document.querySelector('.slider');
+      const slides = document.querySelectorAll('.slide');
+      let currentIndex = 0;
+    
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateSlider();
+      }
+    
+      function updateSlider() {
+        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+      }
+    
+      function startSlider() {
+        setInterval(nextSlide, 3000);
+      }
+    
+      startSlider();
+     
     fetchData();
-
-    const sliderInterval = setInterval(updateSlider, 3000);
-
-    return () => {
-      // Clear the interval when the component unmounts
-      clearInterval(sliderInterval);
-    };
+    fetchCarouselImages();
+   
   }, []);
   return (
     <div>
      <header className="header">
-        <div className="row">
+     <div className="row">
           <div className="col-md-12 col-sm-12 col-lg-12 header-sec">
             <div className="slider">
-              {images.map((image, index) => (
-                <div className={`slide ${index === currentIndex ? 'active' : ''}`} key={index}>
-                  <img src={image} alt={`Slide ${index + 1}`} />
+            {carouselImages.map((data,index) => (
+                <div className={`slide ${index === 0 ? 'active' : ''}`} key={index}>
+                  <img src={`http://localhost:8080/${data.Image}`} alt={`Slide ${index + 1}`} />
                 </div>
               ))}
             </div>
@@ -113,7 +125,7 @@ const Home = () => {
             <p className="text-p2"></p>
             <Link to="/booking">
               <button className="text-button">
-                <span className="text-btn-linkk">Book Now</span>
+                <span className="text-btn-linkk">{data.button}</span>
               </button>
             </Link>
             <div className="icon-sec">
