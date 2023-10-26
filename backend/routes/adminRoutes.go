@@ -68,7 +68,9 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//Content
 		adminRoutes.POST("/content/add", controllers.AddContent)
 		adminRoutes.GET("/content/get", controllers.GETContent)
-		adminRoutes.PATCH("/content/update/1", controllers.UpdateContent)
+		adminRoutes.PATCH("/content/update/:id", controllers.UpdateContent)
+		adminRoutes.GET("/content/get/:id", controllers.GetContentById)
+		adminRoutes.DELETE("/content/delete/:id", controllers.DeleteContent)
 		//Carousel
 		adminRoutes.POST("/carousel/add", controllers.AddImageForCarousel)
 		adminRoutes.GET("/carousel/get", controllers.GetAllImageCarousel)
