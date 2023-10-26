@@ -6,8 +6,6 @@ import (
 	"turf/routes"
 	route "turf/routes"
 
-	frontend "turf/proxy"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,10 +19,8 @@ func init() {
 func main() {
 	//go controllers.Slot_go_rountine()
 	// go controllers.MainCalendar()
+
 	r := gin.Default()
-	//r.GET("/proxy-react", frontend.ProxyHandlerReact)
-	r.GET("/proxy", frontend.ProxyHandler)
-	//r.Use(forbidHTMLExtension)
 
 	routes.RegisterAdminRoutes(r)
 	route.RegisterUserRoutes(r)
