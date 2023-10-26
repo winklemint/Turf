@@ -2,9 +2,12 @@ package main
 
 import (
 	"turf/config"
+	frontend "turf/proxy"
 
 	"turf/routes"
 	route "turf/routes"
+
+	frontend "turf/proxy"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +23,8 @@ func main() {
 	//go controllers.Slot_go_rountine()
 	// go controllers.MainCalendar()
 	r := gin.Default()
-
+	r.GET("/proxy-react", frontend.ProxyHandlerReact)
+	r.GET("/proxy", frontend.ProxyHandler)
 	//r.Use(forbidHTMLExtension)
 
 	routes.RegisterAdminRoutes(r)
@@ -28,26 +32,35 @@ func main() {
 
 	route.RegisterAdminPanelRoutes(r)
 	route.RegisterAdminPanelDashboard(r)
-	route.RegisterAdminPanelCreateBranch(r)
-	route.RegisterAdminPanelAllBranch(r)
-	route.RegisterAdminPanelAllPackages(r)
-	route.RegisterAdminPanelAddPackages(r)
-	route.RegisterAdminPanelAllTestiMonials(r)
-	route.RegisterAdminPanelUpdateTestiMonials(r)
-	route.RegisterAdminPanelUpdateContent(r)
-	// r.LoadHTMLGlob("templates/*.tmpl")
-	// // Define a route that uses the header and footer templates
-	// r.GET("/", func(c *gin.Context) {
-	// 	c.HTML(http.StatusOK, "main.tmpl", gin.H{
-	// 		// "title": "My Page",
-	// 	})
-	// })
 
+	//Carousel
 	route.RegisterAdminPanelUpdatecarousel(r)
 	route.RegisterAdminPanelAddCarousel(r)
+	//Testimonial
 	route.RegisterAdminPanelAddTestimonials(r)
+	route.RegisterAdminPanelAllTestiMonials(r)
+	route.RegisterAdminPanelUpdateTestiMonials(r)
+	//Content
+	route.RegisterAdminPanelUpdateContent(r)
+	route.RegisterAdminPaneladdContent(r)
+	// Branchs
+	route.RegisterAdminPanelUpdatebranchs(r)
+	route.RegisterAdminPanelAllBranch(r)
+	route.RegisterAdminPanelCreateBranch(r)
+	//Packages
+	route.RegisterAdminPanelUpdatepackage(r)
+	route.RegisterAdminPanelAddPackages(r)
+	route.RegisterAdminPanelAllPackages(r)
+	//Users
+	route.RegisterAdminPanelAllUser(r)
+	route.RegisterAdminPanelUpdateUser(r)
+	route.RegisterAdminPanelAddUser(r)
+	//Slots
 	route.RegisterAdminPanelAllSlots(r)
 	route.RegisterAdminPanelCreateSlots(r)
+	//PSR
+	route.RegisterAdminPanelPSR(r)
+
 	r.Run(":8080")
 }
 

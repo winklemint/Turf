@@ -1,0 +1,282 @@
+{{template "header.html"}}
+        <div class="pd-ltr-20 xs-pd-20-10">
+            <div class="min-height-200px">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="title">
+                                <h4>Form</h4>
+                            </div>
+                            <nav aria-label="breadcrumb" role="navigation">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/login">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        Form Basic
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right">
+                            <div class="dropdown">
+                                <a
+                                    class="btn btn-secondary dropdown-toggle"
+                                    href="#"
+                                    role="button"
+                                    data-toggle="dropdown"
+                                >
+                                    January 2018
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">Export List</a>
+                                    <a class="dropdown-item" href="#">Policies</a>
+                                    <a class="dropdown-item" href="#">View Assets</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms Start -->
+                <div class="pd-20 card-box mb-30">
+                   
+                    <form  id = "update_form">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Turf Name</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="name"
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="Turf Name Here"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id = "branch_name"
+                                    class="form-control"
+                                    placeholder="Branch Name Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Email</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="email"
+                                    class="form-control"
+                                    placeholder="bootstrap@example.com"
+                                    type="email"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Address</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="address"
+                                    class="form-control"
+                                    placeholder="Type your address here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label"
+                                >Branch Contact Number</label
+                            >
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="contact"
+                                    class="form-control"
+                                    placeholder="1-(111)-111-1111"
+                                    type="tel"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label"
+                                >GST No.</label
+                            >
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="gst"
+                                    class="form-control"
+                                    placeholder="GSTIN"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                    id="image"
+                                    class="form-control"
+                                    placeholder="Image Here"
+                                    type="file" 
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label"
+                                >Ground Size</label
+                            >
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="size"
+                                    class="form-control"
+                                    placeholder="100 x 100"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+        
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <select class="custom-select col-12" id="status">
+                                    <option selected="">Choose...</option>
+                                    <option value="1">Enable</option>
+                                    <option value="2">Disable</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                           
+                            <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                            
+                        </div>
+                       
+                    </form>
+                    <div class="collapse collapse-box" id="basic-form1">
+                        <div class="code-box">
+                            <div class="clearfix">
+                                <a
+                                    href="javascript:;"
+                                    class="btn btn-primary btn-sm code-copy pull-left"
+                                    data-clipboard-target="#copy-pre"
+                                    ><i class="fa fa-clipboard"></i> Copy Code</a
+                                >
+                                <a
+                                    href="#basic-form1"
+                                    class="btn btn-primary btn-sm pull-right"
+                                    rel="content-y"
+                                    data-toggle="collapse"
+                                    role="button"
+                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
+                                >
+                            </div>
+                            <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms End -->
+            </div>
+            <div class="footer-wrap pd-20 mb-20 card-box">
+                DeskApp - Bootstrap 4 Admin Template By
+                <a href="https://github.com/dropways" target="_blank"
+                    >Ankit Hingarajiya</a
+                >
+            </div>
+        </div>
+
+
+   
+    {{template "footer.html"}}
+<script>
+    $(document).ready(function() {
+        // Retrieve the loan ID from the query parameter
+        var Id = new URLSearchParams(window.location.search).get('id');
+        
+        if (Id) {
+            BranchDetails(Id);
+        }
+    
+        // Helper function to retrieve a specific cookie value by name
+        function BranchDetails(Id) {
+            $.ajax({
+                url: "/admin/get/branch/" + Id,
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    var branchs = response.data;
+                    if (branchs) {
+                        $('#name').val(branchs.Turf_name);
+                        $('#branch_name').val(branchs.Branch_name);
+                        $('#email').val(branchs.Branch_email);
+                        $('#address').val(branchs.Branch_address);
+                        $('#contact').val(branchs.Branch_contact_number);
+                        $('#gst').val(branchs.GST_no);
+                        $('#size').val(branchs.Ground_Size);
+                        $('#status').val(branchs.Status);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+    
+      
+            $('#update_form').submit(function(event) {
+                event.preventDefault();
+        
+                // Create a FormData object to handle the form data and the image
+                var formData = new FormData();
+                formData.append("Turf_name", $('#name').val());
+                formData.append("Branch_name", $('#branch_name').val());
+                formData.append("Branch_email", $("#email").val());
+                formData.append("Branch_address", $('#address').val());
+                formData.append("Branch_contact_number", $('#contact').val());
+                formData.append("GST_no", $('#gst').val());
+                formData.append("Ground_Size", $('#size').val());
+                formData.append("Status", $('#status').val());
+        
+                // Add the image file to the FormData object
+                var imageInput = $('#image')[0];
+                if (imageInput.files.length > 0) {
+                    formData.append("image", imageInput.files[0]);
+                }
+        
+                // Retrieve the branch ID from the query parameter
+                var Id = new URLSearchParams(window.location.search).get('id');
+        
+                // Send the update request using a PATCH method
+                $.ajax({
+                    url: "/admin/update/branch/" + Id, // Update the URL as needed
+                    method: "PATCH", // Use PATCH method for updating
+                    data: formData,
+                    contentType: false, // Set to false to prevent jQuery from processing the data
+                    processData: false, // Set to false to prevent jQuery from converting the data to a query string
+                    success: function(response) {
+                        alert("Branch Details updated successfully!");
+                        window.location.href = "/branchs";
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+        
+</script>   
+</body>
+</html>
+
+    

@@ -62,28 +62,30 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Price</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="price" class="form-control" placeholder="Branch Name Here" type="text" required
+                        <input id="price" class="form-control" placeholder="Package price Here" type="text" required
                             onkeyup="checkPriceLength()" />
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="branch_status" class="form-control" type="number" placeholder="Branch status"
-                            required />
+                        <select class="custom-select col-12" id="branchSelect" required>
+                           
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Branch ID</label>
+                    <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="branch_id" class="form-control" type="text" placeholder="Branch ID here" required />
+                        <select class="custom-select col-12" id="status" required>
+                            <option selected="" selected disabled>Choose...</option>
+                            <option value=1>Active</option>
+                            <option value=2>Disabled</option>
+                        </select>
                     </div>
                 </div>
-
-
-
 
 
                 <!-- <div class="form-group row">
@@ -254,17 +256,35 @@
 <script>
     $(document).ready(function () {
 
-        // $.ajax({
-        //     url: 'http://localhost:8080/admin/get/slot/relationship',
-        //     method: 'GET',
-        //     dataType: 'json',
-        //     success: function (response) {
-        //     },
-        //     error: function (error) {
-        //         console.error('Error fetching data: ' + error);
-        //     }
-        // });
-    
+        $.ajax({
+            url: '/admin/get/branch',
+            method: 'GET',
+            dataType: 'json',
+            success: function (res) {
+                // The "data" variable contains the data received from the server
+                // You can now append the data to the <select> element
+                    
+                $("#branchSelect").html('');
+                appendDataToSelect(res.data);
+            },
+            error: function () {
+                console.error('Failed to retrieve data from the server');
+            }
+        });
+
+
+        function appendDataToSelect(data) 
+        {
+            const element = "<option value=''>Select Branch</option>";
+            $("#branchSelect").append(element);
+            for (let index = 0; index < data.length; index++) 
+            {
+                var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+                $("#branchSelect").append(element_other);
+                console.log(element_other);
+            }
+        }
+
 
 
         // Function to close all slots for a specific day
@@ -338,7 +358,7 @@
             $.ajax({
                 type: 'POST',
                 url: '/admin/get/slot/by/day',
-                
+
                 data: JSON.stringify(payload),
                 contentType: 'application/json',
                 success: function (response) {
@@ -351,7 +371,16 @@
                         var current_day_slot_data = data[day];
                         for (let j = 0; j < current_day_slot_data.length; j++) {
                             var slotData = current_day_slot_data[j];
-                            var current_cb = "<div class='custom-control custom-checkbox d-inline'><input data-value= '" + slotData.ID + "' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "'><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
+
+                            if (slotData.PSR_id > 0) {
+                                var checkbox_disabled = "disabled";
+                                var onClickString = "onclick='alert(\"this slot is already occupied by s\")'";
+
+                            } else {
+                                var checkbox_disabled = "";
+
+                            }
+                            var current_cb = "<div class='custom-control custom-checkbox d-inline' " + onClickString + "><input " + checkbox_disabled + " data-value= '" + slotData.ID + "' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "' ><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
                             slot_div.append(current_cb);
                         }
                     }
@@ -405,4 +434,3 @@
         });
     });
 </script>
-

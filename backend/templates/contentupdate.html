@@ -41,7 +41,7 @@
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">
                         <div class="pull-left">
-                            <h4 class="text-blue h4"> Testimonilas Forms</h4>
+                            <h4 class="text-blue h4">Content</h4>
                             
                         </div>
                         <!-- <div class="pull-right">
@@ -55,56 +55,58 @@
                             >
                         </div> -->
                     </div>
-                    <form  id = "branch_form" action="/admin/add/testimonials" method="POST" enctype="multipart/form-data">
+                    <form  id = "update_form">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Brach</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="heading"
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="Heading Here"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">SubHeading</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id = "subheading"
+                                    class="form-control"
+                                    placeholder="SubHeading Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">button</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="button"
+                                    class="form-control"
+                                    placeholder="Button Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div>
+                           
                         
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Name</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                             <div class="col-sm-12 col-md-10">
-                                <input
-                                id="name"
-                                    class="form-control"
-                                    type="text"
-                                    placeholder="TestiMonial Name Here"
-                                />
+                                <select class="custom-select col-12" id="status">
+                                    <option selected=""></option>
+                                    <option value="1">Enable</option>
+                                    <option value="2">Disable</option>
+                                    
+                                </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Designation</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id = "designation"
-                                    class="form-control"
-                                    placeholder="Designation Here"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Review</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="review"
-                                    class="form-control"
-                                    placeholder="Review Here"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                    id="image"
-                                    class="form-control"
-                                    placeholder="Image Here"
-                                    type="file" 
-                                />
-                            </div>
-                        </div>
-                        
+                       
                         
                         <!-- <div class="form-group row">
-                            <label class="col-sm-12 col-mdvalue="Upload"-2 col-form-label">Branch Status</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
                             <div class="col-sm-12 col-md-10">
                                 <input class="form-control" value="100" type="number" />
                             </div>
@@ -114,7 +116,7 @@
 
                         <div>
                            
-                            <button value="Upload" type="submit" class="btn btn-primary"  id="update">Submit</button>
+                            <button type="submit" class="btn btn-primary"  id="update">Update</button>
                                 
                         </div>
                        
@@ -156,46 +158,64 @@
 
    
     {{template "footer.html"}}
-   
-    <script>
+<script>
     $(document).ready(function() {
-        $('#branch_form').submit(function(event) {
-            event.preventDefault();
+        // Retrieve the loan ID from the query parameter
+        var Id = new URLSearchParams(window.location.search).get('id');
+        
+        if (Id) {
+            ContentDetails(Id);
+        }
     
-            var formData = new FormData();
-    
-            // Add text field values to the FormData object
-            formData.append("Name", $('#name').val());
-            formData.append("Designation", $('#designation').val());
-            formData.append("Review", $('#review').val());
-    
-            // Add the image file to the FormData object
-            var imageInput = $('#image')[0];
-            if (imageInput.files.length > 0) {
-                formData.append("image", imageInput.files[0]);
-            }
-    
-            // Create a promise for the AJAX request
-            var updateTextFieldsPromise = $.ajax({
-                url: "/admin/add/testimonials",
-                method: "POST",
-                data: formData,
-                contentType: false, // Set to false to prevent jQuery from processing the data
-                processData: false, // Set to false to prevent jQuery from converting the data to a query string
+        // Helper function to retrieve a specific cookie value by name
+        function ContentDetails(Id) {
+            $.ajax({
+                url: "/admin/content/get/" + Id,
+                method: "GET",
+                dataType: "json",
                 success: function(response) {
-                    // Handle the success response here
-                    console.log(response);
+                    var content = response.data;
+                    if (content) {
+                        $('#heading').val(content.Heading);
+                        $('#subheading').val(content.SubHeading);
+                        $('#button').val(content.Button);
+                        $('#status').val(content.Status);
+                    }
                 },
                 error: function(xhr, status, error) {
-                    // Handle errors here
-                    console.log(xhr.responseText);
+                    console.error(error);
+                }
+            });
+        }
+    
+        // Handle the form submission
+        $('#update_form').submit(function(event) {
+            event.preventDefault();
+    
+            var formData = {
+                Heading: $("#heading").val(),
+                SubHeading: $("#subheading").val(),
+                Button: $("#button").val(),
+                Status: $('#status').val(),
+            };
+    
+            // Send the update request using a PATCH method
+            $.ajax({
+                url: "/admin/content/update/" + Id, // Update the URL as needed
+                method: "PATCH", // Use PATCH method for updating
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    alert("Content updated successfully!");
+                    window.location.href = "/content";
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
                 }
             });
         });
     });
-    
-</script>       
-
+</script>   
 </body>
 </html>
 

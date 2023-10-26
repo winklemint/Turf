@@ -39,24 +39,8 @@
                 </div>
                 <!-- Default Basic Forms Start -->
                 <div class="pd-20 card-box mb-30">
-                    <div class="clearfix">
-                        <div class="pull-left">
-                            <h4 class="text-blue h4"> Testimonilas Forms</h4>
-                            
-                        </div>
-                        <!-- <div class="pull-right">
-                            <a
-                                href="#basic-form1"
-                                class="btn btn-primary btn-sm scroll-click"
-                                rel="content-y"
-                                data-toggle="collapse"
-                                role="button"
-                                ><i class="fa fa-code"></i> Source Code</a
-                            >
-                        </div> -->
-                    </div>
-                    <form  id = "branch_form" action="/admin/add/testimonials" method="POST" enctype="multipart/form-data">
-                        
+                   
+                    <form  id = "update_form">
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Name</label>
                             <div class="col-sm-12 col-md-10">
@@ -64,47 +48,48 @@
                                 id="name"
                                     class="form-control"
                                     type="text"
-                                    placeholder="TestiMonial Name Here"
+                                    placeholder="User Name Here"
                                 />
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Designation</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Email</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id = "designation"
+                                id = "email"
                                     class="form-control"
-                                    placeholder="Designation Here"
+                                    placeholder="bootstrap@example.com"
                                     type="text"
                                 />
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Review</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Contact</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id="review"
+                                id="contact"
                                     class="form-control"
-                                    placeholder="Review Here"
-                                    type="text"
+                                    placeholder="1-(111)-111-1111"
+                                    type="number"
                                 />
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Password</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                    id="image"
+                                id="password"
                                     class="form-control"
-                                    placeholder="Image Here"
-                                    type="file" 
+                                    placeholder="*********"
+                                    type="text"
                                 />
                             </div>
                         </div>
+                      
                         
                         
                         <!-- <div class="form-group row">
-                            <label class="col-sm-12 col-mdvalue="Upload"-2 col-form-label">Branch Status</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
                             <div class="col-sm-12 col-md-10">
                                 <input class="form-control" value="100" type="number" />
                             </div>
@@ -114,8 +99,8 @@
 
                         <div>
                            
-                            <button value="Upload" type="submit" class="btn btn-primary"  id="update">Submit</button>
-                                
+                            <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                            
                         </div>
                        
                     </form>
@@ -156,46 +141,32 @@
 
    
     {{template "footer.html"}}
-   
-    <script>
+<script>
     $(document).ready(function() {
-        $('#branch_form').submit(function(event) {
+      $("#update_form").submit(function(event) { 
             event.preventDefault();
-    
-            var formData = new FormData();
-    
-            // Add text field values to the FormData object
-            formData.append("Name", $('#name').val());
-            formData.append("Designation", $('#designation').val());
-            formData.append("Review", $('#review').val());
-    
-            // Add the image file to the FormData object
-            var imageInput = $('#image')[0];
-            if (imageInput.files.length > 0) {
-                formData.append("image", imageInput.files[0]);
-            }
-    
-            // Create a promise for the AJAX request
-            var updateTextFieldsPromise = $.ajax({
-                url: "/admin/add/testimonials",
-                method: "POST",
+            var formData = {
+              Full_name: $("#name").val(),
+              Email: $("#email").val(),
+              Contact: $("#contact").val(),
+              Password: $("#password").val(),
+             
+              
+            };
+      
+            $.ajax({
+                type: "POST",
+                url: "/admin/add/user",
                 data: formData,
-                contentType: false, // Set to false to prevent jQuery from processing the data
-                processData: false, // Set to false to prevent jQuery from converting the data to a query string
-                success: function(response) {
-                    // Handle the success response here
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    // Handle errors here
-                    console.log(xhr.responseText);
-                }
-            });
+                dataType: "json",
+              //   encode: true,
+              }).done(function(data) {
+                window.location.href = "/dashboard";
+              });
+          });
         });
-    });
     
-</script>       
-
+</script>   
 </body>
 </html>
 

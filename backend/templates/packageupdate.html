@@ -39,83 +39,66 @@
                 </div>
                 <!-- Default Basic Forms Start -->
                 <div class="pd-20 card-box mb-30">
-                    <div class="clearfix">
-                        <div class="pull-left">
-                            <h4 class="text-blue h4"> Testimonilas Forms</h4>
-                            
-                        </div>
-                        <!-- <div class="pull-right">
-                            <a
-                                href="#basic-form1"
-                                class="btn btn-primary btn-sm scroll-click"
-                                rel="content-y"
-                                data-toggle="collapse"
-                                role="button"
-                                ><i class="fa fa-code"></i> Source Code</a
-                            >
-                        </div> -->
-                    </div>
-                    <form  id = "branch_form" action="/admin/add/testimonials" method="POST" enctype="multipart/form-data">
-                        
+                   
+                    <form  id = "update_form">
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Name</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Package Name</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
                                 id="name"
                                     class="form-control"
                                     type="text"
-                                    placeholder="TestiMonial Name Here"
+                                    placeholder="Package Name Here"
                                 />
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Designation</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Package Charges</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id = "designation"
+                                id = "charges"
                                     class="form-control"
-                                    placeholder="Designation Here"
+                                    placeholder="Package Charges Here"
                                     type="text"
                                 />
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Review</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Id</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id="review"
+                                id="id"
                                     class="form-control"
-                                    placeholder="Review Here"
-                                    type="text"
+                                    placeholder="Branch Here"
+                                    type="number"
                                 />
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                    id="image"
-                                    class="form-control"
-                                    placeholder="Image Here"
-                                    type="file" 
-                                />
-                            </div>
-                        </div>
-                        
+                      
                         
                         <!-- <div class="form-group row">
-                            <label class="col-sm-12 col-mdvalue="Upload"-2 col-form-label">Branch Status</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
                             <div class="col-sm-12 col-md-10">
                                 <input class="form-control" value="100" type="number" />
                             </div>
                         </div> -->
         
-                       
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <select class="custom-select col-12" id="status">
+                                    <option selected="">Choose...</option>
+                                    <option value="1">Enable</option>
+                                    <option value="2">Disable</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
 
                         <div>
                            
-                            <button value="Upload" type="submit" class="btn btn-primary"  id="update">Submit</button>
-                                
+                            <input class="btn btn-primary" type="submit" value="Update" id="submit" />
+                            
                         </div>
                        
                     </form>
@@ -156,46 +139,68 @@
 
    
     {{template "footer.html"}}
-   
-    <script>
+<script>
     $(document).ready(function() {
-        $('#branch_form').submit(function(event) {
-            event.preventDefault();
+        // Retrieve the loan ID from the query parameter
+        var Id = new URLSearchParams(window.location.search).get('id');
+        
+        if (Id) {
+            BranchDetails(Id);
+        }
     
-            var formData = new FormData();
-    
-            // Add text field values to the FormData object
-            formData.append("Name", $('#name').val());
-            formData.append("Designation", $('#designation').val());
-            formData.append("Review", $('#review').val());
-    
-            // Add the image file to the FormData object
-            var imageInput = $('#image')[0];
-            if (imageInput.files.length > 0) {
-                formData.append("image", imageInput.files[0]);
-            }
-    
-            // Create a promise for the AJAX request
-            var updateTextFieldsPromise = $.ajax({
-                url: "/admin/add/testimonials",
-                method: "POST",
-                data: formData,
-                contentType: false, // Set to false to prevent jQuery from processing the data
-                processData: false, // Set to false to prevent jQuery from converting the data to a query string
+        // Helper function to retrieve a specific cookie value by name
+        function BranchDetails(Id) {
+            $.ajax({
+                url: "/admin/get/package/" + Id,
+                method: "GET",
+                dataType: "json",
                 success: function(response) {
-                    // Handle the success response here
-                    console.log(response);
+                    var branchs = response.data;
+                    if (branchs) {
+                        $('#name').val(branchs.Name);
+                        $('#charges').val(branchs.Price);
+                        $('#id').val(branchs.Branch_id);
+                        $('#status').val(branchs.Status);
+                        
+                    }
                 },
                 error: function(xhr, status, error) {
-                    // Handle errors here
-                    console.log(xhr.responseText);
+                    console.error(error);
+                }
+            });
+        }
+    
+        // Handle the form submission
+        $('#update_form').submit(function(event) {
+            event.preventDefault();
+    
+            var formData = {
+                Name: $('#name').val(),
+                Price:  $('#charges').val(),
+                Branch_id: parseInt($('#id').val()),
+               
+                Status: $('#status').val(),
+                
+
+            };
+    
+            // Send the update request using a PATCH method
+            $.ajax({
+                url: "/admin/update/package/" + Id, // Update the URL as needed
+                method: "PATCH", // Use PATCH method for updating
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    alert("Branch Details updated successfully!");
+                    window.location.href = "/packages";
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
                 }
             });
         });
     });
-    
-</script>       
-
+</script>   
 </body>
 </html>
 

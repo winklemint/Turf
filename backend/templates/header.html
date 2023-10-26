@@ -54,12 +54,14 @@
 		<script
 			async
 			src="https://www.googletagmanager.com/gtag/js?id=G-GBZ3SGGX85"
+
 		></script>
 		<script
 			async
 			src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2973766580778258"
 			crossorigin="anonymous"
 		></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag() {
@@ -165,6 +167,14 @@
 				</div>
 			</div>
 			<div class="header-right">
+				<div class="form-group row">
+					<label class="col-sm-12 col-md-2 col-form-label"></label>
+					<div class="col-sm-12 col-md-10">
+						<select class="custom-select col-12" id="status">
+							<option selected="">Select Branch...</option>
+						</select>
+					</div>
+				</div>
 				<div class="dashboard-setting user-notification">
 					<div class="dropdown">
 						<a
@@ -280,7 +290,7 @@
 							<a class="dropdown-item" href="faq.html"
 								><i class="dw dw-help"></i> Help</a
 							>
-							<a class="dropdown-item" href="index.html"
+							<a class="dropdown-item" href="index.html" id="logout"
 								><i class="dw dw-logout"></i> Log Out</a
 							>
 						</div>
@@ -509,7 +519,7 @@
 							><span class="mtext">Packages</span>
 						</a>
 						<ul class="submenu">
-							<li><a href="/all/packages">All Packages</a></li>
+							<li><a href="/packages">All Packages</a></li>
 							<li><a href="/add/package">Create New Package</a></li>
 							</ul>
 							</li>
@@ -539,8 +549,29 @@
 							><span class="mtext">Content</span>
 						</a>
 						<ul class="submenu">
-							<li><a href="/content">Upadte Content</a></li>
+							<li><a href="/content">Content</a></li>
 							<li><a href="/carousel">Carousel</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="javascript:;" class="dropdown-toggle">
+							<span class="micon bi bi-house"></span
+							><span class="mtext">User</span>
+						</a>
+						<ul class="submenu">
+							<li><a href="/user">ALL Users</a></li>
+							<li><a href="/add/user">ADD User</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="javascript:;" class="dropdown-toggle">
+							<span class="micon bi bi-house"></span
+							><span class="mtext">Slots Allocation</span>
+						</a>
+						<ul class="submenu">
+							<li><a href="/psr">Package-slots</a></li>
+							<li><a href="/add/user">ADD User</a></li>
 						</ul>
 					</li>
 				</div>
@@ -549,3 +580,55 @@
 		<div class="mobile-menu-overlay"></div>
 
 		<div class="main-container">
+			<script>
+				$(document).ready(function () {
+					$.ajax({
+						url: "http://localhost:8080/admin/get/branch", // Replace with your actual API endpoint
+						method: "GET",
+						dataType: "json",
+						success: function (response) {
+							if (response.status === 200) {
+								var branches = response.data;
+			
+								var select = $('#status'); // Assuming 'status' is the ID of your dropdown
+			
+								branches.forEach(function (branch) {
+									var option = $('<option>', {
+										value: branch.Branch_name,
+										text: branch.Branch_name
+									});
+			
+									select.append(option);
+								});
+			
+								// Add a change event handler to the dropdown
+								select.on('change', function () {
+									var selectedBranch = $(this).val();
+			
+									$.ajax({
+										url: "/admin/set/id/branch",
+										method: "POST",
+										data: { Branch_Name: selectedBranch }, // Include the selected branch data
+										dataType: "json",
+										success: function(data) {
+											// Handle the response from the second API request
+											console.log(data);
+										},
+										error: function(xhr, status, error) {
+											console.error(error);
+										}
+									});
+								});
+							} else {
+								console.error("Failed to retrieve data.");
+							}
+						},
+						error: function (xhr, status, error) {
+							console.error(error);
+						}
+					});
+				});
+			</script>
+				
+	</body>
+</html>

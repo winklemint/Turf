@@ -37,10 +37,14 @@ type Package_slot_relationship struct {
 
 type Package struct {
 	gorm.Model
-	Name      string ` grom:"unique"`
-	Price     float64
-	Status    int
-	Branch_id int
+	Name        string ` grom:"unique"`
+	Price       float64
+	Status      string
+	Branch_id   int
+	Start_time  string
+	End_time    string
+	Day         string
+	Branch_name string
 }
 type Confirm_Booking_Table struct {
 	gorm.Model
@@ -72,6 +76,7 @@ type Branch_info_management struct {
 	GST_no                string
 	Status                int
 	Ground_Size           string
+	Image                 string
 }
 type Testi_Monial struct {
 	gorm.Model

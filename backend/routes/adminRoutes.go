@@ -18,10 +18,13 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)
 		adminRoutes.GET("/get/slot", controllers.GetAllSlot)
 		adminRoutes.POST("/get/slot/:id", controllers.Get_Package)
+		adminRoutes.DELETE("/delete/slot/:id", controllers.DeleteSlot)
 		//package
 		adminRoutes.POST("/add/package", controllers.AddPackage)
-		adminRoutes.POST("/update/package/:id", controllers.UpdatePackage)
+		adminRoutes.PATCH("/update/package/:id", controllers.UpdatePackage)
 		adminRoutes.GET("/get/package", controllers.GetAllPackage)
+		adminRoutes.GET("/get/package/:id", controllers.GetAllPackageById)
+		adminRoutes.DELETE("/delete/package/:id", controllers.DeletePackage)
 		//booking
 		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
@@ -32,18 +35,24 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/booking/date", controllers.GetAllDetailbydate)
 
 		//user Details
-		//adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
-		//adminRoutes.POST("/get/user/:id", controllers.UpdateUserDetails)
+		adminRoutes.POST("/add/user", controllers.AddUser)
+		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
+		adminRoutes.PATCH("/update/user/:id", controllers.UpdateUserDetails)
+		adminRoutes.GET("/get/user/:id", controllers.GetAllUsersById)
+		adminRoutes.DELETE("/delete/user/:id", controllers.DeleteUser)
 		// adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 		//adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
 		//adminRoutes.GET("/partial/payments", controllers.Partial_payment)
 		//adminRoutes.POST("/update/user/:id", controllers.UpdateUserDetails)
-		//adminRoutes.POST("/get/live/data", controllers.LiveUser)
+		adminRoutes.POST("/get/live/data", controllers.LiveUser)
 		//Branch
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
 		adminRoutes.POST("/update/branch/:id", controllers.Update_Branch)
 		adminRoutes.GET("/get/branch", controllers.GET_All_Branch)
+		adminRoutes.POST("set/id/branch", controllers.Get_IdBy_Branch_NAme)
+		adminRoutes.GET("/get/branch/:id", controllers.GET_All_Branch_Id)
+		adminRoutes.DELETE("/delete/branch/:id", controllers.Delete_Branch)
 
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
 		//tetsimonials
@@ -67,6 +76,10 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.PATCH("/carousel/image/upadte/:id", controllers.UpadtecarouselImage)
 		adminRoutes.DELETE("/delete/carousel/:id", controllers.DeleteCarousel)
 
-		// adminRoutes.GET("/get/slot/relationship", controllers.PSR_slots)
+		adminRoutes.GET("/get/slot/relationship", controllers.PSR_slots)
+
+		//admin logout
+		adminRoutes.POST("/logout", controllers.AdminLogout)
+
 	}
 }
