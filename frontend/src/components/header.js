@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import Heading from './Heading.js';
   
 const Header = () => {
             const [currentIndex, setCurrentIndex] = useState(0);
+
+            
             useEffect(() => {
                 const slider = document.querySelector('.slider');
                 const slides = document.querySelectorAll('.slide');
@@ -44,33 +47,7 @@ const Header = () => {
 
         }
 
-       
 
-
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('https://api.example.com/data'); // Replace with your API URL
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-
-
-
-                
-        
 
     return(
         <div className="App">
@@ -114,24 +91,11 @@ const Header = () => {
 
 
 
-                    <div className="col-md-12 col-sm-12 col-lg-12">
+              <div className="col-md-12 col-sm-12 col-lg-12">
 
-                <div className="text-box ">
-                    <p className="text-p1">Hii ,I am</p>
-                    <h3 className="text-h3">Turf</h3>
-                    <p className="text-p2">Freelance designer from Melbourne</p>
-                    <button className="text-button"><a href="#" className="text-btn-linkk">Book Now</a></button>
-                    <div className="icon-sec">
-                    <p>Join me here</p>
-                    <div className="brand-icon">
-                    <i className='fab fa-whatsapp' style={{fontSize:"30px"}}></i>
-                    <i className='fab fa-facebook' style={{fontSize:"30px"}}></i>
-                    <i className='fab fa-twitter' style={{fontSize:"30px"}}></i>
-                    <i className='fab fa-linkedin' style={{fontSize:"30px"}}></i>
-                        </div>
-                </div>	   
+                <Heading/>
 
-                    </div>
+                
                 </div>
              </div>
         </div>
