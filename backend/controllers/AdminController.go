@@ -2237,6 +2237,26 @@ func GetAllImageCarousel(c *gin.Context) {
 	})
 
 }
+func GetActiveImageCarousel(c *gin.Context) {
+	var carousel []models.Carousel
+	result := config.DB.Find(&carousel, "status=1")
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to get carousel",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Success to get carousel",
+		"data":    carousel,
+	})
+
+}
 func Upadtecarousel(c *gin.Context) {
 	id := c.Param("id")
 	var body struct {
