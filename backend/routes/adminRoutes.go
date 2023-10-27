@@ -34,7 +34,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
 		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
-
+		adminRoutes.POST("remaining/payement/booking", controllers.Remaining_Payment_For_User)
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
 		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
@@ -83,7 +83,8 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.PATCH("/carousel/upadte/:id", controllers.Upadtecarousel)
 		adminRoutes.PATCH("/carousel/image/upadte/:id", controllers.UpadtecarouselImage)
 		adminRoutes.DELETE("/delete/carousel/:id", controllers.DeleteCarousel)
-
+		adminRoutes.GET("/get/image/active", controllers.GETCarouselActiveImages)
+		adminRoutes.GET("/get/image/active/:id", controllers.GetCarouselimagesById)
 		adminRoutes.GET("/get/slot/relationship", controllers.PSR_slots)
 
 		//admin logout
