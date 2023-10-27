@@ -36,7 +36,7 @@ const Home = () => {
   
   const fetchCarouselImages = async () => {
     try {
-      const response = await fetch('http://localhost:8080/admin/carousel/get/4');
+      const response = await fetch('http://localhost:8080/admin/carousel/get/5');
       if (response.status === 200) {
         const responseData = await response.json();
         console.log('Carousel API response data:', responseData);
@@ -48,7 +48,6 @@ const Home = () => {
       console.error('Error fetching carousel images: ' + error.message);
     }
   };
-  
   
  useEffect(() => {
    const slider = document.querySelector('.slider');
@@ -82,7 +81,7 @@ const Home = () => {
             <div className="slider">
             {carouselImages.map((data,index) => (
                 <div className={`slide ${index === 0 ? 'active' : ''}`} key={index}>
-                  <img src={`http://localhost:8080/${data.Image}`} alt={`Slide ${index + 1}`} />
+                  <img src={`{data.Image}`} alt={`Slide ${index + 1}`} />
                 </div>
               ))}
             </div>
