@@ -1,99 +1,8 @@
-// import React, { useState } from 'react';
-// import Carousel from 'react-bootstrap/Carousel';
-
-// let Data = [
-//   {
-//     Id : 1,
-//     Palace : "Rajendra Nagar",
-//     Ground  : "90 X 90",
-//     Amenities : "food, bev ",
-//     Img : "assets/59.jpg"
-//   },
-//   {
-//     Id : 2,
-//     Palace : "Vijay Nagar",
-//     Ground  : "90 X 90",
-//     Amenities : "food, bev ",
-//     Img : "assets/turf-img.jpg"
-//   },
-//   {
-//     Id : 3,
-//     Palace : "Gandhi Nagar",
-//     Ground  : "90 X 90",
-//     Amenities : "food, bev ",
-//     Img : "assets/football-ground-flooring.jpg"
-//   },
-//   {
-//     Id : 4,
-//     Palace : "IT Park",
-//     Ground  : "90 X 90",
-//     Amenities : "food, bev ",
-//     Img : "assets/football-ground-flooring.jpg"
-//   }
-// ]
-
-// function Section1(){
-
-//     return(     
-
-//   <section className="container slider-sec2">
-// 		<div className="row">
-// 			<div className="col-md-12 col-sm-12 col-lg-12">
-// 				<div className="slider-sec2-heading">
-// 					<p className="ex-p">EXCLUSIVELY</p>
-// 					<p className="works-p"><span style={{color:"purple",fontWeight:"bold" }}>works</span> with</p>
-// 					<p className="start-p">Startups and founders</p>
-// 					<p></p>
-// 				</div>
-// 			</div>	
-// 			<div className="col-md-12 col-sm-12 col-lg-12">           
-//             <div className=" mySwiper">
-//                <div className="swiper-wrapper">
-//                 <div className=" swiper-slide">
-               
-//                       {Data.map((Data) => (<div className="content-med" >
-//                                       <div className="swiper-avatar"><img src={Data.Img}/></div>
-//                                           <div className="cites-box">
-//                                         <h2 className="cite"> {Data.Palace}</h2>
-//                                         <p className="cite-box-parag">Ground Size - {Data.Ground}</p>
-//                                           <p className="cite-box-parag">Amenities - {Data.Amenities}</p>
-//                                         <button className="cite1"><a href="#" className="btn-link">Book Now →</a></button>
-//                                     </div>
-//                                     </div>
-//                                       ))}
-                    
-                        
-                              
-                          
-                         
-                         
-                    
-                      
-                          
-//                 </div> 	          
-
-		                      
-//           </div>
-  
-//           <div class="swiper-button-prev" ></div>         
-
-//              <div class="swiper-button-next" ></div>
-    
-        
-//                    </div>
-// </div>
-// </div>
-//    </section> 
-//     )
-// }
-
-
-// export default Section1;
-
 
 import React, { useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Swiper from 'swiper';
+import './section1.css';
 
 let Data = [
   {
@@ -139,16 +48,22 @@ const mySwiper = new Swiper(".mySwiper", {
     nextEl: ".swiper-button-next",
     prevEl: ".swiper-button-prev",
   },
-  noSwiping: true,
+  noSwiping:true,
   noSwipingClass: "swiper-no-swiping",
   breakpoints: {
     767: {
       slidesPerView: 3,
       spaceBetween: 10,
     },
+    576: {
+      slidesPerView: 1,
+      spaceBetween: 10,
+    },
     // Add more breakpoints if needed
   },
 });
+
+mySwiper.allowTouchMove = false;
 
 // Event listener for the Next button
 document.getElementById("swiper-button-next").addEventListener("click", function () {

@@ -78,7 +78,7 @@ import React, { useEffect, useState } from 'react';
                             <span className="line-cross1"></span>
                         </div>
                     </div>
-                    <ul className="main-nav" id="mainNav" style={{display: "none"}}>
+                    <ul className="main-nav" id="mainNav" style={{display: "none",marginRight:"105px"}}>
                         <li><a href="#">Home</a></li>
                         <li><a href="#">Portfolio</a></li>
                         <li><a href="#">About</a></li>

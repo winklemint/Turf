@@ -945,7 +945,22 @@ body{
       margin-top: 12px;
   }
   }    
-  
+  /* Add this CSS to your stylesheet or in a style block in your component */
+
+@media (max-width: 768px) {
+    .swiper-container {
+        /* Adjust the number of slides for smaller screens */
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .swiper-container {
+        /* Further adjust the number of slides for even smaller screens */
+        width: 100%;
+    }
+}
+
   
   
   
