@@ -17,7 +17,7 @@ const Home = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/admin/content/get/2`);
+      const response = await fetch(`http://localhost:8080/admin/content/active`);
       if (response.status === 200) {
         const responseData = await response.json();
         console.log('API response data:', responseData);
@@ -36,7 +36,7 @@ const Home = () => {
   
   const fetchCarouselImages = async () => {
     try {
-      const response = await fetch('http://localhost:8080/admin/carousel/get/5');
+      const response = await fetch('http://localhost:8080/admin/carousel/active');
       if (response.status === 200) {
         const responseData = await response.json();
         console.log('Carousel API response data:', responseData);
@@ -73,17 +73,19 @@ const Home = () => {
     fetchCarouselImages();
    
   }, []);
+  
   return (
     <div>
      <header className="header">
      <div className="row">
           <div className="col-md-12 col-sm-12 col-lg-12 header-sec">
-            <div className="slider">
-            {carouselImages.map((data,index) => (
-                <div className={`slide ${index === 0 ? 'active' : ''}`} key={index}>
-                  <img src={`{data.Image}`} alt={`Slide ${index + 1}`} />
-                </div>
-              ))}
+          <div className="slider">
+          {carouselImages.map((image, index) => (
+  <div className={`slide ${index === 0 ? 'active' : ''}`} key={index}>
+    {console.log('Image URL:', image.Image)}
+    <img src={` ${image.Image}`} alt={`Slide ${index + 1}`} />
+  </div>
+))}
             </div>
           </div>
 

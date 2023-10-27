@@ -2124,6 +2124,14 @@ func GetContentById(c *gin.Context) {
 	})
 }
 func ActiveContent(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
 
 	var content models.Content
 	result := config.DB.Find(&content, "status=1")
@@ -2238,6 +2246,16 @@ func GetAllImageCarousel(c *gin.Context) {
 
 }
 func GetActiveImageCarousel(c *gin.Context) {
+
+	c.Header("Access-Control-Allow-Origin", "*")
+    c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+    c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+    if c.Request.Method == "OPTIONS" {
+        c.JSON(http.StatusOK, gin.H{})
+        return
+    }
+
+
 	var carousel []models.Carousel
 	result := config.DB.Find(&carousel, "status=1")
 
