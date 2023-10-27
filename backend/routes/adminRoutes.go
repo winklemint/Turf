@@ -2,6 +2,7 @@ package routes
 
 import (
 	"turf/controllers"
+	"turf/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +30,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
-
+		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
 		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
@@ -40,12 +41,13 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.PATCH("/update/user/:id", controllers.UpdateUserDetails)
 		adminRoutes.GET("/get/user/:id", controllers.GetAllUsersById)
 		adminRoutes.DELETE("/delete/user/:id", controllers.DeleteUser)
+		adminRoutes.GET("user/count", controllers.CountUser)
 		// adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 		//adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
 		//adminRoutes.GET("/partial/payments", controllers.Partial_payment)
 		//adminRoutes.POST("/update/user/:id", controllers.UpdateUserDetails)
-		adminRoutes.POST("/get/live/data", controllers.LiveUser)
+		adminRoutes.GET("/get/live/data", middleware.RequireAdminAuth, controllers.LiveUser)
 		//Branch
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
 		adminRoutes.POST("/update/branch/:id", controllers.Update_Branch)
@@ -68,12 +70,16 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//Content
 		adminRoutes.POST("/content/add", controllers.AddContent)
 		adminRoutes.GET("/content/get", controllers.GETContent)
+
 		adminRoutes.PATCH("/content/update/:id", controllers.UpdateContent)
 		adminRoutes.GET("/content/get/:id", controllers.GetContentById)
 		adminRoutes.DELETE("/content/delete/:id", controllers.DeleteContent)
+		adminRoutes.GET("/content/active", controllers.ActiveContent)
+
 		//Carousel
 		adminRoutes.POST("/carousel/add", controllers.AddImageForCarousel)
 		adminRoutes.GET("/carousel/get", controllers.GetAllImageCarousel)
+		adminRoutes.GET("/carousel/active", controllers.GetActiveImageCarousel)
 		adminRoutes.PATCH("/carousel/upadte/:id", controllers.Upadtecarousel)
 		adminRoutes.PATCH("/carousel/image/upadte/:id", controllers.UpadtecarouselImage)
 		adminRoutes.DELETE("/delete/carousel/:id", controllers.DeleteCarousel)

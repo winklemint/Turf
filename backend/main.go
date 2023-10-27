@@ -19,8 +19,10 @@ func init() {
 func main() {
 	//go controllers.Slot_go_rountine()
 	// go controllers.MainCalendar()
-
 	r := gin.Default()
+	//r.GET("/proxy-react", frontend.ProxyHandlerReact)
+
+	//r.Use(forbidHTMLExtension)
 
 	routes.RegisterAdminRoutes(r)
 	route.RegisterUserRoutes(r)
