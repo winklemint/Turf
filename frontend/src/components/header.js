@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-
-
-
-
-    
-        const Header = () => {
+  
+const Header = () => {
             const [currentIndex, setCurrentIndex] = useState(0);
             useEffect(() => {
                 const slider = document.querySelector('.slider');
@@ -47,6 +43,32 @@ import React, { useEffect, useState } from 'react';
                 }}
 
         }
+
+       
+
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://api.example.com/data'); // Replace with your API URL
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const jsonData = await response.json();
+      setData(jsonData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+
+
+
                 
         
 
