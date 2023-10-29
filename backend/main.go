@@ -59,6 +59,7 @@ func main() {
 	route.RegisterAdminPanelPSR(r)
 	//bkings
 	route.RegisterAdminPanelAll_bookings(r)
+	route.RegisterAdminPanelConfirmed_bookings(r)
 
 	r.Run(":8080")
 }

@@ -283,6 +283,18 @@ func RegisterAdminPanelAll_bookings(router *gin.Engine) {
 	})
 }
 
+func RegisterAdminPanelConfirmed_bookings(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/confirmed/bookings", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "confirmed_bookings.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
 // Serve all files first
 
 func IsAuthenticated() gin.HandlerFunc {
