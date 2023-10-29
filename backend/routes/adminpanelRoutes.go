@@ -126,7 +126,7 @@ func RegisterAdminPanelUpdateContent(router *gin.Engine) {
 }
 func RegisterAdminPanelUpdatebranchs(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
-	router.GET("update/branch", func(c *gin.Context) {
+	router.GET("/all/update/branch", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
 		id := c.DefaultQuery("id", "default_value_if_not_provided")
 
