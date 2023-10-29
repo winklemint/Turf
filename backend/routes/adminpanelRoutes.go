@@ -293,7 +293,7 @@ func IsAuthenticated() gin.HandlerFunc {
 		requestedPath := c.Request.URL.Path
 
 		// If the requested path is "/panel/index.html," allow access without login
-		if requestedPath == "/panel/" {
+		if requestedPath == "/admin/login/" {
 			c.Next()
 			return
 		}

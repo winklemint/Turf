@@ -1028,22 +1028,28 @@ func DeleteSlot(c *gin.Context) {
 		return
 	}
 	id := c.Param("id")
-	var slot models.Time_Slot
-	result := config.DB.Model(&slot).Where("id=?", id).Delete(&slot)
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "unsuccessfully Deleted Slot",
-			"data":   nil,
-		})
-		return
-	}
+
+	// Create a raw SQL query to delete the record by ID.
+	sqlQuery := "DELETE FROM time_slots WHERE id = ?"
+	config.DB.Exec(sqlQuery, id)
+
+	// if err != nil {
+	// 	// Handle the error if the SQL query fails.
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"status": 500,
+	// 		"error":  "Failed to delete slot",
+	// 		"data":   nil,
+	// 	})
+	// 	return
+	// }
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "successfully Deleted Slot",
+		"success": "Successfully deleted slot",
 		"data":    nil,
 	})
 }
+
 func GetAllPackage(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
