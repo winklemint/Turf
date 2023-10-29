@@ -98,7 +98,7 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                             <div class="col-sm-12 col-md-10">
-                                <select class="custom-select col-12" id="status">
+                                <select class="custom-select col-12" id="stat">
                                     
                                     <option value="1">Active</option>
                                     <option value="2">Hold</option>
@@ -173,7 +173,7 @@
                         $('#name').val(user.Full_Name);
                         $('#email').val(user.Email);
                         $('#contact').val(user.Contact);
-                        $('#status').val(user.Account_Status);
+                        $('#stat').val(user.Account_Status);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -184,11 +184,11 @@
         $("#update_form").submit(function(event) { 
             event.preventDefault();
             var formData = {
-              Full_name: $("#name").val(),
+              Full_Name: $("#name").val(),
               Email: $("#email").val(),
               Contact: $("#contact").val(),
               Password: $("#password").val(),
-              Account_Status: $("#status").val(),
+              Account_Status: parseInt($("#stat").val()),
               
             };
       
@@ -198,6 +198,7 @@
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: function(response) {
+                    console.log(response);
                     alert("User Details updated successfully!");
                     window.location.href = "/user";
                 },
