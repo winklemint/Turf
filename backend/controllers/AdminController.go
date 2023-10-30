@@ -2319,6 +2319,7 @@ func AddContent(c *gin.Context) {
 		Heading    string
 		SubHeading string
 		Button     string
+		
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2516,7 +2517,7 @@ func AddImageForCarousel(c *gin.Context) {
 	}
 
 	filePath := filepath.Join("./uploads/carousel", file.Filename)
-
+fmt.Println(filePath)
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return

@@ -49,43 +49,48 @@ const Home = () => {
     }
   };
   
- useEffect(() => {
-   const slider = document.querySelector('.slider');
-      const slides = document.querySelectorAll('.slide');
-      let currentIndex = 0;
-    
-      function nextSlide() {
-        currentIndex = (currentIndex + 1) % slides.length;
-        updateSlider();
-      }
-    
-      function updateSlider() {
-        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-      }
-    
-      function startSlider() {
-        setInterval(nextSlide, 3000);
-      }
-    
-      startSlider();
-     
+  useEffect(() => {
+    // Initialize the slider and start it when data or carousel images change
+    const slider = document.querySelector('.slider');
+    const slides = document.querySelectorAll('.slide');
+    let currentIndex = 0;
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateSlider();
+    }
+
+    function updateSlider() {
+      slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    // Only start the slider once when the component mounts
+    const interval = setInterval(nextSlide, 2000);
+
+    // Clear the interval when the component unmounts or when dependencies change
+    return () => {
+      clearInterval(interval);
+    };
+  }, [carouselImages]);
+
+
+  useEffect(() => {
     fetchData();
     fetchCarouselImages();
-   
   }, []);
   
   return (
-    <div>
+    <>
      <header className="header">
      <div className="row">
           <div className="col-md-12 col-sm-12 col-lg-12 header-sec">
           <div className="slider">
-          {carouselImages.map((image, index) => (
-  <div className={`slide ${index === 0 ? 'active' : ''}`} key={index}>
-    {console.log('Image URL:', image.Image)}
-    <img src={` ${image.Image}`} alt={`Slide ${index + 1}`} />
-  </div>
-))}
+          {carouselImages.slice(0, 10).map((image, index) => (
+                <div className={`slide ${index === 0 ? 'active' : ''}`} key={index}>
+                  {console.log('Image URL:', image.Image)}
+                  <img src={`http://localhost:8080/admin/get/image/active/${image.ID}`} alt={`Slide ${index + 1}`} />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -143,7 +148,7 @@ const Home = () => {
       </header>
       <Swiper />
       <Testimonial />
-    </div>
+    </>
   );
 };
 

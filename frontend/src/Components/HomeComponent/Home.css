@@ -237,9 +237,9 @@ body{
       position: relative;
       z-index: 1;
   }
-  .cites-box {
+  /* .cites-box {
       margin: 40px 4px;
-  }
+  } */
   .cite-box-parag {
       padding: 0 11px;
   }
@@ -252,11 +252,11 @@ body{
       box-shadow: 2px 13px 20px 0px;
       height: 585;
   }
-  .cite {
+  /* .cite {
     margin-top: 45px;
       padding: 0 59px;
       margin-bottom: 19px;
-  }
+  } */
   .cite1 {
          
       font-size: 21px;

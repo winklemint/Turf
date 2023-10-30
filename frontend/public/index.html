@@ -1,46 +1,94 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="assets/css/theme.css">
-	  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-	 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css'>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/theme.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/testi.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    
-    
-	 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
-	<title></title>
-  
-</head>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.0.7/css/all.css"
+    />
+    <title></title>
+  </head>
+  <!-- <script>
+    document.addEventListener("DOMContentLoaded", function () {
       var mySwiper = new Swiper(".mySwiper", {
-          slidesPerView: 'auto', // Automatically adjust the number of slides based on the container width
-          spaceBetween: 30, // Default space between slides for larger screens
-          centeredSlides: true, // Center the active slide
-          freeMode: true,
-          loop: true,
-          navigation: {
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
+        slidesPerView: "auto", // Automatically adjust the number of slides based on the container width
+        spaceBetween: 30, // Default space between slides for larger screens
+        centeredSlides: true, // Center the active slide
+        freeMode: true,
+        loop: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          // For screens with a width less than or equal to 767px (typical mobile screens)
+          767: {
+            slidesPerView: 3,
+            spaceBetween: 10, // Adjust space between slides for mobile screens
           },
-          breakpoints: {
-              // For screens with a width less than or equal to 767px (typical mobile screens)
-              767: {
-                 slidesPerView: 3,
-                  spaceBetween: 10, // Adjust space between slides for mobile screens
-              },
-              // You can add more breakpoints for different screen sizes if needed
-          },
+          // You can add more breakpoints for different screen sizes if needed
+        },
       });
-  });
+    });
+  </script> -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var mySwiper = new Swiper(".mySwiper", {
+            slidesPerView: 'auto', // Automatically adjust the number of slides based on the container width
+            spaceBetween: 30, // Default space between slides for larger screens
+            centeredSlides: true, // Center the active slide
+            freeMode: true,
+            autoplay: {
+             delay: 1000, // Set the delay between slide transitions (in milliseconds)
+            },
+            loop: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        breakpoints: {
+         767: {
+        slidesPerView: 2,
+        spaceBetween: 10,
+        },
+        991: {
+        slidesPerView: 3,
+        spaceBetween: 10,
+        },
+        
+        
+       },
+
+        });
+        
+    });
 </script>
- <!-- <script>
+  <!-- <script>
   const slider = document.querySelector('.slider');
   const slides = document.querySelectorAll('.slide');
   let currentIndex = 0;
@@ -64,39 +112,32 @@
   
   
     </script>   -->
-    <script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Your JavaScript code here
+      // Get references to the menu elements
+      const menuToggle = document.getElementById("menuToggle");
+      const hamburger = menuToggle.querySelector(".hamburger");
+      const cross = menuToggle.querySelector(".cross");
+      const mainNav = document.getElementById("mainNav");
 
-document.addEventListener("DOMContentLoaded", function() {
-  // Your JavaScript code here
-// Get references to the menu elements
-const menuToggle = document.getElementById("menuToggle");
-const hamburger = menuToggle.querySelector(".hamburger");
-const cross = menuToggle.querySelector(".cross");
-const mainNav = document.getElementById("mainNav");
-
-// Add a click event listener to the menu-toggle element
-menuToggle.addEventListener("click", function () {
-  if (mainNav.style.display === "block") {
-      // Close the menu
-      mainNav.style.display = "none";
-      cross.style.display = "none";
-      hamburger.style.display = "block";
-  } else {
-      // Open the menu
-      mainNav.style.display = "block";
-      cross.style.display = "block";
-      hamburger.style.display = "none";
-  }
-});
-
-
-
-});
-
-
-
-</script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+      // Add a click event listener to the menu-toggle element
+      menuToggle.addEventListener("click", function () {
+        if (mainNav.style.display === "block") {
+          // Close the menu
+          mainNav.style.display = "none";
+          cross.style.display = "none";
+          hamburger.style.display = "block";
+        } else {
+          // Open the menu
+          mainNav.style.display = "block";
+          cross.style.display = "block";
+          hamburger.style.display = "none";
+        }
+      });
+    });
+  </script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
 <script>
   var swiper = new Swiper(".swiper", {
@@ -123,8 +164,7 @@ menuToggle.addEventListener("click", function () {
       },
   });
 </script>  -->
-<body>
-
-  <div id="root"></div>
-</body>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
