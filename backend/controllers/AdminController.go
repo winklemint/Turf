@@ -486,6 +486,34 @@ func GET_All_Branch(c *gin.Context) {
 	})
 
 }
+func ActiveBranch(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var branch []models.Branch_info_management
+	result := config.DB.Find(&branch, "status=1")
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "No Branch Found",
+			"data":   "null",
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "All Branch  Successfully",
+		"data":    branch,
+	})
+
+}
 func Get_IdBy_Branch_NAme(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -563,6 +591,61 @@ func Delete_Branch(c *gin.Context) {
 		"success": "successfully Deleted Branch",
 		"data":    nil,
 	})
+}
+func GetBranchimagesById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+
+	var branch models.Branch_info_management
+	result := config.DB.Find(&branch, "id=?", id)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to fetch testimonial",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Determine the file path based on the file format (you may need to store this information in your model)
+	var filePath string
+	if strings.HasSuffix(branch.Image, ".jpg") {
+		filePath = branch.Image
+		c.Header("Content-Type", "image/jpeg")
+	} else if strings.HasSuffix(branch.Image, ".png") {
+		filePath = branch.Image
+		c.Header("Content-Type", "image/png")
+	} else {
+		// Handle unsupported image formats
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsupported image format",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Read the image file
+	imageData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Println("Error reading the image file:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "internal server error",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Send the image data as the response
+	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
 }
 func AddSlot(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
