@@ -170,8 +170,7 @@
 				<div class="form-group row">
 					<label class="col-sm-12 col-md-2 col-form-label"></label>
 					<div class="col-sm-12 col-md-10">
-						<select class="custom-select col-12" id="status">
-							<option selected="">Select Branch...</option>
+						<select class="custom-select col-12" id="status" onchange="setNewBranch()">							
 						</select>
 					</div>
 				</div>
@@ -559,8 +558,8 @@
 							><span class="mtext">User</span>
 						</a>
 						<ul class="submenu">
-							<li><a href="/user">ALL Users</a></li>
-							<li><a href="/add/user">ADD User</a></li>
+							<li><a href="/user">All Users</a></li>
+							<li><a href="/add/user">Add User</a></li>
 						</ul>
 					</li>
 
@@ -571,7 +570,18 @@
 						</a>
 						<ul class="submenu">
 							<li><a href="/psr">Package-slots</a></li>
-							<li><a href="/add/user">ADD User</a></li>
+							
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="javascript:;" class="dropdown-toggle">
+							<span class="micon bi bi-house"></span
+							><span class="mtext">Bookings</span>
+						</a>
+						<ul class="submenu">
+							<li><a href="/all/bookings">Pending Bookings</a></li>
+							<li><a href="/confirmed/bookings">Confirmed Bookings</a></li>
 						</ul>
 					</li>
 				</div>
@@ -580,55 +590,3 @@
 		<div class="mobile-menu-overlay"></div>
 
 		<div class="main-container">
-			<script>
-				$(document).ready(function () {
-					$.ajax({
-						url: "http://localhost:8080/admin/get/branch", // Replace with your actual API endpoint
-						method: "GET",
-						dataType: "json",
-						success: function (response) {
-							if (response.status === 200) {
-								var branches = response.data;
-			
-								var select = $('#status'); // Assuming 'status' is the ID of your dropdown
-			
-								branches.forEach(function (branch) {
-									var option = $('<option>', {
-										value: branch.Branch_name,
-										text: branch.Branch_name
-									});
-			
-									select.append(option);
-								});
-			
-								// Add a change event handler to the dropdown
-								select.on('change', function () {
-									var selectedBranch = $(this).val();
-			
-									$.ajax({
-										url: "/admin/set/id/branch",
-										method: "POST",
-										data: { Branch_Name: selectedBranch }, // Include the selected branch data
-										dataType: "json",
-										success: function(data) {
-											// Handle the response from the second API request
-											console.log(data);
-										},
-										error: function(xhr, status, error) {
-											console.error(error);
-										}
-									});
-								});
-							} else {
-								console.error("Failed to retrieve data.");
-							}
-						},
-						error: function (xhr, status, error) {
-							console.error(error);
-						}
-					});
-				});
-			</script>
-				
-	</body>
-</html>
