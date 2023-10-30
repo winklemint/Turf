@@ -2,7 +2,6 @@ package main
 
 import (
 	"turf/config"
-	"turf/controllers"
 
 	"turf/routes"
 	route "turf/routes"
@@ -18,7 +17,7 @@ func init() {
 }
 
 func main() {
-	go controllers.Slot_go_rountine()
+	//go controllers.Slot_go_rountine()
 	// go controllers.MainCalendar()
 	r := gin.Default()
 	//r.GET("/proxy-react", frontend.ProxyHandlerReact)

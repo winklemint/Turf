@@ -27,7 +27,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/package/:id", controllers.GetAllPackageById)
 		adminRoutes.DELETE("/delete/package/:id", controllers.DeletePackage)
 		//booking
-		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
+		adminRoutes.GET("/get/confirm/booking", controllers.Cnfrm_slots)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)

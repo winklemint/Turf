@@ -57,6 +57,8 @@ type Confirm_Booking_Table struct {
 	Remaining_amount_to_pay float64
 	Booking_status          int
 	Branch_id               int
+	Name                    string
+	Contact                 string
 }
 
 type Screenshot struct {
