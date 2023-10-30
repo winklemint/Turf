@@ -1028,22 +1028,28 @@ func DeleteSlot(c *gin.Context) {
 		return
 	}
 	id := c.Param("id")
-	var slot models.Time_Slot
-	result := config.DB.Model(&slot).Where("id=?", id).Delete(&slot)
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "unsuccessfully Deleted Slot",
-			"data":   nil,
-		})
-		return
-	}
+
+	// Create a raw SQL query to delete the record by ID.
+	sqlQuery := "DELETE FROM time_slots WHERE id = ?"
+	config.DB.Exec(sqlQuery, id)
+
+	// if err != nil {
+	// 	// Handle the error if the SQL query fails.
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"status": 500,
+	// 		"error":  "Failed to delete slot",
+	// 		"data":   nil,
+	// 	})
+	// 	return
+	// }
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "successfully Deleted Slot",
+		"success": "Successfully deleted slot",
 		"data":    nil,
 	})
 }
+
 func GetAllPackage(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -1273,7 +1279,7 @@ func GetAllUsersById(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var users models.User
-	result := config.DB.Find(&users).Where("id=?", Id)
+	result := config.DB.Find(&users, "id=?", Id)
 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2319,7 +2325,6 @@ func AddContent(c *gin.Context) {
 		Heading    string
 		SubHeading string
 		Button     string
-		
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2517,7 +2522,7 @@ func AddImageForCarousel(c *gin.Context) {
 	}
 
 	filePath := filepath.Join("./uploads/carousel", file.Filename)
-fmt.Println(filePath)
+
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
@@ -2928,7 +2933,7 @@ func Remaining_Payment_For_User(c *gin.Context) {
 		return
 	}
 	var booking []models.Confirm_Booking_Table
-	//var user models.User
+
 	var body struct {
 		Date string
 	}
@@ -2949,10 +2954,46 @@ func Remaining_Payment_For_User(c *gin.Context) {
 		})
 		return
 	}
+	var responseData []interface{}
+	for _, bookings := range booking {
+		var user models.User
+		result := config.DB.First(&user, bookings.User_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to user name",
+			})
+			return
+		}
+		var branch models.Branch_info_management
+		result = config.DB.Find(&branch, bookings.Branch_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to fetch  branch name",
+			})
+			return
+		}
+		bookingData := map[string]interface{}{
+			"ID":                      bookings.ID,
+			"CreatedAt":               bookings.CreatedAt,
+			"User_id":                 bookings.User_id,
+			"User_name":               user.Full_Name,
+			"Date":                    bookings.Date,
+			"Booking_order_id":        bookings.Booking_order_id,
+			"Total_price":             bookings.Total_price,
+			"Total_min_amount_to_pay": bookings.Total_min_amount_to_pay,
+			"Paid_amount":             bookings.Paid_amount,
+			"Remaining_amount_to_pay": bookings.Remaining_amount_to_pay,
+			"Booking_status":          bookings.Booking_status,
+			"Branch_name":             branch.Branch_name,
+		}
+		responseData = append(responseData, bookingData)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "successfully get booking details",
-		"data":    booking,
+		"data":    responseData,
 	})
 }
 func GetCarouselimagesById(c *gin.Context) {

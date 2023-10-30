@@ -362,6 +362,7 @@
 			<table   id="confirm-booking-table" class="data-table table nowrap">
 				<thead>
 					<tr>
+						<th>SN</th>
 						<th>Name</th>
 						<th>Date</th>
 						<th>Total Price</th>
@@ -369,7 +370,7 @@
 						<th>Paid Amount</th>
 						<th>Remaining Amount To Pay</th>
 						<th>Booking Status</th>
-						<th>Branch Id</th>
+						<th>Branch Name</th>
 						
 					</tr>
 				</thead>
@@ -471,8 +472,9 @@
                         branchs.Total_price,
                         branchs.Total_min_amount_to_pay,
                         branchs.Paid_amount, 
+						branchs.Remaining_amount_to_pay, 
                         button, 
-                        branchs.Remaining_amount_to_pay, 
+                        branchs.Branch_name,
                         
                     ]);
                 });
@@ -509,27 +511,7 @@
     }
     
 </script>
-<script>
-	$(document).ready(function () {
-		// Make an AJAX request to fetch data from the backend
-		$.ajax({
-			url: "admin/get/live/data",
-			method: "GET",
-			dataType: 'json',
-			success: function (data) {
-				// Update the HTML with the fetched data
-				$('#user-name').text(data.data.Full_Name);
-				$('#contact-number').text(data.data.Contact);
-				$('#start-time').text(data.data.start_time);
-				$('#end-time').text(data.data.End_time);
-			},
-			error: function (error) {
-				console.error('Error fetching data:', error);
-			}
-		});
-	});
-	
-</script>
+
 <script>
     $(document).ready(function () {
         // Make an AJAX request to fetch the total user count
@@ -542,7 +524,7 @@
                 $('#total-user-count').text(data.data);
             },
             error: function (error) {
-                console.error('Error fetching user count:', error);
+				$('#total-user-count').text("0");
             }
         });
     });
@@ -559,7 +541,7 @@
                 $('#total-booking-count').text(data.data);
             },
             error: function (error) {
-                console.error('Error fetching user count:', error);
+                $('#total-booking-count').text("0");
             }
         });
     });
