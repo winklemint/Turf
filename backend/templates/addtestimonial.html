@@ -165,9 +165,9 @@
                 var formData = new FormData();
         
                 // Add text field values to the FormData object
-                formData.append("name", $('#name').val());
-                formData.append("designation", $('#designation').val());
-                formData.append("review", $('#review').val());
+                formData.append("Name", $('#name').val());
+                formData.append("Designation", $('#designation').val());
+                formData.append("Review", $('#review').val());
         
                 // Add the image file to the FormData object
                 var imageInput = $('#image')[0];
@@ -184,7 +184,7 @@
                     processData: false, // Set to false to prevent jQuery from converting the data to a query string
                     success: function(response) {
                         // Handle the success response here
-                        console.log(response);
+                        window.location.href="/testimonials"
                     },
                     error: function(xhr, status, error) {
                         // Handle errors here

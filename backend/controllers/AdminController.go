@@ -1351,29 +1351,30 @@ func GetAllUsers(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+
 	if c.Request.Method == "OPTIONS" {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
+
 	var users []models.User
 	result := config.DB.Find(&users)
-
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to load user details",
-			"data":   "null",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  "Failed to load user details",
+			"data":   nil,
 		})
 		return
-
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"success": "success to load user details",
+		"status":  http.StatusOK,
+		"success": "Successfully loaded user details",
 		"data":    users,
 	})
 }
+
 func GetAllUsersById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -1460,7 +1461,7 @@ func AddUser(c *gin.Context) {
 	}
 
 	//create the user
-	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: "1"}
+	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: 1}
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
@@ -1494,7 +1495,7 @@ func UpdateUserDetails(c *gin.Context) {
 		Email          string
 		Password       string
 		Contact        string
-		Account_Status string
+		Account_Status int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -2464,8 +2465,8 @@ func GETContent(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	var content models.Content
-	result := config.DB.First(&content)
+	var content []models.Content
+	result := config.DB.Find(&content)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -2489,11 +2490,12 @@ func UpdateContent(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	Id := c.Param("1")
+	Id := c.Param("id")
 	var body struct {
 		Heading    string
 		SubHeading string
 		Button     string
+		Status     string
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2503,7 +2505,7 @@ func UpdateContent(c *gin.Context) {
 		})
 		return
 	}
-	content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button}
+	content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button, Status: body.Status}
 	result := config.DB.Model(&content).Where("id=?", Id).Updates(&content)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2731,7 +2733,7 @@ func Upadtecarousel(c *gin.Context) {
 		return
 	}
 	carousel := models.Carousel{Status: body.Status}
-	result := config.DB.Find(&carousel).Where("id=?", id)
+	result := config.DB.Model(&carousel).Where("id=?", id).Updates(&carousel)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
