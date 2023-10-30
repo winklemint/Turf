@@ -39,9 +39,9 @@
                     // Determine the button content based on the "Status"
                     var button;
                     console.log(users.Account_Status)
-                    if (users.Account_Status === 1) {
+                    if (users.Account_Status === "1") {
                         button = "<button type='button' class='btn btn-outline-success'>Active</button>";
-                    } else if (users.Account_Status === 2){
+                    } else if (users.Account_Status === "2"){
                         button = "<button type='button' class='btn btn-outline-danger'>Hold</button>";
                     }else{
                         button = "<button type='button' class='btn btn-outline-dark'>Block</button>";

@@ -56,51 +56,58 @@
                         </div> -->
                     </div>
                     <form  id = "branch_form">
-                        
-                        
-                        
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Heading</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                    id="image"
+                                id="heading"
                                     class="form-control"
-                                    placeholder="Image Here"
-                                    type="file" 
+                                    type="text"
+                                    placeholder="Heading Here"
                                 />
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">SubHeading</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id = "subheading"
+                                    class="form-control"
+                                    placeholder="SubHeading Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">button</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="button"
+                                    class="form-control"
+                                    placeholder="Button Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                       
+                        
+                        
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
         
                        
 
                         <div>
                            
-                            <button type="submit" class="btn btn-primary"  id="submit">Submit</button>
+                            <button type="submit" class="btn btn-primary"  id="update">Update</button>
                                 
                         </div>
                        
                     </form>
-                    <div class="card-box pb-10">
-                        <!-- Export Datatable start -->
-                        <div class="card-box mb-30">
-                            <div class="pd-20">
-                                <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
-                            </div>
-                            <div class="pb-20">
-                                <table class="table hover multiple-select-row data-table-export nowrap" id="image">
-                                    <thead>
-                                        <tr>
-                                            
-                                            <th>Image</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     <div class="collapse collapse-box" id="basic-form1">
                         <div class="code-box">
                             <div class="clearfix">
@@ -138,104 +145,98 @@
 
    
     {{template "footer.html"}}
+<script>
+   $(document).ready(function() {
+    // Retrieve the testimonial ID from the query parameter
+    var Id = new URLSearchParams(window.location.search).get('id');
+    if (Id) {
+        testimonialsDetails(Id);
+    }
+});
 
-    <script>
-        $(document).ready(function() {
-          $("#branch_form").submit(function(event) {
-            event.preventDefault();
-      
-            var formData = new FormData();
-            var imageInput = $('#image')[0];
-            if (imageInput.files.length > 0) {
-              formData.append("image", imageInput.files[0]);
+function testimonialsDetails(id) {
+    $.ajax({
+        url: "/admin/get/testimonial/" + id,
+        method: "GET",
+        dataType: "json",
+        success: function(response) {
+            var testimonial = response.data;
+            if (testimonial) {
+                $('#name').val(testimonial.Name);
+                $('#designation').val(testimonial.Designation);
+                $('#review').val(testimonial.Review);
             }
-      
-            $.ajax({
-              type: "POST",
-              url: "/admin/carousel/add",
-              data: formData,
-              contentType: false,
-              processData: false, // Set processData to false to prevent jQuery from transforming the data into a query string
-            }).done(function(data) {
-                window.location.href = "/carousel";
-            });
-          });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            
-            CarouselTable();
-        });
-    
-        function CarouselTable() {
-            $.ajax({
-                url: "/admin/carousel/get",
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (response && response.data) {
-                        
-                        displayadmin(response.data);
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+}
 
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
+$('#branch_form').submit(function(event) {
+    event.preventDefault();
+
+    var form_data = {
+        "name": $('#name').val(),
+        "designation": $('#designation').val(),
+        "review": $('#review').val(),
+    };
+
+    var form_image = new FormData();
+    var imageInput = $('#image')[0];
+    if (imageInput.files.length > 0) {
+        form_image.append("image", imageInput.files[0]);
+    }
+
+    // Retrieve the testimonial ID from the query parameter
+    var Id = new URLSearchParams(window.location.search).get('id');
+
+    // Create a promise for the text fields update API
+    var updateTextFieldsPromise = $.ajax({
+        url: "/admin/update/testimonials/" + Id,
+        method: "PATCH",
+        data: JSON.stringify(form_data),
+        contentType: 'application/json',
+    });
+
+    // Check if an image is specified, and create a promise for the image update API
+    var updateImagePromise = null;
+    if (form_image.get("image")) {
+        updateImagePromise = $.ajax({
+            url: "/admin/update/image/testimonials/" + Id,
+            method: "PATCH",
+            data: form_image,
+            contentType: false,
+            processData: false,
+        });
+    }
+
+    // Use Promise.all to execute both requests if needed
+    if (updateImagePromise) {
+        Promise.all([updateTextFieldsPromise, updateImagePromise])
+            .then(function(responses) {
+                // Handle both responses here
+                var textFieldsResponse = responses[0];
+                var imageResponse = responses[1];
+
+                alert("Testimonials updated successfully!");
+                window.location.href = "/testimonials";
+            })
+            .catch(function(errors) {
+                console.error(errors);
             });
-        }
-        function displayadmin(carousel) {
-          
-            var tableBody = $('#image tbody');
-            tableBody.empty();
-    
-            carousel.forEach(function (carousels) {
-                var row = $('<tr></tr>');
-                row.append('<td>' + carousels.Image + '</td>');
-                var Status = '';
-                if (carousels.Status === 1) {
-                    Status = 'Enable';
-                } else{
-                    Status = 'Disable';
-                }
-                row.append('<td>' + Status + '</td');
-               
-                row.append('<td><div class="table-actions"><a href="/update/carousel?id=' + carousels.ID + '" data-color="#265ed7"><i class="icon-copy dw dw-edit2"></i></a><a href="/testimonials" onclick="deleteCarousel(' + carousels.ID + ');" data-color="#e95959"><i class="icon-copy dw dw-delete-3"></i></a></div></td>');
-    
-                
-                tableBody.append(row);
-            });
-        }
-        function deleteCarousel(Id) {
-            var row_id = Id;
-            
-            
-            $.ajax({
-                url: "/admin/delete/carousel/" + Id,
-                method: "DELETE",
-                success: function (response) {
-                    var rowid = 'rowN' + row_id;
-                    alert(rowid);
-                    var rowElement = document.getElementById(rowid);
-                    if (rowElement) {
-                        rowElement.style.display = 'none';
-                        alert("Carousel with ID: " + Id + " deleted successfully");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                    alert("Error deleting Carousel with ID: " + Id);
-                }
-            });
-        }
-        
-       
-      
-       
-       
-        
-    </script>  
+    } else {
+        // Only execute the text fields update if no image is selected
+        updateTextFieldsPromise.then(function(response) {
+            alert("Testimonials updated successfully!");
+            window.location.href = "/testimonials";
+        }).catch(function(error) {
+            console.error(error);
+        });
+    }
+});
+
+</script>    
       
 
 </body>
