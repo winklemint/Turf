@@ -2,6 +2,7 @@ package routes
 
 import (
 	"turf/controllers"
+	"turf/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,26 +30,27 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
-
+		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
-		adminRoutes.GET("/get/booking/date", controllers.GetAllDetailbydate)
-
+		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
+		adminRoutes.POST("remaining/payement/booking", controllers.Remaining_Payment_For_User)
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
 		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
 		adminRoutes.PATCH("/update/user/:id", controllers.UpdateUserDetails)
 		adminRoutes.GET("/get/user/:id", controllers.GetAllUsersById)
 		adminRoutes.DELETE("/delete/user/:id", controllers.DeleteUser)
+		adminRoutes.GET("user/count", controllers.CountUser)
 		// adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 		//adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
 		//adminRoutes.GET("/partial/payments", controllers.Partial_payment)
 		//adminRoutes.POST("/update/user/:id", controllers.UpdateUserDetails)
-		adminRoutes.POST("/get/live/data", controllers.LiveUser)
+		adminRoutes.GET("/get/live/data", middleware.RequireAdminAuth, controllers.LiveUser)
 		//Branch
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
-		adminRoutes.POST("/update/branch/:id", controllers.Update_Branch)
+		adminRoutes.PATCH("/update/branch/:id", controllers.Update_Branch)
 		adminRoutes.GET("/get/branch", controllers.GET_All_Branch)
 		adminRoutes.POST("set/id/branch", controllers.Get_IdBy_Branch_NAme)
 		adminRoutes.GET("/get/branch/:id", controllers.GET_All_Branch_Id)
@@ -68,14 +70,20 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//Content
 		adminRoutes.POST("/content/add", controllers.AddContent)
 		adminRoutes.GET("/content/get", controllers.GETContent)
-		adminRoutes.PATCH("/content/update/1", controllers.UpdateContent)
+		adminRoutes.PATCH("/content/update/:id", controllers.UpdateContent)
+		adminRoutes.GET("/content/get/:id", controllers.GetContentById)
+		adminRoutes.DELETE("/content/delete/:id", controllers.DeleteContent)
+		adminRoutes.GET("/content/active", controllers.ActiveContent)
+
 		//Carousel
 		adminRoutes.POST("/carousel/add", controllers.AddImageForCarousel)
 		adminRoutes.GET("/carousel/get", controllers.GetAllImageCarousel)
+		adminRoutes.GET("/carousel/active", controllers.GetActiveImageCarousel)
 		adminRoutes.PATCH("/carousel/upadte/:id", controllers.Upadtecarousel)
 		adminRoutes.PATCH("/carousel/image/upadte/:id", controllers.UpadtecarouselImage)
 		adminRoutes.DELETE("/delete/carousel/:id", controllers.DeleteCarousel)
-
+		adminRoutes.GET("/get/image/active", controllers.GETCarouselActiveImages)
+		adminRoutes.GET("/get/image/active/:id", controllers.GetCarouselimagesById)
 		adminRoutes.GET("/get/slot/relationship", controllers.PSR_slots)
 
 		//admin logout

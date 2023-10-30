@@ -2,12 +2,9 @@ package main
 
 import (
 	"turf/config"
-	frontend "turf/proxy"
 
 	"turf/routes"
 	route "turf/routes"
-
-	frontend "turf/proxy"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,8 +20,8 @@ func main() {
 	//go controllers.Slot_go_rountine()
 	// go controllers.MainCalendar()
 	r := gin.Default()
-	r.GET("/proxy-react", frontend.ProxyHandlerReact)
-	r.GET("/proxy", frontend.ProxyHandler)
+	//r.GET("/proxy-react", frontend.ProxyHandlerReact)
+
 	//r.Use(forbidHTMLExtension)
 
 	routes.RegisterAdminRoutes(r)
@@ -60,7 +57,12 @@ func main() {
 	route.RegisterAdminPanelCreateSlots(r)
 	//PSR
 	route.RegisterAdminPanelPSR(r)
+	//bkings
+	route.RegisterAdminPanelAll_bookings(r)
+	route.RegisterAdminPanelConfirmed_bookings(r)
 
+	//remaining
+	route.RemainingAmountForAdminPanel(r)
 	r.Run(":8080")
 }
 

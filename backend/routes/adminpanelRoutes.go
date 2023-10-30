@@ -32,6 +32,19 @@ func RegisterAdminPanelDashboard(router *gin.Engine) {
 		})
 	})
 }
+func RemainingAmountForAdminPanel(router *gin.Engine) {
+	// Load HTML templates for the admin panel
+	//router.LoadHTMLGlob("templates/*.html")
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/remaining", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "remaining.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
 
 func RegisterAdminPanelCreateBranch(router *gin.Engine) {
 	// Load HTML templates for the admin panel
@@ -91,7 +104,7 @@ func RegisterAdminPaneladdContent(router *gin.Engine) {
 		// For example, you can use it to fetch data related to this ID.
 
 		// Render your HTML template (updatetestimonials.html) with the data
-		c.HTML(http.StatusOK, "updatecontent.html", gin.H{"id": id})
+		c.HTML(http.StatusOK, "content.html", gin.H{"id": id})
 	})
 
 }
@@ -126,7 +139,7 @@ func RegisterAdminPanelUpdateContent(router *gin.Engine) {
 }
 func RegisterAdminPanelUpdatebranchs(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
-	router.GET("update/branch", func(c *gin.Context) {
+	router.GET("/all/update/branch", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
 		id := c.DefaultQuery("id", "default_value_if_not_provided")
 
@@ -271,6 +284,30 @@ func RegisterAdminPanelPSR(router *gin.Engine) {
 	})
 }
 
+func RegisterAdminPanelAll_bookings(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/all/bookings", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "all_bookings.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
+func RegisterAdminPanelConfirmed_bookings(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/confirmed/bookings", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "confirmed_bookings.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
 // Serve all files first
 
 func IsAuthenticated() gin.HandlerFunc {
@@ -281,7 +318,7 @@ func IsAuthenticated() gin.HandlerFunc {
 		requestedPath := c.Request.URL.Path
 
 		// If the requested path is "/panel/index.html," allow access without login
-		if requestedPath == "/panel/" {
+		if requestedPath == "/admin/login/" {
 			c.Next()
 			return
 		}
