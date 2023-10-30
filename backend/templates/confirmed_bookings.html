@@ -11,15 +11,15 @@
                 <thead>
                     <tr>
                         <th>Sn.</th>
- 						<th>Name</th>
-						<th>Date</th>
-						<th>Total Price</th>
-						<th>Total Min Amount To Pay</th>
-						<th>Paid Amount</th>
-						<th>Remaining Amount To Pay</th>
-						<th>Booking Status</th>
-						<th>Branch Id</th>
-						
+                        <th class="table-plus datatable-nosort">Name</th>
+                        <th>Cntact</th>
+                        <th>Date</th>
+                        <th>Total Price</th>
+                        <th>Minimum Amount</th>
+                        <th>Remaining Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Status</th>
+                        <th>branch ID</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,41 +41,37 @@
                 dataType: 'json',
                 success: function (response) {
                     console.log(response);
+
+                    // Access the "data.Data" key in the response
+                    var responseData = response.data.Data;
+
                     // Iterate through the data and append it to the table
-                    $.each(response.data, function (index, branchs) {
-                        // Determine the button content based on the "Status"
+                    $.each(responseData, function (index, booking) {
+                        // Determine the button content based on the "Booking_status"
                         var button;
-                        if (branchs.Booking_status === 1) {
+                        if (booking.Booking_status === 1) {
                             button = "<button type='button' class='btn btn-outline-success'>Free</button>";
-                        } else if(branchs.Booking_status === 3){
+                        } else if (booking.Booking_status === 4) {
                             button = "<button type='button' class='btn btn-outline-success'>Confirmed</button>";
-                        }else {
-                            button = "<button type='button' class='btn btn-outline-danger'>reserve</button>";
+                        } else {
+                            button = "<button type='button' class='btn btn-outline-danger'>Reserve</button>";
                         }
-                        var action = '<div class="dropdown">' +
-                            '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + branchs.ID + '" role="button" data-toggle="dropdown">' +
-                            '<i class="dw dw-more"></i>' +
-                            '</a>' +
-                            '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-                            '<a class="dropdown-item" href="update/branch?id=' + branchs.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                            '<a class="dropdown-item" href="/branchs" onclick="deleteCarousel(' + branchs.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
-                            '</div>' +
-                            '</div>';
-    
+
                         // Create a new row and append it to the table
                         table.row.add([
                             index + 1, // Sn.
-                            branchs.User_name, 
-                            branchs.Date,
-                            branchs.Total_price,
-                            branchs.Total_min_amount_to_pay,
-                            branchs.Paid_amount, 
-                            branchs.Remaining_amount_to_pay, 
-                            button, 
-                            
+                            booking.Name,
+                            booking.Contact,
+                            booking.Date,
+                            booking.Total_price,
+                            booking.Total_min_amount_to_pay,
+                            booking.Paid_amount,
+                            booking.Remaining_amount_to_pay,
+                            button,
+                            booking.Branch_id
                         ]);
                     });
-    
+
                     // Refresh the table to apply the changes
                     table.draw();
                 },
@@ -83,9 +79,11 @@
                     console.error('Error fetching data: ' + error);
                 }
             });
+
         });
-        
+
     </script>
-    
-</body>
-</html>
+
+    </body>
+
+    </html>
