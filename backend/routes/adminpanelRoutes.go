@@ -32,6 +32,19 @@ func RegisterAdminPanelDashboard(router *gin.Engine) {
 		})
 	})
 }
+func RemainingAmountForAdminPanel(router *gin.Engine) {
+	// Load HTML templates for the admin panel
+	//router.LoadHTMLGlob("templates/*.html")
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/remaining", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "remaining.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
 
 func RegisterAdminPanelCreateBranch(router *gin.Engine) {
 	// Load HTML templates for the admin panel

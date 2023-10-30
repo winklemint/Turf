@@ -362,6 +362,7 @@
 			<table   id="confirm-booking-table" class="data-table table nowrap">
 				<thead>
 					<tr>
+						<th>Sn.</th>
 						<th>Name</th>
 						<th>Date</th>
 						<th>Total Price</th>
@@ -369,7 +370,7 @@
 						<th>Paid Amount</th>
 						<th>Remaining Amount To Pay</th>
 						<th>Booking Status</th>
-						<th>Branch Id</th>
+						<th>Branch Name</th>
 						
 					</tr>
 				</thead>
@@ -471,8 +472,9 @@
                         branchs.Total_price,
                         branchs.Total_min_amount_to_pay,
                         branchs.Paid_amount, 
+						branchs.Remaining_amount_to_pay, 
                         button, 
-                        branchs.Remaining_amount_to_pay, 
+                        branchs.Branch_name,
                         
                     ]);
                 });
