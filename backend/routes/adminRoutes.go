@@ -27,14 +27,16 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/package/:id", controllers.GetAllPackageById)
 		adminRoutes.DELETE("/delete/package/:id", controllers.DeletePackage)
 		//booking
-		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
+		adminRoutes.GET("/get/confirm/booking", controllers.Cnfrm_slots)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
 		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
-		adminRoutes.POST("remaining/payement/booking", controllers.Remaining_Payment_For_User)
+		adminRoutes.POST("/remaining/payement/booking", controllers.Remaining_Payment_For_User)
+		adminRoutes.GET("/pending/bookings", controllers.Pending_bookings)
+
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
 		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
@@ -50,11 +52,13 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/live/data", middleware.RequireAdminAuth, controllers.LiveUser)
 		//Branch
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
-		adminRoutes.POST("/update/branch/:id", controllers.Update_Branch)
+		adminRoutes.PATCH("/update/branch/:id", controllers.Update_Branch)
 		adminRoutes.GET("/get/branch", controllers.GET_All_Branch)
+		adminRoutes.GET("/active/branch", controllers.ActiveBranch)
 		adminRoutes.POST("set/id/branch", controllers.Get_IdBy_Branch_NAme)
 		adminRoutes.GET("/get/branch/:id", controllers.GET_All_Branch_Id)
 		adminRoutes.DELETE("/delete/branch/:id", controllers.Delete_Branch)
+		adminRoutes.GET("/branch/image/active/:id", controllers.GetBranchimagesById)
 
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
 		//tetsimonials
@@ -70,7 +74,6 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//Content
 		adminRoutes.POST("/content/add", controllers.AddContent)
 		adminRoutes.GET("/content/get", controllers.GETContent)
-
 		adminRoutes.PATCH("/content/update/:id", controllers.UpdateContent)
 		adminRoutes.GET("/content/get/:id", controllers.GetContentById)
 		adminRoutes.DELETE("/content/delete/:id", controllers.DeleteContent)

@@ -399,27 +399,8 @@ func Update_Branch(c *gin.Context) {
 		return
 
 	}
-	file, err := c.FormFile("image")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
-	filePath := filepath.Join("./uploads/branch", file.Filename)
-
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-		return
-	}
-	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Upload the right file format (jpg or png)",
-			"data":   "null",
-		})
-		return
-	}
-	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status, Image: filePath}
+	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status}
 	result := config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -429,11 +410,52 @@ func Update_Branch(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{
-		"status":  200,
-		"success": "Branch Successfully Updated",
-		"data":    branch,
-	})
+
+	if body.Image != "" {
+
+		file, err := c.FormFile("image")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		filePath := filepath.Join("./uploads/branch", file.Filename)
+
+		if err := c.SaveUploadedFile(file, filePath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+			return
+		}
+		if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Upload the right file format (jpg or png)",
+				"data":   "null",
+			})
+			return
+		}
+
+		fmt.Println(filePath)
+
+		branch = models.Branch_info_management{Image: filePath}
+		result = config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Branch Update unsuccessfully",
+				"data":   "null",
+			})
+			return
+		}
+	} else {
+		fmt.Println("n image")
+
+		c.JSON(http.StatusCreated, gin.H{
+			"status":  200,
+			"success": "Branch Successfully Updated",
+			"data":    branch,
+		})
+	}
+
 }
 
 func GET_All_Branch(c *gin.Context) {
@@ -447,6 +469,34 @@ func GET_All_Branch(c *gin.Context) {
 
 	var branch []models.Branch_info_management
 	result := config.DB.Find(&branch)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "No Branch Found",
+			"data":   "null",
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "All Branch  Successfully",
+		"data":    branch,
+	})
+
+}
+func ActiveBranch(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var branch []models.Branch_info_management
+	result := config.DB.Find(&branch, "status=1")
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -499,7 +549,7 @@ func GET_All_Branch_Id(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var branch models.Branch_info_management
-	result := config.DB.Find(&branch).Where("id=?", Id)
+	result := config.DB.Find(&branch, "id=?", Id)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -541,6 +591,61 @@ func Delete_Branch(c *gin.Context) {
 		"success": "successfully Deleted Branch",
 		"data":    nil,
 	})
+}
+func GetBranchimagesById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+
+	var branch models.Branch_info_management
+	result := config.DB.Find(&branch, "id=?", id)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to fetch testimonial",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Determine the file path based on the file format (you may need to store this information in your model)
+	var filePath string
+	if strings.HasSuffix(branch.Image, ".jpg") {
+		filePath = branch.Image
+		c.Header("Content-Type", "image/jpeg")
+	} else if strings.HasSuffix(branch.Image, ".png") {
+		filePath = branch.Image
+		c.Header("Content-Type", "image/png")
+	} else {
+		// Handle unsupported image formats
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsupported image format",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Read the image file
+	imageData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Println("Error reading the image file:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "internal server error",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Send the image data as the response
+	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
 }
 func AddSlot(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
@@ -620,7 +725,7 @@ func AddPackage(c *gin.Context) {
 	var body struct {
 		Name      string
 		Price     float64
-		Status    string
+		Status    int
 		Branch_id int
 		Slot_id   []string
 	}
@@ -925,7 +1030,7 @@ func UpdatePackage(c *gin.Context) {
 	var body struct {
 		Name      string ` grom:"unique"`
 		Price     float64
-		Status    string
+		Status    int
 		Branch_id int
 		Slot_id   []string
 	}
@@ -1028,22 +1133,28 @@ func DeleteSlot(c *gin.Context) {
 		return
 	}
 	id := c.Param("id")
-	var slot models.Time_Slot
-	result := config.DB.Model(&slot).Where("id=?", id).Delete(&slot)
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "unsuccessfully Deleted Slot",
-			"data":   nil,
-		})
-		return
-	}
+
+	// Create a raw SQL query to delete the record by ID.
+	sqlQuery := "DELETE FROM time_slots WHERE id = ?"
+	config.DB.Exec(sqlQuery, id)
+
+	// if err != nil {
+	// 	// Handle the error if the SQL query fails.
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"status": 500,
+	// 		"error":  "Failed to delete slot",
+	// 		"data":   nil,
+	// 	})
+	// 	return
+	// }
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "successfully Deleted Slot",
+		"success": "Successfully deleted slot",
 		"data":    nil,
 	})
 }
+
 func GetAllPackage(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -1240,29 +1351,30 @@ func GetAllUsers(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+
 	if c.Request.Method == "OPTIONS" {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
+
 	var users []models.User
 	result := config.DB.Find(&users)
-
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to load user details",
-			"data":   "null",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  "Failed to load user details",
+			"data":   nil,
 		})
 		return
-
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"success": "success to load user details",
+		"status":  http.StatusOK,
+		"success": "Successfully loaded user details",
 		"data":    users,
 	})
 }
+
 func GetAllUsersById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -1273,7 +1385,7 @@ func GetAllUsersById(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var users models.User
-	result := config.DB.Find(&users).Where("id=?", Id)
+	result := config.DB.Find(&users, "id=?", Id)
 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1349,7 +1461,7 @@ func AddUser(c *gin.Context) {
 	}
 
 	//create the user
-	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: "1"}
+	user := models.User{Full_Name: body.Full_Name, Email: body.Email, Password: string(hash), Contact: body.Contact, Account_Status: 1}
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
@@ -1383,7 +1495,7 @@ func UpdateUserDetails(c *gin.Context) {
 		Email          string
 		Password       string
 		Contact        string
-		Account_Status string
+		Account_Status int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -1946,7 +2058,7 @@ func Testimonials(c *gin.Context) {
 		return
 	}
 
-	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: body.Image}
+	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: filePath}
 	result := config.DB.Create(&testimonial)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2353,8 +2465,8 @@ func GETContent(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	var content models.Content
-	result := config.DB.First(&content)
+	var content []models.Content
+	result := config.DB.Find(&content)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -2378,11 +2490,12 @@ func UpdateContent(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	Id := c.Param("1")
+	Id := c.Param("id")
 	var body struct {
 		Heading    string
 		SubHeading string
 		Button     string
+		Status     string
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2392,7 +2505,7 @@ func UpdateContent(c *gin.Context) {
 		})
 		return
 	}
-	content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button}
+	content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button, Status: body.Status}
 	result := config.DB.Model(&content).Where("id=?", Id).Updates(&content)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2620,7 +2733,7 @@ func Upadtecarousel(c *gin.Context) {
 		return
 	}
 	carousel := models.Carousel{Status: body.Status}
-	result := config.DB.Find(&carousel).Where("id=?", id)
+	result := config.DB.Model(&carousel).Where("id=?", id).Updates(&carousel)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -2813,22 +2926,7 @@ func PSR_slots(c *gin.Context) {
 	// var slots []models.Time_Slot
 
 	result := config.DB.Debug().Raw(`
-    SELECT
-        p.id as ID,
-        p.name as Name,
-        p.price as Price,
-        p.status as Status,
-        p.branch_id as Branch_id,
-        ts.start_time as Start_time,
-        ts.end_time as End_time,
-        ts.day as Day,
-        ts.branch_id as Slot_Branch_id,
-        psr.id as PSR_id,
-        bim.branch_name as Branch_name
-    FROM packages p
-    LEFT JOIN package_slot_relationships psr ON p.id = psr.package_id
-    LEFT JOIN time_slots ts ON psr.slot_id = ts.id
-    LEFT JOIN branch_info_managements bim ON ts.branch_id = bim.id
+	SELECT p.id as ID, p.name as Name, p.price as Price, p.status as Status, p.branch_id as Branch_id, ts.start_time as Start_time, ts.end_time as End_time, ts.day as Day, ts.branch_id as Slot_Branch_id, psr.id as PSR_id, bim.branch_name as Branch_name FROM package_slot_relationships psr INNER JOIN packages p ON p.id = psr.package_id INNER JOIN time_slots ts ON psr.slot_id = ts.id INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
 `).Scan(&packages)
 
 	if result.Error != nil {
@@ -2927,7 +3025,7 @@ func Remaining_Payment_For_User(c *gin.Context) {
 		return
 	}
 	var booking []models.Confirm_Booking_Table
-	//var user models.User
+
 	var body struct {
 		Date string
 	}
@@ -2948,10 +3046,46 @@ func Remaining_Payment_For_User(c *gin.Context) {
 		})
 		return
 	}
+	var responseData []interface{}
+	for _, bookings := range booking {
+		var user models.User
+		result := config.DB.First(&user, bookings.User_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to user name",
+			})
+			return
+		}
+		var branch models.Branch_info_management
+		result = config.DB.Find(&branch, bookings.Branch_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to fetch  branch name",
+			})
+			return
+		}
+		bookingData := map[string]interface{}{
+			"ID":                      bookings.ID,
+			"CreatedAt":               bookings.CreatedAt,
+			"User_id":                 bookings.User_id,
+			"User_name":               user.Full_Name,
+			"Date":                    bookings.Date,
+			"Booking_order_id":        bookings.Booking_order_id,
+			"Total_price":             bookings.Total_price,
+			"Total_min_amount_to_pay": bookings.Total_min_amount_to_pay,
+			"Paid_amount":             bookings.Paid_amount,
+			"Remaining_amount_to_pay": bookings.Remaining_amount_to_pay,
+			"Booking_status":          bookings.Booking_status,
+			"Branch_name":             branch.Branch_name,
+		}
+		responseData = append(responseData, bookingData)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "successfully get booking details",
-		"data":    booking,
+		"data":    responseData,
 	})
 }
 func GetCarouselimagesById(c *gin.Context) {
@@ -3008,4 +3142,83 @@ func GetCarouselimagesById(c *gin.Context) {
 
 	// Send the image data as the response
 	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
+}
+
+func Cnfrm_slots(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var response struct {
+		Data []interface{}
+	}
+
+	var bookings []models.Confirm_Booking_Table
+	// var slots []models.Time_Slot
+
+	result := config.DB.Debug().Raw(`
+	SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4
+`).Scan(&bookings)
+
+	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch package slots",
+		})
+		return
+	}
+	// Combine the "Package" and "Slot" data into a single array
+	for _, cbData := range bookings {
+		response.Data = append(response.Data, cbData)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "package names and slots",
+		"data":    response,
+	})
+}
+
+func Pending_bookings(c *gin.Context) {
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var response struct {
+		Data []interface{}
+	}
+
+	var bookings []models.Confirm_Booking_Table
+	// var slots []models.Time_Slot
+
+	result := config.DB.Debug().Raw(`
+	SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 3
+`).Scan(&bookings)
+
+	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch package slots",
+		})
+		return
+	}
+	// Combine the "Package" and "Slot" data into a single array
+	for _, cbData := range bookings {
+		response.Data = append(response.Data, cbData)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "package names and slots",
+		"data":    response,
+	})
 }

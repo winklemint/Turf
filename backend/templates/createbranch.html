@@ -140,17 +140,23 @@
                                 />
                             </div>
                         </div>
-                        <!-- <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
                             <div class="col-sm-12 col-md-10">
-                                <input class="form-control" value="100" type="number" />
+                                <input
+                                    id="image"
+                                    class="form-control"
+                                    placeholder="Image Here"
+                                    type="file" 
+                                />
                             </div>
-                        </div> -->
+                        </div>
+                        
         
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
                             <div class="col-sm-12 col-md-10">
-                                <select class="custom-select col-12">
+                                <select class="custom-select col-12" id="branch_status">
                                     <option selected="">Choose...</option>
                                     <option value="1">Enable</option>
                                     <option value="2">Disable</option>
@@ -205,31 +211,41 @@
     {{template "footer.html"}}
 
     <script>
-        $(document).ready(function(e) {
-          $("#branch_form").submit(function(event) { 
-            event.preventDefault();
-            var formData = {
-              Turf_name: $("#name").val(),
-              Branch_Email: $("#email").val(),
-              Branch_name: $("#branch_name").val(),
-              Branch_address: $("#address").val(),
-              Branch_contact: $("#contact").val(),
-              GST: $("#gst").val(),
-              Ground_size: $("#size").val(),
-            };
-      
-            $.ajax({
-              type: "POST",
-              url: "/admin/add/branch",
-              data: formData,
-              dataType: "json",
-            //   encode: true,
-            }).done(function(data) {
-              console.log(data);
+        $(document).ready(function() {
+            $("#branch_form").submit(function(event) {
+                event.preventDefault();
+    
+                var formData = new FormData();  // Create a FormData object
+    
+                // Append form fields to the FormData object
+                formData.append("Turf_name", $("#name").val());
+                formData.append("Branch_email", $("#email").val());
+                formData.append("Branch_name", $("#branch_name").val());
+                formData.append("Branch_address", $("#address").val());
+                formData.append("Branch_contact_number", $("#contact").val());
+                formData.append("GST_no", $("#gst").val());
+                formData.append("Ground_Size", $("#size").val());
+                formData.append("Status", parseInt($('#branch_status').val(), 10));
+                // Append the file input
+                var imageInput = $('#image')[0];
+                if (imageInput.files.length > 0) {
+                    formData.append("image", imageInput.files[0]);
+                }
+    
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/add/branch",
+                    data: formData,
+                    processData: false,  // Prevent jQuery from processing data
+                    contentType: false,  // Prevent jQuery from setting content type
+                    dataType: "json",
+                }).done(function(data) {
+                    window.location.href = "/all/branch";
+                });
             });
-          });
         });
-      </script>
+    </script>
+    
       
 
 </body>

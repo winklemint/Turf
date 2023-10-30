@@ -45,8 +45,8 @@
                 $.each(response.data, function (index, branchs) {
                     // Determine the button content based on the "Status"
                     var button;
-                    if (branchs.Status === "1") {
-                        button = "<button type='button' class='btn btn-outline-success'>Enable</button>";
+                    if (branchs.Status == "1") {
+                        button = "<button type='button' class='btn btn-outline-success'>Active</button>";
                     } else {
                         button = "<button type='button' class='btn btn-outline-danger'>Disable</button>";
                     }
