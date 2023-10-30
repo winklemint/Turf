@@ -86,7 +86,7 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                             <div class="col-sm-12 col-md-10">
-                                <select class="custom-select col-12" id="status">
+                                <select class="custom-select col-12" id="package_status">
                                     <option selected="">Choose...</option>
                                     <option value="1">Enable</option>
                                     <option value="2">Disable</option>
@@ -160,7 +160,7 @@
                         $('#name').val(branchs.Name);
                         $('#charges').val(branchs.Price);
                         $('#id').val(branchs.Branch_id);
-                        $('#status').val(branchs.Status);
+                        $('#package_status').val(branchs.Status);
                         
                     }
                 },
@@ -176,10 +176,10 @@
     
             var formData = {
                 Name: $('#name').val(),
-                Price:  $('#charges').val(),
+                Price:  parseFloat($('#charges').val()),
                 Branch_id: parseInt($('#id').val()),
                
-                Status: $('#status').val(),
+                Status: parseInt($('#package_status').val()),
                 
 
             };
@@ -191,8 +191,8 @@
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: function(response) {
-                    alert("Branch Details updated successfully!");
-                    window.location.href = "/packages";
+                    // alert("Branch Details updated successfully!");
+                    // window.location.href = "/packages";
                 },
                 error: function(xhr, status, error) {
                     console.error(error);

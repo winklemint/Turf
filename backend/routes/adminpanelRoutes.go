@@ -139,7 +139,7 @@ func RegisterAdminPanelUpdateContent(router *gin.Engine) {
 }
 func RegisterAdminPanelUpdatebranchs(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
-	router.GET("update/branch", func(c *gin.Context) {
+	router.GET("/all/update/branch", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
 		id := c.DefaultQuery("id", "default_value_if_not_provided")
 
@@ -296,6 +296,18 @@ func RegisterAdminPanelAll_bookings(router *gin.Engine) {
 	})
 }
 
+func RegisterAdminPanelConfirmed_bookings(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/confirmed/bookings", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "confirmed_bookings.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+
 // Serve all files first
 
 func IsAuthenticated() gin.HandlerFunc {
@@ -306,7 +318,7 @@ func IsAuthenticated() gin.HandlerFunc {
 		requestedPath := c.Request.URL.Path
 
 		// If the requested path is "/panel/index.html," allow access without login
-		if requestedPath == "/panel/" {
+		if requestedPath == "/admin/login/" {
 			c.Next()
 			return
 		}

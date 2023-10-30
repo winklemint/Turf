@@ -1,0 +1,89 @@
+{{template "header.html"}}
+
+<div class="card-box pb-10">
+    <!-- Export Datatable start -->
+    <div class="card-box mb-30">
+        <div class="pd-20">
+            <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
+        </div>
+        <div class="pb-20">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="all_confirmed_bookings_tbl">
+                <thead>
+                    <tr>
+                        <th>Sn.</th>
+                        <th class="table-plus datatable-nosort">Name</th>
+                        <th>Cntact</th>
+                        <th>Date</th>
+                        <th>Total Price</th>
+                        <th>Minimum Amount</th>
+                        <th>Remaining Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Status</th>
+                        <th>branch ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Export Datatable End -->
+
+    {{template "footer.html"}}
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable
+            var table = $('#all_confirmed_bookings_tbl').DataTable();
+            // Make an AJAX request to fetch data from the URL
+            $.ajax({
+                url: '/admin/get/confirm/booking', // Adjust the URL to match your API endpoint
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+
+                    // Access the "data.Data" key in the response
+                    var responseData = response.data.Data;
+
+                    // Iterate through the data and append it to the table
+                    $.each(responseData, function (index, booking) {
+                        // Determine the button content based on the "Booking_status"
+                        var button;
+                        if (booking.Booking_status === 1) {
+                            button = "<button type='button' class='btn btn-outline-success'>Free</button>";
+                        } else if (booking.Booking_status === 4) {
+                            button = "<button type='button' class='btn btn-outline-success'>Confirmed</button>";
+                        } else {
+                            button = "<button type='button' class='btn btn-outline-danger'>Reserve</button>";
+                        }
+
+                        // Create a new row and append it to the table
+                        table.row.add([
+                            index + 1, // Sn.
+                            booking.Name,
+                            booking.Contact,
+                            booking.Date,
+                            booking.Total_price,
+                            booking.Total_min_amount_to_pay,
+                            booking.Paid_amount,
+                            booking.Remaining_amount_to_pay,
+                            button,
+                            booking.Branch_id
+                        ]);
+                    });
+
+                    // Refresh the table to apply the changes
+                    table.draw();
+                },
+                error: function (error) {
+                    console.error('Error fetching data: ' + error);
+                }
+            });
+
+        });
+
+    </script>
+
+    </body>
+
+    </html>

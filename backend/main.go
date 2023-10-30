@@ -57,6 +57,10 @@ func main() {
 	route.RegisterAdminPanelCreateSlots(r)
 	//PSR
 	route.RegisterAdminPanelPSR(r)
+	//bkings
+	route.RegisterAdminPanelAll_bookings(r)
+	route.RegisterAdminPanelConfirmed_bookings(r)
+
 	//remaining
 	route.RemainingAmountForAdminPanel(r)
 	r.Run(":8080")
