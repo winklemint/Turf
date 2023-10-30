@@ -95,10 +95,9 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                             <div class="col-sm-12 col-md-10">
-                                <select class="custom-select col-12" id="status">
-                                    <option selected=""></option>
-                                    <option value=1>Enable</option>
-                                    <option value=2>Disable</option>
+                                <select class="custom-select col-12" id="stat">
+                                    <option value="1">Enable</option>
+                                    <option value="2">Disable</option>
                                     
                                 </select>
                             </div>
@@ -179,7 +178,7 @@
                         $('#heading').val(content.Heading);
                         $('#subheading').val(content.SubHeading);
                         $('#button').val(content.Button);
-                        $('#status').val(content.Status);
+                        $('#stat').val(content.Status);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -196,7 +195,7 @@
                 Heading: $("#heading").val(),
                 SubHeading: $("#subheading").val(),
                 Button: $("#button").val(),
-                Status: $('#status').val(),
+                Status: $('#stat').val(),
             };
     
             // Send the update request using a PATCH method
