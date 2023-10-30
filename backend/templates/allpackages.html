@@ -41,7 +41,8 @@
                     $.each(response.data, function (index, packages) {
                         // Determine the button content based on the "Status"
                         var button;
-                        if (packages.Status === 1) {
+                        console.log(packages.Status);
+                        if (packages.Status == 1) {
                             button = "<button type='button' class='btn btn-outline-success'>Active</button>";
                         } else {
                             button = "<button type='button' class='btn btn-outline-danger'>Hold</button>";

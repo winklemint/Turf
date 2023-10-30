@@ -27,14 +27,16 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/package/:id", controllers.GetAllPackageById)
 		adminRoutes.DELETE("/delete/package/:id", controllers.DeletePackage)
 		//booking
-		adminRoutes.GET("/get/confirm/booking", controllers.GetConfirmBooking)
+		adminRoutes.GET("/get/confirm/booking", controllers.Cnfrm_slots)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
 		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
 		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
-		adminRoutes.POST("remaining/payement/booking", controllers.Remaining_Payment_For_User)
+		adminRoutes.POST("/remaining/payement/booking", controllers.Remaining_Payment_For_User)
+		adminRoutes.GET("/pending/bookings", controllers.Pending_bookings)
+
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
 		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
