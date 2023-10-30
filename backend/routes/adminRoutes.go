@@ -73,7 +73,6 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//Content
 		adminRoutes.POST("/content/add", controllers.AddContent)
 		adminRoutes.GET("/content/get", controllers.GETContent)
-
 		adminRoutes.PATCH("/content/update/:id", controllers.UpdateContent)
 		adminRoutes.GET("/content/get/:id", controllers.GetContentById)
 		adminRoutes.DELETE("/content/delete/:id", controllers.DeleteContent)

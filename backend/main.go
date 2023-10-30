@@ -62,6 +62,8 @@ func main() {
 	route.RegisterAdminPanelConfirmed_bookings(r)
 	route.RegisterAdminPanelUpdatebookings(r)
 
+	//remaining
+	route.RemainingAmountForAdminPanel(r)
 	r.Run(":8080")
 }
 

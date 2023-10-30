@@ -2940,7 +2940,7 @@ func Remaining_Payment_For_User(c *gin.Context) {
 		return
 	}
 	var booking []models.Confirm_Booking_Table
-	//var user models.User
+
 	var body struct {
 		Date string
 	}
@@ -2961,10 +2961,46 @@ func Remaining_Payment_For_User(c *gin.Context) {
 		})
 		return
 	}
+	var responseData []interface{}
+	for _, bookings := range booking {
+		var user models.User
+		result := config.DB.First(&user, bookings.User_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to user name",
+			})
+			return
+		}
+		var branch models.Branch_info_management
+		result = config.DB.Find(&branch, bookings.Branch_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to fetch  branch name",
+			})
+			return
+		}
+		bookingData := map[string]interface{}{
+			"ID":                      bookings.ID,
+			"CreatedAt":               bookings.CreatedAt,
+			"User_id":                 bookings.User_id,
+			"User_name":               user.Full_Name,
+			"Date":                    bookings.Date,
+			"Booking_order_id":        bookings.Booking_order_id,
+			"Total_price":             bookings.Total_price,
+			"Total_min_amount_to_pay": bookings.Total_min_amount_to_pay,
+			"Paid_amount":             bookings.Paid_amount,
+			"Remaining_amount_to_pay": bookings.Remaining_amount_to_pay,
+			"Booking_status":          bookings.Booking_status,
+			"Branch_name":             branch.Branch_name,
+		}
+		responseData = append(responseData, bookingData)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "successfully get booking details",
-		"data":    booking,
+		"data":    responseData,
 	})
 }
 func GetCarouselimagesById(c *gin.Context) {
