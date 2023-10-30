@@ -322,7 +322,7 @@
 
     var imageInput = $('#image')[0];
     if (imageInput.files.length > 0) {
-        formData.append("image", imageInput.files[0]);
+        formData.append("Image", imageInput.files[0]);
     }
 
     var Id = new URLSearchParams(window.location.search).get('id');
@@ -335,8 +335,8 @@
         contentType: false, // Set to false to prevent jQuery from setting Content-Type
         processData: false, // Set to false to prevent jQuery from converting data to a query string
         success: function(response) {
-            alert("Branch Details updated successfully!");
-            window.location.href = "/branchs";
+            // alert("Branch Details updated successfully!");
+            // window.location.href = "/all/branch";
         },
         error: function(xhr, status, error) {
             console.error(error);
