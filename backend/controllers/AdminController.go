@@ -496,7 +496,7 @@ func ActiveBranch(c *gin.Context) {
 	}
 
 	var branch []models.Branch_info_management
-	result := config.DB.Find(&branch, "status=1")
+	result := config.DB.Find(&branch,"status=1")
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,

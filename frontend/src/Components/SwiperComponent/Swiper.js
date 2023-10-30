@@ -1,13 +1,13 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import Swiper from 'swiper';
 
-
-const Swiper = () => {
+const SwiperComponent = () => {
 	const [branches, setBranches] = useState([]);
   
 	const fetchData = async () => {
 	  try {
-		const response = await fetch(`http://localhost:8080/admin/get/branch`);
+		const response = await fetch(`http://localhost:8080/admin/active/branch`);
 		console.log('Response Status:', response.status);
 		if (response.status === 201) {
 		  const responseData = await response.json();
@@ -24,7 +24,28 @@ const Swiper = () => {
 	useEffect(() => {
 	  fetchData();
 	}, []);
-  
+	useEffect(() => {
+		const testimonialSwiper = new Swiper('.swiper', {
+		  slidesPerView: 'auto', // Show asmany slides as fit the container width
+		  spaceBetween: 30, // Space between slides
+		  centeredSlides: true, // Center the active slide
+		  autoplay: {
+			delay: 2000, // Set the delay between slide transitions (in milliseconds)
+		  },
+		  loop: true,
+		  pagination: {
+			el: '.swiper-pagination',
+			clickable: true,
+		  },
+		  breakpoints: {
+			767: {
+			  slidesPerView: 3,
+			  spaceBetween: 10,
+			},
+		  },
+		});
+	  }, []); // Empty dependency array means this will only run once on component mount
+	
   return (
 	<div>
 	<section className="container slider-sec2">
@@ -47,10 +68,13 @@ const Swiper = () => {
                 <div className="swiper-slide" key={index}>
                   <div className="content-med">
                     <div className="swiper-avatar">
-                      <img src={branch.Image} alt={branch.Turf_name} />
+                    <img
+                        src={`http://localhost:8080/admin/branch/image/active/${branch.ID}`}
+                        alt={branch.Turf_name}
+                      />
                     </div>
                     <div className="cites-box">
-                      <h2 className="cite">{branch.Turf_name}</h2>
+                      <h2 className="cite">{branch.Branch_name}</h2>
                       <p className="cite-box-parag">
                         <i className="fas fa-map-marker-alt" style={{ color: "red" }}>
                           <span className="address" style={{ color: "black", paddingLeft: "10px" }}>
@@ -93,4 +117,4 @@ const Swiper = () => {
   </div>
   )
 }
-export default Swiper;
+export default  SwiperComponent;

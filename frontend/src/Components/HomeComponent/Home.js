@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
 import Testimonial from '../TestimonialComponent/Testimonial';
-import Swiper from '../SwiperComponent/Swiper';
+import SwiperComponent from '../SwiperComponent/Swiper';
 
 const Home = () => {
   
@@ -146,7 +146,7 @@ const Home = () => {
           </div>
         </div>
       </header>
-      <Swiper />
+      <SwiperComponent />
       <Testimonial />
     </>
   );
