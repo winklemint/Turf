@@ -728,7 +728,7 @@ func Screenshot(c *gin.Context) {
 			return
 		}
 		// Define the path where the file will be saved
-		filePath := filepath.Join("./uploads", file.Filename)
+		filePath := filepath.Join("./uploads/user_payment", file.Filename)
 		// Save the file to the defined path
 		if err := c.SaveUploadedFile(file, filePath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})

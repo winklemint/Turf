@@ -1310,7 +1310,7 @@ func UpdatecomfirmDetails(c *gin.Context) {
 	var body struct {
 		Paid_amount             float64
 		Remaining_amount_to_pay float64
-		Booking_status          string
+		Booking_status          int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -1321,14 +1321,14 @@ func UpdatecomfirmDetails(c *gin.Context) {
 		})
 		return
 	}
-	var Status int
-	if body.Booking_status == "Confirm" {
-		Status = 4
+	// var Status int
+	// if body.Booking_status == "Confirm" {
+	// 	Status = 4
 
-	} else {
-		Status = 1
-	}
-	confirm_booking := models.Confirm_Booking_Table{Paid_amount: body.Paid_amount, Remaining_amount_to_pay: body.Remaining_amount_to_pay, Booking_status: Status}
+	// } else {
+	// 	Status = 1
+	// }
+	confirm_booking := models.Confirm_Booking_Table{Paid_amount: body.Paid_amount, Remaining_amount_to_pay: body.Remaining_amount_to_pay, Booking_status: body.Booking_status}
 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Where("id = ?", Id).Updates(&confirm_booking)
 	// result = config.DB.Exec(result)
 	if result.Error != nil {
@@ -3250,7 +3250,7 @@ func Pending_bookings_by_ID(c *gin.Context) {
 	// var slots []models.Time_Slot
 
 	result := config.DB.Debug().Raw(`
-	SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.ID = ?
+	SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.booking_order_id, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.ID = ?
 `, ID).Scan(&bookings)
 
 	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
@@ -3272,4 +3272,66 @@ func Pending_bookings_by_ID(c *gin.Context) {
 		"success": "package names and slots",
 		"data":    response,
 	})
+}
+
+func GetpaymentimagesById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	// var body struct {
+	// 	Booking_order_id string
+	// }
+	// id := c.Param("id")
+
+	bid := c.Request.FormValue("Booking_order_id")
+
+	var payment models.Screenshot
+	result := config.DB.Find(&payment, "booking_order_id=?", bid)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to fetch testimonial",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Determine the file path based on the file format (you may need to store this information in your model)
+	var filePath string
+	if strings.HasSuffix(payment.Payment_screenshot, ".jpg") {
+		filePath = payment.Payment_screenshot
+		c.Header("Content-Type", "image/jpeg")
+	} else if strings.HasSuffix(payment.Payment_screenshot, ".png") {
+		filePath = payment.Payment_screenshot
+		c.Header("Content-Type", "image/png")
+	} else {
+		// Handle unsupported image formats
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "unsupported image format",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Read the image file
+	imageData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Println("Error reading the image file:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "internal server error",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Send the image data as the response
+	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
 }
