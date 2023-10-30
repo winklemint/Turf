@@ -3015,79 +3015,88 @@ func GETCarouselActiveImages(c *gin.Context) {
 	// Send the combined image data with the dynamic content type
 	c.Data(http.StatusOK, contentType, imageData)
 }
-func Remaining_Payment_For_User(c *gin.Context) {
+func RemainingPaymentForUser(c *gin.Context) {
+	// Set CORS headers to allow cross-origin requests
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
 
+	// Handle preflight OPTIONS requests
 	if c.Request.Method == "OPTIONS" {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
+
+	now := time.Now()
+	date := now.Format("02-01-2006")
+
+	// Define a slice to store booking data
 	var booking []models.Confirm_Booking_Table
 
-	var body struct {
-		Date string
-	}
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "Failed To Read Body",
-			"Data":    nil,
-		})
-		return
-	}
-	result := config.DB.Find(&booking, "date=? AND remaining_amount_to_pay>0", body.Date)
+	// Use the WHERE clause in the Find method to filter results
+	result := config.DB.Find(&booking, "date <= ? AND remaining_amount_to_pay > 0", date)
+
+	// Check if any matching records were found
 	if result.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "unsuccessfully get booking details",
-			"data":   "null",
+			"error":  "No matching booking details found",
+			"data":   nil,
 		})
 		return
 	}
+
 	var responseData []interface{}
+
 	for _, bookings := range booking {
 		var user models.User
-		result := config.DB.First(&user, bookings.User_id)
+		result := config.DB.Find(&user, "id=?", bookings.User_id)
+
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "failed to user name",
+				"error":  "Failed to fetch user name",
 			})
 			return
 		}
+
 		var branch models.Branch_info_management
-		result = config.DB.Find(&branch, bookings.Branch_id)
+		result = config.DB.Find(&branch, "id=?", bookings.Branch_id)
+
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "failed to fetch  branch name",
+				"error":  "Failed to fetch branch name",
 			})
 			return
 		}
+
 		bookingData := map[string]interface{}{
-			"ID":                      bookings.ID,
-			"CreatedAt":               bookings.CreatedAt,
-			"User_id":                 bookings.User_id,
-			"User_name":               user.Full_Name,
-			"Date":                    bookings.Date,
-			"Booking_order_id":        bookings.Booking_order_id,
-			"Total_price":             bookings.Total_price,
-			"Total_min_amount_to_pay": bookings.Total_min_amount_to_pay,
-			"Paid_amount":             bookings.Paid_amount,
-			"Remaining_amount_to_pay": bookings.Remaining_amount_to_pay,
-			"Booking_status":          bookings.Booking_status,
-			"Branch_name":             branch.Branch_name,
+			"ID":                   bookings.ID,
+			"CreatedAt":            bookings.CreatedAt,
+			"UserID":               bookings.User_id,
+			"UserName":             user.Full_Name,
+			"Contact":              user.Contact,
+			"Date":                 bookings.Date,
+			"BookingOrderID":       bookings.Booking_order_id,
+			"TotalPrice":           bookings.Total_price,
+			"TotalMinAmountToPay":  bookings.Total_min_amount_to_pay,
+			"PaidAmount":           bookings.Paid_amount,
+			"RemainingAmountToPay": bookings.Remaining_amount_to_pay,
+
+			"BranchName": branch.Branch_name,
 		}
+
 		responseData = append(responseData, bookingData)
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "successfully get booking details",
+		"success": "Successfully fetched booking details",
 		"data":    responseData,
 	})
 }
+
 func GetCarouselimagesById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
