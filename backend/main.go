@@ -60,6 +60,7 @@ func main() {
 	//bkings
 	route.RegisterAdminPanelAll_bookings(r)
 	route.RegisterAdminPanelConfirmed_bookings(r)
+	route.RegisterAdminPanelUpdatebookings(r)
 
 	r.Run(":8080")
 }

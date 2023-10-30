@@ -59,6 +59,7 @@ type Confirm_Booking_Table struct {
 	Branch_id               int
 	Name                    string
 	Contact                 string
+	Branch_Name             string
 }
 
 type Screenshot struct {

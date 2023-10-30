@@ -3078,8 +3078,50 @@ func Pending_bookings(c *gin.Context) {
 	// var slots []models.Time_Slot
 
 	result := config.DB.Debug().Raw(`
-	SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 3
+	SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3
 `).Scan(&bookings)
+
+	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch package slots",
+		})
+		return
+	}
+	// Combine the "Package" and "Slot" data into a single array
+	for _, cbData := range bookings {
+		response.Data = append(response.Data, cbData)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "package names and slots",
+		"data":    response,
+	})
+}
+func Pending_bookings_by_ID(c *gin.Context) {
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	Id := c.Param("id")
+	var response struct {
+		Data []interface{}
+	}
+
+	ID, _ := strconv.Atoi(Id)
+
+	var bookings []models.Confirm_Booking_Table
+	// var slots []models.Time_Slot
+
+	result := config.DB.Debug().Raw(`
+	SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.ID = ?
+`, ID).Scan(&bookings)
 
 	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
 

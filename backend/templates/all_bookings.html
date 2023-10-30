@@ -16,10 +16,11 @@
                         <th>Date</th>
                         <th>Total Price</th>
                         <th>Minimum Amount</th>
-                        <th>Remaining Amount</th>
+                        
                         <th>Paid Amount</th>
                         <th>Status</th>
-                        <th>branch ID</th>
+                        <th>branch Name</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,6 +55,15 @@
                         } else {
                             button = "<button type='button' class='btn btn-outline-danger'>Reserve</button>";
                         }
+                        console.log(booking.ID)
+                        var action = '<div class="dropdown">' +
+                            '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + booking.ID + '" role="button" data-toggle="dropdown">' +
+                            '<i class="dw dw-more"></i>' +
+                            '</a>' +
+                            '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                            '<a class="dropdown-item" href="/admin/update/confirm/booking?id=' + booking.ID + '"><i class="dw dw-edit2"></i> View</a>' +
+                            '</div>' +
+                            '</div>';
 
                         // Create a new row and append it to the table
                         table.row.add([
@@ -64,9 +74,11 @@
                             booking.Total_price,
                             booking.Total_min_amount_to_pay,
                             booking.Paid_amount,
-                            booking.Remaining_amount_to_pay,
+                           
                             button,
-                            booking.Branch_id
+                            booking.Branch_Name,
+                            action,
+
                         ]);
                     });
 
