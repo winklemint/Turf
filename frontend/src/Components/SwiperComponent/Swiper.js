@@ -1,222 +1,96 @@
 import React from 'react'
-
- const Swiper = () => {
-  return (
-    <div>
-     <section class="container slider-sec2">
-		<div class="">
-			<div class="">
-				<div class="slider-sec2-heading">
-					<p class="ex-p">EXCLUSIVELY</p>
-					<p class="works-p"><span style={{color:"purple", fontWeight: "bold"}}>works</span> with</p>
-					<p class="start-p">Startups and founders</p>
-					<p></p>
-				</div>
-			</div>	
-			<div class="">           
-            <div class=" mySwiper">
-               <div class="swiper-wrapper">
-                <div class=" swiper-slide">
-                    <div class="content-med ">
-                      <div class="swiper-avatar"><img src="assets/images/59.jpg"/></div>
-                        <div class="cites-box">
-                      <h2 class="cite"> Rajenndra Nagar</h2>
-                      <p class="cite-box-parag"><i class="	fas fa-map-marker-alt"  style={{ color: "red"}}><span class="address" style={{color:"black",paddingLeft: "10px"}}>Indore (M.P)</span></i></p>
-                       <button class="cite1"><a href="#" class="btn-link">Book Now </a></button>
-                   </div>
-                   <div class="sports-icon">
-                
-                   
-                   <span class="material-symbols-outlined tennis">
-					<img class="sports-img"
-					src="assets/images/batminton.png"/>
-					</span>
-					<span class="material-symbols-outlined cricket">
-					<img class="sports-img"
-					src="assets/images/447875.png"/>
-					</span>
-					<span class="material-symbols-outlined basketball">
-					<img class="sports-img"
-					src="assets/images/footballllll.jpeg"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/fotbal123.png"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/tabletennis.png"/>
-					</span>
-                   </div>
-                      
-                    </div>
-                </div>
+import { useState, useEffect } from 'react';
 
 
-                 <div class=" swiper-slide">
-                    <div class="content-med">
-                      <div class="swiper-avatar"><img src="assets/images/turf-img.jpg"/></div>
-                        <div class="cites-box">
-                      <h2 class="cite"> Vijay Nagar square</h2>
-                      <p class="cite-box-parag"><i class="	fas fa-map-marker-alt"  style={{ color: "red"}}><span class="address" style={{color:"black",paddingLeft: "10px"}}>Indore (M.P)</span></i></p>
-                       <button class="cite1"><a href="#" class="btn-link">Book Now </a></button>
-                   </div>
-                    <div class="sports-icon">
-                
-                   
- 
-                   <span class="material-symbols-outlined tennis">
-					<img class="sports-img"
-					src="assets/images/batminton.png"/>
-					</span>
-					<span class="material-symbols-outlined cricket">
-					<img class="sports-img"
-					src="assets/images/447875.png"/>
-					</span>
-					<span class="material-symbols-outlined basketball">
-					<img class="sports-img"
-					src="assets/images/footballllll.jpeg"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/fotbal123.png"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/tabletennis.png"/>
-					</span>
-                   </div>
-                      
-                    </div>
-                </div>
-                 <div class=" swiper-slide">
-                    <div class="content-med">
-                      <div class="swiper-avatar"><img src="assets/images/football-ground-flooring.jpg"/></div>
-                        <div class="cites-box">
-                      <h2 class="cite">New Palasiya</h2>
-                       <p class="cite-box-parag"><i class="	fas fa-map-marker-alt"  style={{ color: "red"}}><span class="address" style={{color:"black",paddingLeft: "10px"}}>Indore (M.P)</span></i></p>
-                      <button class="cite1"><a href="#" class="btn-link">Book Now</a></button>
-                   </div>
-                    <div class="sports-icon">
-                
-                   
-                   
-                   <span class="material-symbols-outlined tennis">
-					<img class="sports-img"
-					src="assets/images/batminton.png"/>
-					</span>
-					<span class="material-symbols-outlined cricket">
-					<img class="sports-img"
-					src="assets/images/447875.png"/>
-					</span>
-					<span class="material-symbols-outlined basketball">
-					<img class="sports-img"
-					src="assets/images/footballllll.jpeg"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/fotbal123.png"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/tabletennis.png"/>
-					</span>
-                   </div>
-                      
-                    </div>
-                </div>
-          
-
-		      
-		      <div class="swiper-slide">
-                     <div class="content-med">
-                      <div class="swiper-avatar"><img src="assets/images/turf-img.jpg"/></div>
-                        <div class="cites-box">
-                      <h2 class="cite"> Gandhi Nagar </h2>
-                     <p class="cite-box-parag"><i class="	fas fa-map-marker-alt"  style={{ color: "red"}}><span class="address" style={{color:"black",paddingLeft: "10px"}}>Indore (M.P)</span></i></p>
-                       <button class="cite1"><a href="#" class="btn-link">Book Now </a></button>
-                   </div>
-                    <div class="sports-icon">
-                
-                   
-                   
-                   <span class="material-symbols-outlined tennis">
-					<img class="sports-img"
-					src="assets/images/batminton.png"/>
-					</span>
-					<span class="material-symbols-outlined cricket">
-					<img class="sports-img"
-					src="assets/images/447875.png"/>
-					</span>
-					<span class="material-symbols-outlined basketball">
-					<img class="sports-img"
-					src="assets/images/footballllll.jpeg"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/fotbal123.png"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/tabletennis.png"/>
-					</span>
-                   </div>
-                       
-                    </div>
-
-		      </div>
-		     
-		      <div class="swiper-slide">
-		      	
-		      	<div class="content-med">
-                      <div class="swiper-avatar">
-                      	<img src="assets/images/football-ground-flooring.jpg"/>
-                      </div>
-                      <div class="cites-box">
-                         <h2 class="cite">Annapurna Square</h2>
-                         <p class="cite-box-parag"><i class="	fas fa-map-marker-alt"  style={{ color: "red"}}><span class="address" style={{color:"black",paddingLeft: "10px"}}>Indore (M.P)</span></i></p>
-                        <button class="cite1"><a href="#" class="btn-link">Book Now</a></button>
-                   </div>
-                    <div class="sports-icon">
-                
-                   
-                    
-                   <span class="material-symbols-outlined tennis">
-					<img class="sports-img"
-					src="assets/images/batminton.png"/>
-					</span>
-					<span class="material-symbols-outlined cricket">
-					<img class="sports-img"
-					src="assets/images/447875.png"/>
-					</span>
-					<span class="material-symbols-outlined basketball">
-					<img class="sports-img"
-					src="assets/images/footballllll.jpeg"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/fotbal123.png"/>
-					</span>
-					<span class="material-symbols-outlined soccer">
-					<img class="sports-img"
-					src="assets/images/tabletennis.png"/>
-					</span>
-                   </div>
-                       
-                    </div>
-		      </div>
-               
-          </div>
+const Swiper = () => {
+	const [branches, setBranches] = useState([]);
   
-          <div class="swiper-button-prev"></div>         
-
-             <div class="swiper-button-next"></div>
-    
-        
-                   </div>
-</div>
-</div>
-   </section></div>
+	const fetchData = async () => {
+	  try {
+		const response = await fetch(`http://localhost:8080/admin/get/branch`);
+		console.log('Response Status:', response.status);
+		if (response.status === 201) {
+		  const responseData = await response.json();
+		  console.log("Branch API response", responseData);
+		  setBranches(responseData.data); // Use the correct property for the array
+		} else {
+		  throw new Error('Network response was not ok');
+		}
+	  } catch (error) {
+		console.error('Error fetching Branches: ' + error.message);
+	  }
+	};
+  
+	useEffect(() => {
+	  fetchData();
+	}, []);
+  
+  return (
+	<div>
+	<section className="container slider-sec2">
+	  <div>
+		<div>
+		  <div className="slider-sec2-heading">
+			<p className="ex-p">EXCLUSIVELY</p>
+			<p className="works-p">
+			  <span style={{ color: "purple", fontWeight: "bold" }}>works</span> with
+			</p>
+			<p className="start-p">Startups and founders</p>
+			<p></p>
+		  </div>
+		</div>
+	  </div>
+	  <div>
+	  <div className="mySwiper">
+            <div className="swiper-wrapper">
+              {branches.map((branch, index) => (
+                <div className="swiper-slide" key={index}>
+                  <div className="content-med">
+                    <div className="swiper-avatar">
+                      <img src={branch.Image} alt={branch.Turf_name} />
+                    </div>
+                    <div className="cites-box">
+                      <h2 className="cite">{branch.Turf_name}</h2>
+                      <p className="cite-box-parag">
+                        <i className="fas fa-map-marker-alt" style={{ color: "red" }}>
+                          <span className="address" style={{ color: "black", paddingLeft: "10px" }}>
+                            {branch.Branch_address}
+                          </span>
+                        </i>
+                      </p>
+                      <button className="cite1">
+                        <a href="#" className="btn-link">
+                          Book Now
+                        </a>
+                      </button>
+				  </div>
+				  <div className="sports-icon">
+					<span className="material-symbols-outlined tennis">
+					  <img className="sports-img" src="assets/images/batminton.png" />
+					</span>
+					<span className="material-symbols-outlined cricket">
+					  <img className="sports-img" src="assets/images/447875.png" />
+					</span>
+					<span className="material-symbols-outlined basketball">
+					  <img className="sports-img" src="assets/images/footballllll.jpeg" />
+					</span>
+					<span className="material-symbols-outlined soccer">
+					  <img className="sports-img" src="assets/images/fotbal123.png" />
+					</span>
+					<span className="material-symbols-outlined soccer">
+					  <img className="sports-img" src="assets/images/tabletennis.png" />
+					</span>
+				  </div>
+				</div>
+			  </div>
+			))}
+		  </div>
+		  <div className="swiper-button-prev"></div>
+		  <div className="swiper-button-next"></div>
+		</div>
+	  </div>
+	</section>
+  </div>
   )
 }
 export default Swiper;
