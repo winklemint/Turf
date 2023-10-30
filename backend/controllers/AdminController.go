@@ -499,7 +499,7 @@ func GET_All_Branch_Id(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var branch models.Branch_info_management
-	result := config.DB.Find(&branch).Where("id=?", Id)
+	result := config.DB.Find(&branch, "id=?", Id)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,

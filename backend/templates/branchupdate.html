@@ -147,6 +147,9 @@
                             <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
                             <div class="col-sm-12 col-md-10">
                                 <select class="custom-select col-12" id="branch_status">
+                                    <option selected="">Choose...</option>
+                                    <option value="1">Enable</option>
+                                    <option value="2">Disable</option>
                                     
                                 </select>
                             </div>
@@ -221,17 +224,8 @@
                         $('#contact').val(branchs.Branch_contact_number);
                         $('#gst').val(branchs.GST_no);
                         $('#size').val(branchs.Ground_Size);
-
-                        if(branchs.Status == 1)
-                        {
-                            var dropDownStatus = "<option value='1' selected >Enable</option><option value='2'>Disable</option>";
-                        }
-                        else
-                        {
-                            var dropDownStatus = "<option value='1'  >Enable</option><option value='2' selected>Disable</option>";
-
-                        }
-                        $('#branch_status').html(dropDownStatus);
+                        $('#branch_status').val(branchs.Status);
+                       
                         
                                     
                     }
@@ -318,7 +312,7 @@
     formData.append("Branch_address", $('#address').val());
     formData.append("Branch_contact_number", $('#contact').val());
     formData.append("GST_no", $('#gst').val());
-    formData.append("Status", parseInt($('#branch_status').val(), 10));
+    formData.append("Status", parseInt($('#branch_status').val()));
 
     var imageInput = $('#image')[0];
     if (imageInput.files.length > 0) {
@@ -336,7 +330,7 @@
         processData: false, // Set to false to prevent jQuery from converting data to a query string
         success: function(response) {
             alert("Branch Details updated successfully!");
-            window.location.href = "/branchs";
+            window.location.href = "/all/branch";
         },
         error: function(xhr, status, error) {
             console.error(error);
