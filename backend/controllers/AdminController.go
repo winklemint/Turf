@@ -1301,7 +1301,7 @@ func GetAllUsersById(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var users models.User
-	result := config.DB.Find(&users).Where("id=?", Id)
+	result := config.DB.Find(&users, "id=?", Id)
 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
