@@ -198,6 +198,7 @@
                 success: function(response) {
                     var branchs = response.data;
                     if (branchs) {
+                        
                         $('#name').val(branchs.Turf_name);
                         $('#branch_name').val(branchs.Branch_name);
                         $('#email').val(branchs.Branch_email);
