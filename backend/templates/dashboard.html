@@ -359,7 +359,7 @@
 		
 		<div class="card-box pb-10">
 			<div class="h5 pd-20 mb-0" >Confirm Bookings</div>
-			<table   id="confirm-booking-table" class="data-table table nowrap">
+			<table   id="conf_booking" class="data-table table nowrap">
 				<thead>
 					<tr>
 						<th>SN</th>
@@ -430,12 +430,11 @@
 	
 	
 
-		{{template "footer.html"}}
 
 <script>
     $(document).ready(function () {
         // Initialize DataTable
-        var table = $('#confirm-booking-table').DataTable();
+        var table = $('#conf_booking').DataTable();
         // Make an AJAX request to fetch data from the URL
         $.ajax({
             url: '/admin/get/confirm/booking/top5', // Adjust the URL to match your API endpoint
@@ -482,9 +481,10 @@
                 // Refresh the table to apply the changes
                 table.draw();
             },
-            error: function (error) {
-                console.error('Error fetching data: ' + error);
-            }
+			error: function(xhr, status, error) {
+				console.log(error);
+			}
+			
         });
     });
     function deleteCarousel(Id) {

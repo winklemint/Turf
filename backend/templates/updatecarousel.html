@@ -61,7 +61,7 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                             <div class="col-sm-12 col-md-10">
-                                <select class="custom-select col-12" id="stat">
+                                <select class="custom-select col-12" id="stt">
                                     <option selected="">Choose...</option>
                                     <option value="1">Enable</option>
                                     <option value="2">Disable</option>
@@ -140,7 +140,7 @@
               event.preventDefault();
      
               var form_data = {
-                 "status": $('#stat').val(),
+                 Status: $('#stt').val(),
               };
      
               var form_image = new FormData();
