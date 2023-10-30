@@ -1,0 +1,26 @@
+.slider {
+    display: flex;
+    transition: transform 0.5s ease; /* Add a CSS transition for smooth sliding */
+  }
+  
+  .slide {
+    flex: 0 0 100%; /* Ensure each slide takes up the full width of the container */
+
+
+  }
+
+  .slide-animating {
+    transition: none; /* Disable transitions during animation */
+    animation: slideAnimation 0.5s linear;
+  }
+  
+  @keyframes slideAnimation {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
+  
