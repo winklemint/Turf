@@ -96,21 +96,39 @@ document.getElementById("swiper-button-prev").addEventListener("click", function
                 <div className="swiper-slide" key={data.Id}>
                   <Carousel slide={false}>
                     <Carousel.Item>
-                      <div className="content-med">
-                        <div className="swiper-avatar">
-                          <img src={data.Img} alt={data.Palace} />
-                        </div>
-                        <div className="cites-box">
-                          <h2 className="cite">{data.Palace}</h2>
-                          <p className="cite-box-parag">Ground Size - {data.Ground}</p>
-                          <p className="cite-box-parag">Amenities - {data.Amenities}</p>
-                          <button className="cite1">
-                            <a href="#" className="btn-link">
-                              Book Now →
-                            </a>
-                          </button>
-                        </div>
-                      </div>
+                                  <div class="content-med ">
+                                    <div class="swiper-avatar"><img src={data.Img}/></div>
+                                      <div class="cites-box">
+                                    <h2 class="cite"> {data.Palace}</h2>
+                                    <p class="cite-box-parag"><i class="	fas fa-map-marker-alt" style= {{color: "red"}} ><span class="address" style={{color:"black", paddingLeft:"10px"}}>Indore (M.P)</span></i></p>
+                                    <button class="cite1"><a href="#" class="btn-link">Book Now </a></button>
+                                </div>
+                                <div class="sports-icon">
+                              
+                                
+                                <span class="material-symbols-outlined tennis">
+                                <img class="sports-img"
+                                src="assets/batminton.png"/>
+                                </span>
+                                <span class="material-symbols-outlined cricket">
+                                <img class="sports-img"
+                                src="assets/447875.png"/>
+                                </span>
+                                <span class="material-symbols-outlined basketball">
+                                <img class="sports-img"
+                                src="assets/footballllll.jpeg"/>
+                                </span>
+                                <span class="material-symbols-outlined soccer">
+                                <img class="sports-img"
+                                src="assets/fotbal123.png"/>
+                                </span>
+                                <span class="material-symbols-outlined soccer">
+                                <img class="sports-img"
+                                src="assets/tabletennis.png"/>
+                                </span>
+                   </div>
+                      
+                    </div>
                     </Carousel.Item>
                   </Carousel>
                 </div>

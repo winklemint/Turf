@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+import 'swiper/swiper-bundle.css';
 
 function Section2() {
     return (
@@ -18,6 +18,8 @@ function Section2() {
                         spaceBetween={50}
                         onSlideChange={() => console.log('slide change')}
                         onSwiper={(swiper) => console.log(swiper)}
+                        mousewheel={{ forceToAxis: true }}
+                        pagination={{ clickable: true }}
                         breakpoints={{
                             768: {
                                 slidesPerView: 3, // Number of slides on screens wider than 768px

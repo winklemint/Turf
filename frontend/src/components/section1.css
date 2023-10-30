@@ -1,7 +1,10 @@
-.carousel-control-prev-icon {
-    display: none;
+.carousel-control-next-icon, .carousel-control-prev-icon {
+    display: inline-block;
     width: 0rem;
     height: 0rem;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100% 100%;
 }
 
         
