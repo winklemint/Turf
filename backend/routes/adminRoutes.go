@@ -54,9 +54,11 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
 		adminRoutes.PATCH("/update/branch/:id", controllers.Update_Branch)
 		adminRoutes.GET("/get/branch", controllers.GET_All_Branch)
+		adminRoutes.GET("/active/branch", controllers.ActiveBranch)
 		adminRoutes.POST("set/id/branch", controllers.Get_IdBy_Branch_NAme)
 		adminRoutes.GET("/get/branch/:id", controllers.GET_All_Branch_Id)
 		adminRoutes.DELETE("/delete/branch/:id", controllers.Delete_Branch)
+		adminRoutes.GET("/branch/image/active/:id", controllers.GetBranchimagesById)
 
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
 		//tetsimonials
