@@ -3688,3 +3688,131 @@ func DeleteHeading(c *gin.Context) {
 		"success": " Delete Heading Details successfully",
 	})
 }
+
+func Total_Revenue(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var revenue []models.Confirm_Booking_Table
+	result := config.DB.Find(&revenue)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to Delete Heading Details",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Calculate the total Paid_amount
+	totalPaidAmount := 0.0
+	for _, booking := range revenue {
+		totalPaidAmount += booking.Paid_amount
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "revenue",
+		"data":   totalPaidAmount,
+	})
+}
+
+func Total_Remaining_amount(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var revenue []models.Confirm_Booking_Table
+	result := config.DB.Find(&revenue)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to execute query",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Calculate the total Paid_amount
+	totalRemainingAmount := 0.0
+	for _, booking := range revenue {
+		totalRemainingAmount += booking.Remaining_amount_to_pay
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "remaining amt",
+		"data":   totalRemainingAmount,
+	})
+}
+
+func Total_Sales(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var revenue []models.Confirm_Booking_Table
+	result := config.DB.Find(&revenue)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to execute query",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Calculate the total Paid_amount
+	totalSales := 0.0
+	for _, booking := range revenue {
+		totalSales += booking.Total_price
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "total Sales",
+		"data":   totalSales,
+	})
+}
+
+func Total_Monthly_revenue(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	sqlQuery := "SELECT * FROM `confirm_booking_tables` WHERE Year(created_at) = Year(CURRENT_DATE) AND MONTH(CURRENT_DATE) = MONTH(CURRENT_DATE);"
+	var monthlyRevenue []models.Confirm_Booking_Table
+	result := config.DB.Raw(sqlQuery).Scan(&monthlyRevenue)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to execute query",
+			"data":   "null",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "m0nthly revenue details",
+		"data":   monthlyRevenue,
+	})
+
+}

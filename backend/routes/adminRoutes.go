@@ -111,5 +111,10 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/heading/get/:id", controllers.GetHeadingById)
 		adminRoutes.DELETE("/heading/delete/:id", controllers.DeleteHeading)
 
+		//dashbard
+		adminRoutes.GET("/total/revenue", controllers.Total_Revenue)
+		adminRoutes.GET("/total/remaining/amount", controllers.Total_Remaining_amount)
+		adminRoutes.GET("/total/sales", controllers.Total_Sales)
+		adminRoutes.GET("/total/m")
 	}
 }
