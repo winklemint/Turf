@@ -14,7 +14,7 @@ func RegisterUserRoutes(router *gin.Engine) {
 		userRoutes.POST("/verify/otp", controllers.VerifyOTPhandler)
 		userRoutes.POST("/login", controllers.Login)
 		userRoutes.POST("/booking", middleware.RequireUserAuth, controllers.Booking)
-		userRoutes.POST("/available/slot", controllers.AvailableSlot)
+		//userRoutes.POST("/available/slot", controllers.AvailableSlot)
 		userRoutes.PUT("/update", middleware.RequireUserAuth, controllers.UpdateUser)
 		userRoutes.POST("/uplad", controllers.Screenshot)
 		userRoutes.GET("/get/detail", controllers.GetAllDetail)
