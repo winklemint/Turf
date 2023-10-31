@@ -40,6 +40,8 @@ func main() {
 	//Content
 	route.RegisterAdminPanelUpdateContent(r)
 	route.RegisterAdminPaneladdContent(r)
+	route.RegisterAdminPanelOtherContent(r)
+	route.RegisterAdminPanelUpdateOtherContent(r)
 	// Branchs
 	route.RegisterAdminPanelUpdatebranchs(r)
 	route.RegisterAdminPanelAllBranch(r)
@@ -67,9 +69,7 @@ func main() {
 
 	//Navbar
 	route.RegisterAdminPanelNavbar(r)
-
-	//Other Content
-	route.RegisterAdminPanelOtherContent(r)
+	route.RegisterAdminPanelUpdateNavbar(r)
 	r.Run(":8080")
 }
 
