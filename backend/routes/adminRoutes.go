@@ -95,5 +95,21 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//admin logout
 		adminRoutes.POST("/logout", controllers.AdminLogout)
 
+		//Navbar
+		adminRoutes.POST("/navbar/add", controllers.AddNavbar)
+		adminRoutes.GET("/navbar/get", controllers.GetAllNavbar)
+		adminRoutes.GET("/navbar/active", controllers.GetActiveNavbar)
+		adminRoutes.PATCH("/navbar/update/:id", controllers.UpadateNavbar)
+		adminRoutes.GET("/navbar/get/:id", controllers.GetNavbarById)
+		adminRoutes.DELETE("/navbar/delete/:id", controllers.DeleteNavbar)
+
+		//Other content
+		adminRoutes.POST("/heading/add", controllers.AddHeading)
+		adminRoutes.GET("/heading/get", controllers.GetAllHeading)
+		adminRoutes.GET("/heading/active", controllers.GetActiveHeading)
+		adminRoutes.PATCH("/heading/update/:id", controllers.UpadateHeading)
+		adminRoutes.GET("/heading/get/:id", controllers.GetHeadingById)
+		adminRoutes.DELETE("/heading/delete/:id", controllers.DeleteHeading)
+
 	}
 }
