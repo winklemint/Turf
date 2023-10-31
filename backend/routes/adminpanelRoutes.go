@@ -59,7 +59,32 @@ func RegisterAdminPanelCreateBranch(router *gin.Engine) {
 		})
 	})
 }
+func RegisterAdminPanelNavbar(router *gin.Engine) {
+	// Load HTML templates for the admin panel
+	//router.LoadHTMLGlob("templates/*.html")
+	router.LoadHTMLGlob("templates/*.html")
 
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/navbar", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "navbar.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+func RegisterAdminPanelOtherContent(router *gin.Engine) {
+	// Load HTML templates for the admin panel
+	//router.LoadHTMLGlob("templates/*.html")
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/other", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "othercontent.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
 func RegisterAdminPanelAllBranch(router *gin.Engine) {
 	// Load HTML templates for the admin panel
 	//router.LoadHTMLGlob("templates/*.html")

@@ -41,7 +41,7 @@
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">
                         <div class="pull-left">
-                            <h4 class="text-blue h4">Carosel Content</h4>
+                            <h4 class="text-blue h4">Content</h4>
                             
                         </div>
                         <!-- <div class="pull-right">
@@ -58,10 +58,10 @@
                     <form  id = "content_form">
                         
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Heading</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Menu1</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id="heading"
+                                id="menu1"
                                     class="form-control"
                                     type="text"
                                     placeholder="Heading Here"
@@ -69,10 +69,10 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">SubHeading</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Menu2</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id = "subheading"
+                                id = "menu2"
                                     class="form-control"
                                     placeholder="SubHeading Here"
                                     type="text"
@@ -80,10 +80,21 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">button</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Menu3</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id="button"
+                                id="menu3"
+                                    class="form-control"
+                                    placeholder="Button Here"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Menu4</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="menu4"
                                     class="form-control"
                                     placeholder="Button Here"
                                     type="text"
@@ -96,7 +107,41 @@
                                 
                         </div>
                     </form>
-                      
+                        <div class="card-box pb-10">
+                            <!-- Export Datatable start -->
+                            <div class="card-box mb-30">
+                                <div class="pd-20">
+                                    <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
+                                </div>
+                                <div class="pb-20">
+                                    <table class="table hover multiple-select-row data-table-export nowrap" id="update_content">
+                                        <thead>
+                                            <tr>
+                                                <th>Sn.</th>
+                                                <th>Menu1</th>
+                                                <th>Menu2</th>
+                                                <th>Menu3</th>
+                                                <th>Menu4</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        
+                        
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+        
+                       
+
+                       
                        
                     
                     <div class="collapse collapse-box" id="basic-form1">
@@ -125,68 +170,6 @@
                 </div>
                 <!-- Default Basic Forms End -->
             </div>
-            
-        </div>
-        <div class="pd-20 card-box mb-30">
-            <div class="clearfix">
-                <div class="pull-left">
-                    <h4 class="text-blue h4">Other Content</h4>
-                    
-                </div>
-                <!-- <div class="pull-right">
-                    <a
-                        href="#basic-form1"
-                        class="btn btn-primary btn-sm scroll-click"
-                        rel="content-y"
-                        data-toggle="collapse"
-                        role="button"
-                        ><i class="fa fa-code"></i> Source Code</a
-                    >
-                </div> -->
-            </div>
-            <form  id = "other_form">
-                
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Slider Heading</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input
-                        id="slider"
-                            class="form-control"
-                            type="text"
-                            placeholder="Slider Heading Here"
-                        />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Testimonial Heading</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input
-                        id = "testimonial"
-                            class="form-control"
-                            placeholder="Testimonial Heading Here"
-                            type="text"
-                        />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Footer Heading</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input
-                        id="footer"
-                            class="form-control"
-                            placeholder="Footer Heading Here"
-                            type="text"
-                        />
-                    </div>
-                </div>
-               
-                <div>
-                   
-                    <button type="submit" class="btn btn-primary"  id="update">Submit</button>
-                        
-                </div>
-            </form>
-               
             <div class="footer-wrap pd-20 mb-20 card-box">
                 DeskApp - Bootstrap 4 Admin Template By
                 <a href="https://github.com/dropways" target="_blank"
@@ -194,6 +177,9 @@
                 >
             </div>
         </div>
+
+
+   
     {{template "footer.html"}}
 <script>
     $(document).ready(function(e) {
@@ -215,43 +201,89 @@
             dataType: "json",
         
           }).done(function(data) {
-            window.location.href = "/other";
+            window.location.href = "/content";
           });
         });
       });
   
        
 </script>    
-
-        
 <script>
-    $(document).ready(function(e) {
-        $("#other_form").submit(function(event) { 
-          event.preventDefault();
-          var formData = {
-            Slider: $("#slider").val(),
-            Testimonials: $("#testimonial").val(),
-            Footer: $("#footer").val(),
-            
+    $(document).ready(function () {
+        // Initialize DataTable
+        var table = $('#update_content').DataTable();
+        // Make an AJAX request to fetch data from the URL
+        $.ajax({
+            url: '/admin/content/get',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                // Iterate through the data and append it to the table
+                $.each(response.data, function (index, packages) {
+                    
+                    // Determine the button content based on the "Status"
+                    var button;
+                    if (packages.Status === "1") {
+                        button = "<button type='button' class='btn btn-outline-success'>Enable</button>";
+                    } else {
+                        button = "<button type='button' class='btn btn-outline-danger'>Disable</button>";
+                    }
+                    var action = '<div class="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/update/content' + packages.ID + '" role="button" data-toggle="dropdown">' +
+                        '<i class="dw dw-more"></i>' +
+                        '</a>' +
+                        '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                        '<a class="dropdown-item" href="/update/content?id=' + packages.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/content" onclick="deleteCarousel(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '</div>' +
+                        '</div>'
 
-            
-          };
-    
-          $.ajax({
-            type: "POST",
-            url: "/admin/heading/add",
-            data: formData,
-            dataType: "json",
-        
-          }).done(function(data) {
-            window.location.href = "/other";
-          });
+                       
+                    // Create a new row and append it to the table
+                    table.row.add([
+                        index + 1, // Sn.
+                        packages.Heading, // Package Name
+                        packages.SubHeading, // Charges
+                        packages.Button, // Branch ID
+                        button, // Status button
+                        action, // Status
+
+                    ]);
+                });
+
+                // Refresh the table to apply the changes
+                table.draw();
+            },
+            error: function (error) {
+                console.error('Error fetching data: ' + error);
+            }
         });
-      });
-  
-       
-</script>    
+    });
+    function deleteCarousel(Id) {
+        var row_id = Id;
+        
+        
+        $.ajax({
+            url: "/admin/content/delete/" + Id,
+            method: "DELETE",
+            success: function (response) {
+                var rowid = 'rowN' + row_id;
+                alert(rowid);
+                var rowElement = document.getElementById(rowid);
+                if (rowElement) {
+                    rowElement.style.display = 'none';
+                    alert("Carousel with ID: " + Id + " deleted successfully");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("Error deleting Carousel with ID: " + Id);
+            }
+        });
+    }
     
+</script>      
+
 </body>
 </html>
 
