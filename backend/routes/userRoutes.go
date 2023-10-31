@@ -19,6 +19,7 @@ func RegisterUserRoutes(router *gin.Engine) {
 		userRoutes.POST("/uplad", controllers.Screenshot)
 		userRoutes.GET("/get/detail", controllers.GetAllDetail)
 		userRoutes.GET("/get/booking/detail", controllers.GetBookingDetail)
+		userRoutes.POST("/get/avl/slots", controllers.Get_Available_slots)
 
 	}
 
