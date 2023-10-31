@@ -3286,12 +3286,10 @@ func GetpaymentimagesById(c *gin.Context) {
 	// var body struct {
 	// 	Booking_order_id string
 	// }
-	// id := c.Param("id")
-
-	bid := c.Request.FormValue("Booking_order_id")
+	id := c.Param("id")
 
 	var payment models.Screenshot
-	result := config.DB.Find(&payment, "booking_order_id=?", bid)
+	result := config.DB.Find(&payment, "booking_order_id=?", id)
 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -3302,38 +3300,13 @@ func GetpaymentimagesById(c *gin.Context) {
 		return
 	}
 
-	// Determine the file path based on the file format (you may need to store this information in your model)
-	var filePath string
-	if strings.HasSuffix(payment.Payment_screenshot, ".jpg") {
-		filePath = payment.Payment_screenshot
-		c.Header("Content-Type", "image/jpeg")
-	} else if strings.HasSuffix(payment.Payment_screenshot, ".png") {
-		filePath = payment.Payment_screenshot
-		c.Header("Content-Type", "image/png")
-	} else {
-		// Handle unsupported image formats
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "unsupported image format",
-			"data":   "null",
-		})
-		return
-	}
-
-	// Read the image file
-	imageData, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		fmt.Println("Error reading the image file:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": 500,
-			"error":  "internal server error",
-			"data":   "null",
-		})
-		return
-	}
-
-	// Send the image data as the response
-	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
+	// Handle unsupported image formats
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "success",
+		"data":   payment,
+	})
+	return
 }
 func AddNavbar(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")

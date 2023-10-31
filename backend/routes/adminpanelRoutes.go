@@ -376,6 +376,7 @@ func RegisterAdminPanelUpdatebookings(router *gin.Engine) {
 
 }
 
+
 // Serve all files first
 
 func IsAuthenticated() gin.HandlerFunc {
