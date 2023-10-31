@@ -796,10 +796,10 @@ func AvailableSlot(c *gin.Context) {
 		return
 	}
 	// slot go routine running
-	go Slot_go_rountine()
+	//go Slot_go_rountine()
 
 	var body struct {
-		Date time.Time
+		Date string
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -818,12 +818,12 @@ func AvailableSlot(c *gin.Context) {
 		fmt.Println(result.Error)
 		return
 	}
-	currentTime := time.Now()
-	date := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), 0, currentTime.Location())
+	// currentTime := time.Now()
+	// date := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), 0, currentTime.Location())
 
-	fmt.Println(date)
+	// fmt.Println(date)
 
-	result = config.DB.Where("date = ? AND is_booked = ?", date, 1).Find(&slots)
+	result = config.DB.Where("date = ? AND is_booked = ?", body.Date, 1).Find(&slots)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return
