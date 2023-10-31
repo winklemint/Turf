@@ -115,6 +115,6 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/total/revenue", controllers.Total_Revenue)
 		adminRoutes.GET("/total/remaining/amount", controllers.Total_Remaining_amount)
 		adminRoutes.GET("/total/sales", controllers.Total_Sales)
-		adminRoutes.GET("/total/m")
+		adminRoutes.GET("/total/monthly/revenue", controllers.Total_Monthly_revenue)
 	}
 }
