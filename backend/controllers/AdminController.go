@@ -3813,10 +3813,16 @@ func Total_Monthly_revenue(c *gin.Context) {
 		return
 	}
 
+	// Calculate the sum of Paid_amount
+	totalPaidAmount := 0.0
+	for _, booking := range monthlyRevenue {
+		totalPaidAmount += booking.Paid_amount
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": 200,
 		"msg":    "m0nthly revenue details",
-		"data":   monthlyRevenue,
-	})
 
+		"data": totalPaidAmount,
+	})
 }
