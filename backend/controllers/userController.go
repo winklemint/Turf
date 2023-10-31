@@ -796,7 +796,7 @@ func AvailableSlot(c *gin.Context) {
 		return
 	}
 	// slot go routine running
-	//go Slot_go_rountine()
+	//go Slot_go_rountine()w3s
 
 	var body struct {
 		Date string
@@ -823,10 +823,13 @@ func AvailableSlot(c *gin.Context) {
 
 	// fmt.Println(date)
 
-	result = config.DB.Where("date = ? AND is_booked = ?", body.Date, 1).Find(&slots)
+	result = config.DB.Where("date = ? AND is_booked = 1", body.Date).Find(&slots)
 	if result.Error != nil {
-		fmt.Println(result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to find slot by start_slot",
+		})
 		return
+
 	}
 
 	for _, s := range slots {
@@ -849,16 +852,29 @@ func AvailableSlot(c *gin.Context) {
 	for _, s := range availableSlots {
 		var slt models.Time_Slot
 		result := config.DB.Where("id = ? ", s).Find(&slt)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Failed to find slot by start_slot",
+			})
+			return
 
-		fmt.Println(s)
+		}
+
+		//fmt.Println(s)
 
 		var psr models.Package_slot_relationship
 		result = config.DB.Where("slot_id = ?", s).Find(&psr)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Failed to find slot by start_slot",
+			})
+			return
+
+		}
 
 		var price models.Package
 
 		result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
-
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Failed to find slot by start_slot",
@@ -1168,5 +1184,67 @@ func GetAllDetailbydate(c *gin.Context) {
 		"status":  200,
 		"success": "fetch booking detail Successfully",
 		"data":    booking,
+	})
+}
+
+func Get_Available_slots(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var body struct {
+		Date string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Fetch all time slots
+	var slots []models.Time_Slot
+	result := config.DB.Find(&slots)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return
+	}
+
+	// Fetch booked slots for the specified date
+	var bookedSlots []models.Turf_Bookings
+	result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4)", body.Date).Find(&bookedSlots)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to find booked slots",
+		})
+		return
+	}
+
+	// Create a map to keep track of booked slots with is_booked status 1
+	bookedSlotMap := make(map[int]bool)
+	for _, bookedSlot := range bookedSlots {
+		if bookedSlot.Is_booked == 2 || bookedSlot.Is_booked == 3 || bookedSlot.Is_booked == 4 {
+			bookedSlotMap[bookedSlot.Slot_id] = false
+		}
+	}
+
+	// Filter available slots
+	availableSlots := []models.Time_Slot{}
+	for _, slot := range slots {
+		if _, exists := bookedSlotMap[int(slot.ID)]; !exists {
+			availableSlots = append(availableSlots, slot)
+		}
+	}
+
+	// Return the available slots
+	c.JSON(http.StatusOK, gin.H{
+		"available_slots": availableSlots,
 	})
 }
