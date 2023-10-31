@@ -41,7 +41,7 @@
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">
                         <div class="pull-left">
-                            <h4 class="text-blue h4">Content</h4>
+                            <h4 class="text-blue h4">Navbar</h4>
                             
                         </div>
                         <!-- <div class="pull-right">
@@ -58,50 +58,28 @@
                     <form  id = "content_form">
                         
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Menu1</label>
+                            <label class="col-sm-12 col-md-2 col-form-label"> Navbar Name</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id="menu1"
+                                id="name"
                                     class="form-control"
                                     type="text"
-                                    placeholder="Heading Here"
+                                    placeholder="Navbar Name Here"
                                 />
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Menu2</label>
+                            <label class="col-sm-12 col-md-2 col-form-label">Link</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id = "menu2"
+                                id = "link"
                                     class="form-control"
-                                    placeholder="SubHeading Here"
+                                    placeholder="link Here"
                                     type="text"
                                 />
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Menu3</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="menu3"
-                                    class="form-control"
-                                    placeholder="Button Here"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Menu4</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="menu4"
-                                    class="form-control"
-                                    placeholder="Button Here"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div>
+                        
                            
                             <button type="submit" class="btn btn-primary"  id="update">Submit</button>
                                 
@@ -118,10 +96,10 @@
                                         <thead>
                                             <tr>
                                                 <th>Sn.</th>
-                                                <th>Menu1</th>
-                                                <th>Menu2</th>
-                                                <th>Menu3</th>
-                                                <th>Menu4</th>
+                                                <th>Name</th>
+                                                <th>Link</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
                                                 
                                             </tr>
                                         </thead>
@@ -186,9 +164,8 @@
         $("#content_form").submit(function(event) { 
           event.preventDefault();
           var formData = {
-            Heading: $("#heading").val(),
-            SubHeading: $("#subheading").val(),
-            Button: $("#button").val(),
+            Name: $("#name").val(),
+            Link: $("#link").val(),
             
 
             
@@ -196,12 +173,12 @@
     
           $.ajax({
             type: "POST",
-            url: "/admin/content/add",
+            url: "/admin/navbar/add",
             data: formData,
             dataType: "json",
         
           }).done(function(data) {
-            window.location.href = "/content";
+            window.location.href = "/navbar";
           });
         });
       });
@@ -214,7 +191,7 @@
         var table = $('#update_content').DataTable();
         // Make an AJAX request to fetch data from the URL
         $.ajax({
-            url: '/admin/content/get',
+            url: '/admin/navbar/get',
             method: 'GET',
             dataType: 'json',
             success: function (response) {
@@ -229,12 +206,12 @@
                         button = "<button type='button' class='btn btn-outline-danger'>Disable</button>";
                     }
                     var action = '<div class="dropdown">' +
-                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/update/content' + packages.ID + '" role="button" data-toggle="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/update/navbar/' + packages.ID + '" role="button" data-toggle="dropdown">' +
                         '<i class="dw dw-more"></i>' +
                         '</a>' +
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-                        '<a class="dropdown-item" href="/update/content?id=' + packages.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/content" onclick="deleteCarousel(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '<a class="dropdown-item" href="/update/navbar?id=' + packages.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/navbar" onclick="deleteCarousel(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
                         '</div>' +
                         '</div>'
 
@@ -242,10 +219,10 @@
                     // Create a new row and append it to the table
                     table.row.add([
                         index + 1, // Sn.
-                        packages.Heading, // Package Name
-                        packages.SubHeading, // Charges
-                        packages.Button, // Branch ID
-                        button, // Status button
+                        packages.Name, // Package Name
+                        packages.Link, // Charges
+                        
+button, // Status button
                         action, // Status
 
                     ]);
@@ -264,7 +241,7 @@
         
         
         $.ajax({
-            url: "/admin/content/delete/" + Id,
+            url: "/admin/navbar/delete/" + Id,
             method: "DELETE",
             success: function (response) {
                 var rowid = 'rowN' + row_id;
@@ -272,12 +249,12 @@
                 var rowElement = document.getElementById(rowid);
                 if (rowElement) {
                     rowElement.style.display = 'none';
-                    alert("Carousel with ID: " + Id + " deleted successfully");
+                    alert("Navbar with ID: " + Id + " deleted successfully");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("Error deleting Carousel with ID: " + Id);
+                alert("Error deleting Navbar with ID: " + Id);
             }
         });
     }

@@ -2440,7 +2440,7 @@ func AddContent(c *gin.Context) {
 		})
 		return
 	}
-	content := &models.Content{Heading: body.SubHeading, SubHeading: body.SubHeading, Button: body.Button}
+	content := &models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button}
 	result := config.DB.Create(&content)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -3317,10 +3317,8 @@ func AddNavbar(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Filed1 string
-		Filed2 string
-		Filed3 string
-		Filed4 string
+		Name   string
+		Link   string
 		Status string
 	}
 	if c.Bind(&body) != nil {
@@ -3331,7 +3329,7 @@ func AddNavbar(c *gin.Context) {
 		})
 		return
 	}
-	navbar := models.Navbar{Filed1: body.Filed1, Filed2: body.Filed2, Filed3: body.Filed3, Filed4: body.Filed4, Status: "2"}
+	navbar := models.Navbar{Name: body.Name, Link: body.Link, Status: "2"}
 	result := config.DB.Create(&navbar)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -3418,10 +3416,8 @@ func UpadateNavbar(c *gin.Context) {
 	}
 	id := c.Param("id")
 	var body struct {
-		Filed1 string
-		Filed2 string
-		Filed3 string
-		Filed4 string
+		Name   string
+		Link   string
 		Status string
 	}
 	if c.Bind(&body) != nil {
@@ -3432,7 +3428,7 @@ func UpadateNavbar(c *gin.Context) {
 		})
 		return
 	}
-	navbar := models.Navbar{Filed1: body.Filed1, Filed2: body.Filed2, Filed3: body.Filed3, Filed4: body.Filed4, Status: body.Status}
+	navbar := models.Navbar{Name: body.Name, Link: body.Link, Status: body.Status}
 	result := config.DB.Model(&navbar).Where("id=?", id).Updates(&navbar)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

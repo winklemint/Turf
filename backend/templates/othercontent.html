@@ -40,10 +40,7 @@
                 <!-- Default Basic Forms Start -->
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">
-                        <div class="pull-left">
-                            <h4 class="text-blue h4">Other Content</h4>
-                            
-                        </div>
+                        
                         <!-- <div class="pull-right">
                             <a
                                 href="#basic-form1"
@@ -56,12 +53,17 @@
                         </div> -->
                     </div>
                     <div class="card-box pb-10">
-                        <!-- Export Datatable start -->
+                        <div class="pull-left">
+                            <h4 class="text-blue h4">Carousel Content</h4>
+                            
+                        </div>
                         <div class="card-box mb-30">
                             <div class="pd-20">
                                 <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
                             </div>
+                            
                             <div class="pb-20">
+                               
                                 <table class="table hover multiple-select-row data-table-export nowrap" id="update_content">
                                     <thead>
                                         <tr>
@@ -81,7 +83,10 @@
                     
                     </div>
                         <div class="card-box pb-10">
-                            <!-- Export Datatable start -->
+                            <div class="pull-left">
+                                <h4 class="text-blue h4">Other Content</h4>
+                                
+                            </div>
                             <div class="card-box mb-30">
                                 <div class="pd-20">
                                     <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
@@ -178,12 +183,12 @@
                         button = "<button type='button' class='btn btn-outline-danger'>Disable</button>";
                     }
                     var action = '<div class="dropdown">' +
-                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/update/content' + packages.ID + '" role="button" data-toggle="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/update/other/content' + packages.ID + '" role="button" data-toggle="dropdown">' +
                         '<i class="dw dw-more"></i>' +
                         '</a>' +
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-                        '<a class="dropdown-item" href="/update/content?id=' + packages.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/content" onclick="deleteCarousel(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '<a class="dropdown-item" href="/update/other/content?id=' + packages.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/other" onclick="deleteothercontent(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
                         '</div>' +
                         '</div>'
 
@@ -208,12 +213,12 @@
             }
         });
     });
-    function deleteCarousel(Id) {
+    function deleteothercontent(Id) {
         var row_id = Id;
         
         
         $.ajax({
-            url: "/admin/content/delete/" + Id,
+            url: "/admin/heading/delete/" + Id,
             method: "DELETE",
             success: function (response) {
                 var rowid = 'rowN' + row_id;
@@ -221,12 +226,12 @@
                 var rowElement = document.getElementById(rowid);
                 if (rowElement) {
                     rowElement.style.display = 'none';
-                    alert("Carousel with ID: " + Id + " deleted successfully");
+                    alert("Content with ID: " + Id + " deleted successfully");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("Error deleting Carousel with ID: " + Id);
+                alert("Error deleting Content with ID: " + Id);
             }
         });
     }
@@ -258,7 +263,7 @@
                         '</a>' +
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
                         '<a class="dropdown-item" href="/update/content?id=' + packages.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/content" onclick="deleteCarousel(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '<a class="dropdown-item" href="/content" onclick="deleteContent(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
                         '</div>' +
                         '</div>'
 
@@ -283,7 +288,7 @@
             }
         });
     });
-    function deleteCarousel(Id) {
+    function deleteContent(Id) {
         var row_id = Id;
         
         
@@ -296,12 +301,12 @@
                 var rowElement = document.getElementById(rowid);
                 if (rowElement) {
                     rowElement.style.display = 'none';
-                    alert("Carousel with ID: " + Id + " deleted successfully");
+                    alert("Content with ID: " + Id + " deleted successfully");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("Error deleting Carousel with ID: " + Id);
+                alert("Error deleting Content with ID: " + Id);
             }
         });
     }

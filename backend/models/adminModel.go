@@ -30,10 +30,8 @@ type Carousel struct {
 }
 type Navbar struct {
 	gorm.Model
-	Filed1 string
-	Filed2 string
-	Filed3 string
-	Filed4 string
+	Name   string
+	Link   string
 	Status string
 }
 type Heading struct {
