@@ -850,6 +850,15 @@ func AvailableSlot(c *gin.Context) {
 		var slt models.Time_Slot
 		result := config.DB.Where("id = ? ", s).Find(&slt)
 
+		fmt.Println(s)
+
+		var psr models.Package_slot_relationship
+		result = config.DB.Where("slot_id = ?", s).Find(&psr)
+
+		var price models.Package
+
+		result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
+
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Failed to find slot by start_slot",
@@ -862,6 +871,8 @@ func AvailableSlot(c *gin.Context) {
 			"id":        slt.ID,
 			"starttime": slt.Start_time,
 			"endtime":   slt.End_time,
+			"price":     price.Price,
+			"package":   price.Name,
 		}
 		availableSlots1 = append(availableSlots1, Data)
 
