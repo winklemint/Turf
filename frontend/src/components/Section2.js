@@ -1,9 +1,18 @@
 
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 
 function Section2() {
+    const [carouselData, setCarouselData] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/admin/get/testimonials')
+          .then((response) => response.json())
+          .then((data) => setCarouselData(data.data))
+          .catch((error) => console.error('Error fetching carousel data:', error));
+      }, []);
+
     return (
         <section className="section3">
             <div className="container heading">
@@ -32,52 +41,19 @@ function Section2() {
                             },
                         }}
                     >
-                        <SwiperSlide>
-                            <div className="swiper-slide">
+                                {carouselData.map((item,index) => (
+          <       SwiperSlide key={index}>
+                 {/* Render slide content with data from the API */}
+                 <div className="swiper-slide">
                                 <div className="slide-box1">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
+                                    <h1>{item.Designation}</h1>
+                                    <p>{item.Review}</p>
+                                    <p className="namp">{item.Name}</p>
                                 </div>
                             </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box2">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-						<SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box3">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box4">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box5">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                        {/* Add more slides as needed */}
+                 </SwiperSlide>
+                                ))}
+                        
                     </Swiper>
                 </div>
             </div>

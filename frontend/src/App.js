@@ -5,6 +5,7 @@ import Header from './components/header';
 import Section1 from './components/section1';
 
 
+
 function App() {
   return(
     <div className='body'>
@@ -12,8 +13,7 @@ function App() {
       <Section1/>
       <Section2/>
       <Footer/>
-      {/* <ImageSlider/> */}
-    </div>
+     </div>
 
     )
   

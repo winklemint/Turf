@@ -1,42 +1,37 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Swiper from 'swiper';
 import './section1.css';
 
-let Data = [
-  {
-    Id: 1,
-    Palace: "Rajendra Nagar",
-    Ground: "90 X 90",
-    Amenities: "food, bev ",
-    Img: "assets/59.jpg",
-  },
-  {
-    Id: 2,
-    Palace: "Vijay Nagar",
-    Ground: "90 X 90",
-    Amenities: "food, bev ",
-    Img: "assets/turf-img.jpg",
-  },
-  {
-    Id: 3,
-    Palace: "Gandhi Nagar",
-    Ground: "90 X 90",
-    Amenities: "food, bev ",
-    Img: "assets/football-ground-flooring.jpg",
-  },
-  {
-    Id: 4,
-    Palace: "IT Park",
-    Ground: "90 X 90",
-    Amenities: "food, bev ",
-    Img: "assets/football-ground-flooring.jpg",
-  },
-];
+
 
 function Section1() {
+
+const [branchData, setBranchData] = useState([]);
   useEffect(() => {
+    // Inside your React component's useEffect hook
+    // Fetch data from the API
+    const fetchBranchData = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/admin/active/branch'
+        );
+        if (!response.ok) {
+          throw new Error('HTTP error: ' + response.status);
+        }
+        const data = await response.json();
+        setBranchData(data.data);
+      } catch (error) {
+        console.error('Error fetching branch data:', error.message);
+      }
+    }
+   
+    fetchBranchData();
+ 
+
+  console.log(branchData)
+
     // Inside your React component's useEffect hook
 const mySwiper = new Swiper(".mySwiper", {
   slidesPerView: 'auto',
@@ -92,15 +87,18 @@ document.getElementById("swiper-button-prev").addEventListener("click", function
         <div className="col-md-12 col-sm-12 col-lg-12">
           <div className="mySwiper">
             <div className="swiper-wrapper">
-              {Data.map((data) => (
+              {branchData.map((data) => (
                 <div className="swiper-slide" key={data.Id}>
                   <Carousel slide={false}>
                     <Carousel.Item>
                                   <div class="content-med ">
-                                    <div class="swiper-avatar"><img src={data.Img}/></div>
+                                    <div class="swiper-avatar"><img 
+                                    src={`http://localhost:8080/admin/branch/image/active/${data.ID}`}
+                                    alt={data.Turf_name}
+                                   /></div>
                                       <div class="cites-box">
-                                    <h2 class="cite"> {data.Palace}</h2>
-                                    <p class="cite-box-parag"><i class="	fas fa-map-marker-alt" style= {{color: "red"}} ><span class="address" style={{color:"black", paddingLeft:"10px"}}>Indore (M.P)</span></i></p>
+                                    <h2 class="cite"> {data.Turf_name}</h2>
+                                    <p class="cite-box-parag"><i class="	fas fa-map-marker-alt" style= {{color: "red"}} ><span class="address" style={{color:"black", paddingLeft:"10px"}}>{data.Branch_name}</span></i></p>
                                     <button class="cite1"><a href="#" class="btn-link">Book Now </a></button>
                                 </div>
                                 <div class="sports-icon">
@@ -141,7 +139,7 @@ document.getElementById("swiper-button-prev").addEventListener("click", function
       </div>
     </section>
   );
-}
+              }
 
 export default Section1;
 
