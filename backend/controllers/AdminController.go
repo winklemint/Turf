@@ -4067,7 +4067,7 @@ func Multiple_slot_booking(c *gin.Context) {
 			price25 := percent.PercentFloat(25.0, price.Price)
 
 			booking := models.Turf_Bookings{
-				User_id:                  uint(ID),
+				User_id:                  Id,
 				Date:                     currentDate.Format("02-01-2006"),
 				Slot_id:                  body.Slots[i],
 				Package_slot_relation_id: int(psr.ID),
