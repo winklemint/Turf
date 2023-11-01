@@ -3380,21 +3380,12 @@ func GetActiveNavbar(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	var navbars models.Navbar
+	var navbars []models.Navbar
 	result := config.DB.Find(&navbars, "status=1")
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Navbar Details",
-			"data":   nil,
-		})
-		return
-	}
-	if navbars.ID == 0 {
-
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "No Active Navbar",
 			"data":   nil,
 		})
 		return

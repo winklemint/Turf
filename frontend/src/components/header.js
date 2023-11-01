@@ -5,6 +5,14 @@
   
 
 const Header = () => {
+  const [NavbarData, setNavbarData] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/admin/navbar/active')
+          .then((response) => response.json())
+          .then((data) => setNavbarData(data.data))
+          .catch((error) => console.error('Error fetching carousel data:', error));
+      }, []);
   
   const menubar = () => {
     const menu = document.getElementById('mainNav');
@@ -67,18 +75,11 @@ const Header = () => {
                 id="mainNav"
                 style={{ display: 'none', marginRight: '12px' }}
               >
+                {NavbarData.map((item,index) => (
                 <li>
-                  <a href="#">Home</a>
+                  <a href={item.Link}>{item.Name}</a>
                 </li>
-                <li>
-                  <a href="#">Portfolio</a>
-                </li>
-                <li>
-                  <a href="#">About</a>
-                </li>
-                <li>
-                  <a href="#">Contact</a>
-                </li>
+                ))}
               </ul>
             </nav>
           </div>

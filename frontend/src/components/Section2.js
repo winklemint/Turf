@@ -3,7 +3,7 @@ import React,{useState,useEffect} from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 
-function Section2() {
+function Section2(props) {
     const [carouselData, setCarouselData] = useState([]);
 
     useEffect(() => {
@@ -12,12 +12,13 @@ function Section2() {
           .then((data) => setCarouselData(data.data))
           .catch((error) => console.error('Error fetching carousel data:', error));
       }, []);
+      console.log(props.Headingdata)
 
     return (
         <section className="section3">
             <div className="container heading">
                 <p className="client"><span style={{ color: "#ef1b40", fontWeight: "600" }}>Clients</span> memo</p>
-                <p>testimonials</p>
+                <p>{props.Headingdata.Testimonials}</p>
                 <p className="border-line"></p>
             </div>
 

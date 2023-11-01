@@ -2,12 +2,12 @@ import React from "react";
  
 
 
-function Footer(){
+function Footer(props){
     return(
 
         <footer className="footer">
 			<div className="footer-box">
-				<p className="footer-p1">Turf</p>
+				<p className="footer-p1">{props.Headingdata.Footer}</p>
 				<p className="footerp"></p>
 						<div className="foot-brand-icon">
 								<i className='fab fa-whatsapp' style={{fontSize:"45px"}}></i>

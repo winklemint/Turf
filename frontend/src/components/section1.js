@@ -6,7 +6,9 @@ import './section1.css';
 
 
 
-function Section1() {
+function Section1(props) {
+  
+      // console.log(Heading);
 
 const [branchData, setBranchData] = useState([]);
   useEffect(() => {
@@ -81,7 +83,7 @@ document.getElementById("swiper-button-prev").addEventListener("click", function
             <p className="works-p">
               <span style={{ color: "purple", fontWeight: "bold" }}>works</span> with
             </p>
-            <p className="start-p">Startups and founders</p>
+            <p className="start-p">{props.Headingdata.Slider}</p>
           </div>
         </div>
         <div className="col-md-12 col-sm-12 col-lg-12">
