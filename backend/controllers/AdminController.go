@@ -3822,3 +3822,126 @@ func Total_Monthly_revenue(c *gin.Context) {
 		"data": totalPaidAmount,
 	})
 }
+func Multiple_slot_booking(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var body struct {
+		Start_date string
+		End_date   string
+		Slots      []int
+		Branch_id  int
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
+		})
+		return
+	}
+
+	Booking_id, _ := uuid.NewRandom()
+
+	B_id := Booking_id.String()
+
+	// Parse start and end dates as time objects
+	startDate, err := time.Parse("02-01-2006", body.Start_date)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Invalid start date format",
+			"data":   "null",
+		})
+		return
+	}
+
+	endDate, err := time.Parse("02-01-2006", body.End_date)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Invalid end date format",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Loop through dates and create bookings
+	for currentDate := startDate; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
+		for i := 0; i < len(body.Slots); i++ {
+			var psr models.Package_slot_relationship
+
+			config.DB.First(&psr, "slot_id=?", int(body.Slots[i]))
+
+			// Fetch the price based on package id retrieved
+			var price models.Package
+			config.DB.Find(&price, "id=?", psr.Package_id)
+			price25 := percent.PercentFloat(25.0, price.Price)
+
+			booking := models.Turf_Bookings{
+				Date:                     currentDate.Format("02-01-2006"),
+				Slot_id:                  body.Slots[i],
+				Package_slot_relation_id: int(psr.ID),
+				Package_id:               psr.Package_id,
+				Price:                    price.Price,
+				Minimum_amount_to_pay:    price25,
+				Order_id:                 B_id,
+				Is_booked:                4,
+				Branch_id:                body.Branch_id,
+			}
+
+			result := config.DB.Create(&booking)
+			if result.Error != nil {
+				c.JSON(http.StatusOK, gin.H{
+					"status": 400,
+					"error":  "Slot Already Exist",
+					"data":   "null",
+				})
+				return
+			}
+		}
+	}
+
+	var booking models.Turf_Bookings
+
+	// Confirm booking table
+	config.DB.Find(&booking, "order_id = ?", B_id)
+
+	var totalPrice float64
+	var total_min_amount float64
+	for p := 0; p < len(body.Slots); p++ {
+		totalPrice += booking.Price
+		total_min_amount += booking.Minimum_amount_to_pay
+	}
+
+	confirm_booking := models.Confirm_Booking_Table{
+		Date:                    body.Start_date,
+		Booking_order_id:        B_id,
+		Total_price:             totalPrice,
+		Total_min_amount_to_pay: total_min_amount,
+		Booking_status:          4,
+		Branch_id:               body.Branch_id,
+	}
+
+	result := config.DB.Create(&confirm_booking)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Slot Already Exist",
+			"data":   "null",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Slots reserved successfully",
+		"data":    booking,
+	})
+}
