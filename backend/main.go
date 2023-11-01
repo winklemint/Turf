@@ -70,6 +70,14 @@ func main() {
 	//Navbar
 	route.RegisterAdminPanelNavbar(r)
 	route.RegisterAdminPanelUpdateNavbar(r)
+
+	//Social Icon
+	route.RegisterAdminPanelSocialIcon(r)
+	route.RegisterAdminPanelUpdateIcon(r)
+
+	//staff
+	route.RegisterAdminPanelAddstaff(r)
+
 	r.Run(":8080")
 }
 

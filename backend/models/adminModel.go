@@ -15,6 +15,7 @@ type Admin struct {
 	Role           int
 	LastLogin      time.Time
 	Turf_branch_id uint
+	Authorization  []int
 }
 type Content struct {
 	gorm.Model
@@ -40,4 +41,10 @@ type Heading struct {
 	Testimonials string
 	Footer       string
 	Status       string
+}
+type Icon struct {
+	gorm.Model
+	Name   string
+	Link   string
+	Status string
 }
