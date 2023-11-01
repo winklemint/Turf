@@ -41,3 +41,9 @@ type Heading struct {
 	Footer       string
 	Status       string
 }
+type Icon struct {
+	gorm.Model
+	Name   string
+	Link   string
+	Status string
+}
