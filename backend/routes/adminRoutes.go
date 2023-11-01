@@ -39,6 +39,8 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/pending/bookings/:id", controllers.Pending_bookings_by_ID)
 		adminRoutes.GET("/payments/:id", controllers.GetpaymentimagesById)
 
+		adminRoutes.POST("/multi/bookings", controllers.Multiple_slot_booking)
+
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
 		adminRoutes.GET("/get/all/user", controllers.GetAllUsers)
