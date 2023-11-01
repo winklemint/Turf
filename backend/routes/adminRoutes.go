@@ -118,5 +118,13 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/total/remaining/amount", controllers.Total_Remaining_amount)
 		adminRoutes.GET("/total/sales", controllers.Total_Sales)
 		adminRoutes.GET("/total/monthly/revenue", controllers.Total_Monthly_revenue)
+		//Social Icon
+		adminRoutes.POST("/icon/add", controllers.AddIcon)
+		adminRoutes.GET("/icon/get", controllers.GetAllIcon)
+		adminRoutes.GET("/icon/active", controllers.GetActiveIcon)
+		adminRoutes.PATCH("/icon/update/:id", controllers.UpadateIcon)
+		adminRoutes.GET("/icon/get/:id", controllers.GetIconById)
+		adminRoutes.DELETE("/icon/delete/:id", controllers.DeleteIcon)
+
 	}
 }

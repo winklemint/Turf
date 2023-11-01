@@ -190,6 +190,20 @@ func RegisterAdminPanelUpdateNavbar(router *gin.Engine) {
 	})
 
 }
+func RegisterAdminPanelUpdateIcon(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/update/icon", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request UR
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "socialiconupdate.html", gin.H{"id": id})
+	})
+
+}
 func RegisterAdminPanelUpdateOtherContent(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/update/other/content", func(c *gin.Context) {
@@ -239,6 +253,17 @@ func RegisterAdminPanelAllPackages(router *gin.Engine) {
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/packages", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "allpackages.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+func RegisterAdminPanelSocialIcon(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/icon", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "socialicon.html", gin.H{
 			// You can pass data to the template if needed
 			//"data": "helloworld.html",
 		})
@@ -375,7 +400,6 @@ func RegisterAdminPanelUpdatebookings(router *gin.Engine) {
 	})
 
 }
-
 
 // Serve all files first
 
