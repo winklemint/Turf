@@ -248,6 +248,22 @@
 
 <script>
     $(document).ready(function () {
+
+
+        var selectedSlotIDs = [];
+        var formattedStartDate; // Declare the variable here
+        var formattedEndDate;
+
+        var initialURL = window.location.href; // Replace with your actual URL
+        var idMatch = initialURL.match(/id=(\d+)/);
+
+        if (idMatch) {
+            var id = idMatch[1];
+            console.log("ID extracted:", id);
+        } else {
+            console.log("ID not found in the URL");
+        }
+
         // Function to format the date from "yyyy-MM-dd" to "dd-MM-yyyy"
         function formatDateToDDMMYYYY(dateString) {
             var parts = dateString.split('-');
@@ -307,8 +323,8 @@
         // Function to handle the AJAX request
         function makeAjaxRequest() {
             if (allFieldsFilled()) {
-                var formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
-                var formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
+                formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
+                formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
 
                 // All fields are filled, so make the AJAX request with formatted dates
                 $.ajax({
@@ -353,6 +369,15 @@
                                     const div = $('<div></div>').addClass('checkbox-item');
                                     div.append(label);
 
+                                    // Add a click event listener to track selected slots
+                                    checkbox.on('click', function () {
+                                        if (checkbox.is(':checked')) {
+                                            selectedSlotIDs.push(slotID);
+                                        } else {
+                                            selectedSlotIDs = selectedSlotIDs.filter(id => id !== slotID);
+                                        }
+                                    });
+
                                     dateContainer.append(div); // Append the slot to the dateContainer
                                 });
                             } else {
@@ -370,6 +395,31 @@
 
         // Add input event listeners to the fields
         $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
+        // Add a click event listener to the submit button
+        $("#submit").on('click', function (e) {
+            e.preventDefault();
+            // Make the second POST request with selected slots
+            const secondPOSTData = {
+                Start_date: formattedStartDate, // Update as needed
+                End_date: formattedEndDate,   // Update as neededed
+                Branch_id: parseInt($("#branchSelect").val()),
+                Slots: selectedSlotIDs,          // Update as needed
+            };
+
+            const jsonString = JSON.stringify(secondPOSTData);
+
+            // Perform the second POST request here with the secondPOSTData
+            $.ajax({
+                url: '/admin/multi/bookings/' + id,
+                method: 'POST',
+                data: jsonString,
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+        });
     });
 </script>
 </body>

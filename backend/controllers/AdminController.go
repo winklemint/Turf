@@ -4017,6 +4017,12 @@ func Multiple_slot_booking(c *gin.Context) {
 
 	ID, _ := strconv.Atoi(id)
 
+	fmt.Println(ID)
+
+	Id := uint(ID)
+
+	fmt.Println(Id)
+
 	var body struct {
 		Start_date string
 		End_date   string
@@ -4070,7 +4076,7 @@ func Multiple_slot_booking(c *gin.Context) {
 			price25 := percent.PercentFloat(25.0, price.Price)
 
 			booking := models.Turf_Bookings{
-				User_id:                  uint(ID),
+				User_id:                  Id,
 				Date:                     currentDate.Format("02-01-2006"),
 				Slot_id:                  body.Slots[i],
 				Package_slot_relation_id: int(psr.ID),
@@ -4107,6 +4113,7 @@ func Multiple_slot_booking(c *gin.Context) {
 	}
 
 	confirm_booking := models.Confirm_Booking_Table{
+		User_id:                 Id,
 		Date:                    body.Start_date,
 		Booking_order_id:        B_id,
 		Total_price:             totalPrice,
