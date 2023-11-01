@@ -122,26 +122,7 @@
                                 />
                             </div>
                         </div>
-<!-- 
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label"
-                                >Ground Size</label
-                            >
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="size"
-                                    class="form-control"
-                                    placeholder="100 x 100"
-                                    type="text"
-                                />
-                            </div>
-                        </div> -->
-                        <!-- <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input class="form-control" value="100" type="number" />
-                            </div>
-                        </div> -->
+
         
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
@@ -217,6 +198,7 @@
                 success: function(response) {
                     var branchs = response.data;
                     if (branchs) {
+                        
                         $('#name').val(branchs.Turf_name);
                         $('#branch_name').val(branchs.Branch_name);
                         $('#email').val(branchs.Branch_email);
@@ -237,71 +219,7 @@
         }
     
       
-            // $('#update_form').submit(function(event) {
-            //     event.preventDefault();
-
-            //     //old data
-            //       // Create a FormData object to handle the form data and the image
-            //     // var formData = new FormData();
-            //     // formData.append("Turf_name", $('#name').val());
-            //     // formData.append("Branch_name", $('#branch_name').val());
-            //     // formData.append("Branch_email", $("#email").val());
-            //     // formData.append("Branch_address", $('#address').val());
-            //     // formData.append("Branch_contact_number", $('#contact').val());
-            //     // formData.append("GST_no", $('#gst').val());
-            //     // formData.append("Ground_Size", $('#size').val());
-            //     // formData.append("Status", $('#status').val());
-        
-            //     // // Add the image file to the FormData object
-            //     // var imageInput = $('#image')[0];
-            //     // if (imageInput.files.length > 0) {
-            //     //     formData.append("image", imageInput.files[0]);
-            //     // }
-        
-            //     // Add the image file to the FormData object
-              
-            //     var imageInput = $('#image')[0];
-            //     if (imageInput.files.length > 0) {
-            //         var i = imageInput.files[0];
-            //     }
-            //     else
-            //     {
-            //         var i = "null";
-            //     }
           
-            //     // Create a FormData object to handle the form data and the image
-            //     var formData = {
-            //         Turf_name:  $('#name').val(),
-            //         Branch_name: $('#branch_name').val(),
-            //         Branch_email: $("#email").val(),
-            //         Branch_address:$('#address').val(),
-            //         Branch_contact_number: $('#contact').val(),
-            //         GST_no:$('#gst').val(),
-            //         Image: imageInput,
-            //         Status: parseInt( $('#branch_status').val() )             
-            //         };
-            
-            //     var formData = JSON.stringify(formData);
-
-            //     var Id = new URLSearchParams(window.location.search).get('id');
-                
-                
-            //     // Send the update request using a PATCH method
-            //     $.ajax({
-            //         url: "/admin/update/branch/" + Id, // Update the URL as needed
-            //         method: "PATCH", // Use PATCH method for updating
-            //         data: formData,
-            //         contentType: "multipart/form-data", // Set the content type to JSON
-            //         dataType: "json",
-            //         success: function(response) {
-            //             alert("Branch Details updated successfully!");
-            //             window.location.href = "/branchs";
-            //         },
-            //         error: function(xhr, status, error) {
-            //             console.error(error);
-            //         }
-            //     });
-            // });
             $('#update_form').submit(function(event) {
     event.preventDefault();
 

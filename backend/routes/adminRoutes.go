@@ -29,13 +29,15 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//booking
 		adminRoutes.GET("/get/confirm/booking", controllers.Cnfrm_slots)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
-		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
+		adminRoutes.PATCH("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
 		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
-		adminRoutes.POST("/remaining/payement/booking", controllers.Remaining_Payment_For_User)
+		adminRoutes.POST("/remaining/payement/booking", controllers.RemainingPaymentForUser)
 		adminRoutes.GET("/pending/bookings", controllers.Pending_bookings)
+		adminRoutes.GET("/pending/bookings/:id", controllers.Pending_bookings_by_ID)
+		adminRoutes.GET("/payments/:id", controllers.GetpaymentimagesById)
 
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
@@ -93,5 +95,26 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//admin logout
 		adminRoutes.POST("/logout", controllers.AdminLogout)
 
+		//Navbar
+		adminRoutes.POST("/navbar/add", controllers.AddNavbar)
+		adminRoutes.GET("/navbar/get", controllers.GetAllNavbar)
+		adminRoutes.GET("/navbar/active", controllers.GetActiveNavbar)
+		adminRoutes.PATCH("/navbar/update/:id", controllers.UpadateNavbar)
+		adminRoutes.GET("/navbar/get/:id", controllers.GetNavbarById)
+		adminRoutes.DELETE("/navbar/delete/:id", controllers.DeleteNavbar)
+
+		//Other content
+		adminRoutes.POST("/heading/add", controllers.AddHeading)
+		adminRoutes.GET("/heading/get", controllers.GetAllHeading)
+		adminRoutes.GET("/heading/active", controllers.GetActiveHeading)
+		adminRoutes.PATCH("/heading/update/:id", controllers.UpadateHeading)
+		adminRoutes.GET("/heading/get/:id", controllers.GetHeadingById)
+		adminRoutes.DELETE("/heading/delete/:id", controllers.DeleteHeading)
+
+		//dashbard
+		adminRoutes.GET("/total/revenue", controllers.Total_Revenue)
+		adminRoutes.GET("/total/remaining/amount", controllers.Total_Remaining_amount)
+		adminRoutes.GET("/total/sales", controllers.Total_Sales)
+		adminRoutes.GET("/total/monthly/revenue", controllers.Total_Monthly_revenue)
 	}
 }

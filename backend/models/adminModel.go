@@ -28,3 +28,16 @@ type Carousel struct {
 	Image  string
 	Status string
 }
+type Navbar struct {
+	gorm.Model
+	Name   string
+	Link   string
+	Status string
+}
+type Heading struct {
+	gorm.Model
+	Slider       string
+	Testimonials string
+	Footer       string
+	Status       string
+}

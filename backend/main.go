@@ -40,6 +40,8 @@ func main() {
 	//Content
 	route.RegisterAdminPanelUpdateContent(r)
 	route.RegisterAdminPaneladdContent(r)
+	route.RegisterAdminPanelOtherContent(r)
+	route.RegisterAdminPanelUpdateOtherContent(r)
 	// Branchs
 	route.RegisterAdminPanelUpdatebranchs(r)
 	route.RegisterAdminPanelAllBranch(r)
@@ -60,9 +62,14 @@ func main() {
 	//bkings
 	route.RegisterAdminPanelAll_bookings(r)
 	route.RegisterAdminPanelConfirmed_bookings(r)
+	route.RegisterAdminPanelUpdatebookings(r)
 
-	//remaining
+	//Remaining Amount
 	route.RemainingAmountForAdminPanel(r)
+
+	//Navbar
+	route.RegisterAdminPanelNavbar(r)
+	route.RegisterAdminPanelUpdateNavbar(r)
 	r.Run(":8080")
 }
 

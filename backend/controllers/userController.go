@@ -728,7 +728,7 @@ func Screenshot(c *gin.Context) {
 			return
 		}
 		// Define the path where the file will be saved
-		filePath := filepath.Join("./uploads", file.Filename)
+		filePath := filepath.Join("./uploads/user_payment", file.Filename)
 		// Save the file to the defined path
 		if err := c.SaveUploadedFile(file, filePath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
@@ -787,92 +787,119 @@ func Screenshot(c *gin.Context) {
 	}
 }
 
-func AvailableSlot(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
-	if c.Request.Method == "OPTIONS" {
-		c.JSON(http.StatusOK, gin.H{})
-		return
-	}
-	// slot go routine running
-	go Slot_go_rountine()
+// func AvailableSlot(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+// 	if c.Request.Method == "OPTIONS" {
+// 		c.JSON(http.StatusOK, gin.H{})
+// 		return
+// 	}
+// 	// slot go routine running
+// 	//go Slot_go_rountine()w3s
 
-	var body struct {
-		Date time.Time
-	}
-	err := c.Bind(&body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
-		})
-		return
-	}
-	var slots []models.Turf_Bookings
-	var bookSlots, AllSlot []int
-	var slot []models.Time_Slot
-	result := config.DB.Find(&slot)
-	if result.Error != nil {
-		fmt.Println(result.Error)
-		return
-	}
-	currentTime := time.Now()
-	date := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), 0, currentTime.Location())
+// 	var body struct {
+// 		Date string
+// 	}
+// 	err := c.Bind(&body)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status": 400,
+// 			"error":  "failed to read body",
+// 			"data":   "null",
+// 		})
+// 		return
+// 	}
+// 	var slots []models.Turf_Bookings
+// 	var bookSlots, AllSlot []int
+// 	var slot []models.Time_Slot
+// 	result := config.DB.Find(&slot)
+// 	if result.Error != nil {
+// 		fmt.Println(result.Error)
+// 		return
+// 	}
+// 	// currentTime := time.Now()
+// 	// date := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), 0, currentTime.Location())
 
-	fmt.Println(date)
+// 	// fmt.Println(date)
 
-	result = config.DB.Where("date = ? AND is_booked = ?", date, 1).Find(&slots)
-	if result.Error != nil {
-		fmt.Println(result.Error)
-		return
-	}
+// 	result = config.DB.Where("date = ? AND is_booked = 1", body.Date).Find(&slots)
+// 	if result.Error != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "Failed to find slot by start_slot",
+// 		})
+// 		return
 
-	for _, s := range slots {
-		bookSlots = append(bookSlots, s.Slot_id)
-	}
+// 	}
 
-	for _, s := range slot {
-		AllSlot = append(AllSlot, int(s.ID))
-	}
+// 	for _, s := range slots {
+// 		bookSlots = append(bookSlots, s.Slot_id)
+// 	}
 
-	availableSlots := []int{}
-	for _, s := range AllSlot {
-		if !contains(bookSlots, s) {
-			availableSlots = append(availableSlots, s)
-		}
-	}
-	var availableSlots1 []map[string]interface{}
-	// fmt.Println(availableSlots)
-	Data := make(map[string]interface{})
-	for _, s := range availableSlots {
-		var slt models.Time_Slot
-		result := config.DB.Where("id = ? ", s).Find(&slt)
+// 	for _, s := range slot {
+// 		AllSlot = append(AllSlot, int(s.ID))
+// 	}
 
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Failed to find slot by start_slot",
-			})
-			return
+// 	availableSlots := []int{}
+// 	for _, s := range AllSlot {
+// 		if !contains(bookSlots, s) {
+// 			availableSlots = append(availableSlots, s)
+// 		}
+// 	}
+// 	var availableSlots1 []map[string]interface{}
+// 	// fmt.Println(availableSlots)
+// 	Data := make(map[string]interface{})
+// 	for _, s := range availableSlots {
+// 		var slt models.Time_Slot
+// 		result := config.DB.Where("id = ? ", s).Find(&slt)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"error": "Failed to find slot by start_slot",
+// 			})
+// 			return
 
-		}
+// 		}
 
-		Data = map[string]interface{}{
-			"id":        slt.ID,
-			"starttime": slt.Start_time,
-			"endtime":   slt.End_time,
-		}
-		availableSlots1 = append(availableSlots1, Data)
+// 		//fmt.Println(s)
 
-	}
+// 		var psr models.Package_slot_relationship
+// 		result = config.DB.Where("slot_id = ?", s).Find(&psr)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"error": "Failed to find slot by start_slot",
+// 			})
+// 			return
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"success": "Get Available Slot Successfully ",
-		"data":    availableSlots1,
-	})
-}
+// 		}
+
+// 		var price models.Package
+
+// 		result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"error": "Failed to find slot by start_slot",
+// 			})
+// 			return
+
+// 		}
+
+// 		Data = map[string]interface{}{
+// 			"id":        slt.ID,
+// 			"starttime": slt.Start_time,
+// 			"endtime":   slt.End_time,
+// 			"price":     price.Price,
+// 			"package":   price.Name,
+// 		}
+// 		availableSlots1 = append(availableSlots1, Data)
+
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  200,
+// 		"success": "Get Available Slot Successfully ",
+// 		"data":    availableSlots1,
+// 	})
+// }
 
 func contains(slice []int, item int) bool {
 
@@ -1157,5 +1184,91 @@ func GetAllDetailbydate(c *gin.Context) {
 		"status":  200,
 		"success": "fetch booking detail Successfully",
 		"data":    booking,
+	})
+}
+
+func Get_Available_slots(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var body struct {
+		Date string
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Fetch all time slots
+	var slots []models.Time_Slot
+	result := config.DB.Find(&slots)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return
+	}
+
+	// Fetch booked slots for the specified date
+	var bookedSlots []models.Turf_Bookings
+	result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4)", body.Date).Find(&bookedSlots)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to find booked slots",
+		})
+		return
+	}
+
+	// Create a map to store booked slots with their is_booked status
+	bookedSlotMap := make(map[int]int)
+	for _, bookedSlot := range bookedSlots {
+		bookedSlotMap[bookedSlot.Slot_id] = bookedSlot.Is_booked
+	}
+
+	// Create a slice to store the final response
+	var response []gin.H
+	for _, slot := range slots {
+		isBooked, exists := bookedSlotMap[int(slot.ID)]
+		if !exists {
+			isBooked = 1
+		}
+
+		var psr models.Package_slot_relationship
+		result = config.DB.Where("slot_id = ?", slot.ID).Find(&psr)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Failed to find Package_slot_relationship for slot",
+			})
+			return
+		}
+
+		var price models.Package
+		result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Failed to find Package for slot",
+			})
+			return
+		}
+
+		response = append(response, gin.H{
+			"Slot":      slot,
+			"Is_booked": isBooked,
+			"Package":   price.Name,
+			"Price":     price.Price,
+		})
+	}
+
+	// Return the available slots along with their is_booked status and associated Package information
+	c.JSON(http.StatusOK, gin.H{
+		"available_slots": response,
 	})
 }

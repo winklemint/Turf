@@ -1,0 +1,280 @@
+{{template "header.html"}}
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/login">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            January 2018
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Export List</a>
+                            <a class="dropdown-item" href="#">Policies</a>
+                            <a class="dropdown-item" href="#">View Assets</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+        <div class="pd-20 card-box mb-30">
+
+            <form id="update_booking_form">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label ">User Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="name" class="form-control" type="text" disabled="disabled" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Contact</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="contact" class="form-control" type="text" disabled="disabled" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Date</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="date" class="form-control" type="text" disabled="disabled" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Total Price</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="tp" class="form-control" type="text" disabled="disabled" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Total Min Amount</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="tma" class="form-control" type="text" disabled="disabled" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Paid Amount</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="pa" class="form-control" placeholder="GSTIN" type="text" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Remaining Amount</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="rem_a" class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="branch_name" class="form-control" type="text" disabled="disabled" />
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Booking Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="booking_status">
+
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Booking order id</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="booking_order_id" class="form-control" type="text" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Image</label>
+                    <div class="col-sm-12 col-md-10">
+                        <!-- <img alt="Image Preview"
+                            style="max-width: 100%; max-height: 200px; display: none;" /> -->
+                        <input type="file" id="imageInput" accept="image/*">
+                        <div id="imagePreview"></div>
+                    </div>
+                </div>
+
+
+
+                <div>
+
+                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+
+                </div>
+
+            </form>
+            <div class="collapse collapse-box" id="basic-form1">
+                <div class="code-box">
+                    <div class="clearfix">
+                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                    </div>
+                    <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms End -->
+    </div>
+    <div class="footer-wrap pd-20 mb-20 card-box">
+        DeskApp - Bootstrap 4 Admin Template By
+        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
+</div>
+
+
+
+{{template "footer.html"}}
+
+<script>
+    $(document).ready(function () {
+        // Retrieve the loan ID from the query parameter
+        var Id = new URLSearchParams(window.location.search).get('id');
+
+        if (Id) {
+            BookingDetails(Id);
+        }
+
+        // Helper function to retrieve a specific cookie value by name
+        function BookingDetails(Id) {
+            $.ajax({
+                url: "/admin/pending/bookings/" + Id,
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    var b = response.data.Data;
+                    console.log(b[0]);
+
+                    if (b) {
+
+                        $('#name').val(b[0].Name);
+                        $('#contact').val(b[0].Contact);
+                        $('#date').val(b[0].Date);
+                        $('#tp').val(b[0].Total_price);
+                        $('#tma').val(b[0].Total_min_amount_to_pay);
+                        $('#pa').val(b[0].Paid_amount);
+                        $('#rem_a').val(b[0].Remaining_amount_to_pay);
+                        $('#branch_name').val(b[0].Branch_Name);
+                        $('#booking_order_id').val(b[0].Booking_order_id)
+
+                        var bookingOrderId = $('#booking_order_id').val();
+
+
+                        if (bookingOrderId) {
+                            console.log("Booking Order ID:", bookingOrderId);
+                        } else {
+                            console.log("Booking Order ID is not found or is empty.");
+                        }
+
+                        // Define the API URL where you want to make the call
+                        var apiUrl = "/admin/payments/" + bookingOrderId;
+
+                        // Make the API call
+                        $.get(apiUrl, function (image_data) {
+                            // Handle the response data from the API here
+                            console.log("API Response:", image_data);
+                            console.log("API path:", image_data.Payment_screenshot);
+                            console.log(image_data.data.Payment_screenshot);
+
+
+                            var imageURL = 'C:/Users/swati/OneDrive/Documents/GitHub/Turf/backend/' + image_data.data.Payment_screenshot + '.jpg';
+
+                            // console.log(imageURL);
+
+                            // var image_div = "<img alt='Image Preview' style='max-width: 100%; max-height: 200px;' src='" + imageURL + "'>";
+                            // $('#imagePreview').html(image_div);
+
+                            document.getElementById('imageInput').addEventListener('change', function (event) {
+                                var file = event.target.files[0];
+
+                                if (file) {
+                                    var imageURL = URL.createObjectURL(file);
+
+                                    console.log(imageURL);
+
+                                    var image_div = "<img alt='Image Preview' style='max-width: 100%; max-height: 200px;' src='" + imageURL + "'>";
+                                    document.getElementById('imagePreview').innerHTML = image_div;
+                                }
+                            });
+                            // if (imageURL) {
+                            //     // Set the 'src' attribute of the image to the received image URL
+                            //     $('#imagePreview').attr('src', imageURL);
+
+
+                            //     // Display the image element
+                            //     $('#imagePreview').show();
+                            // }
+
+                            // You can perform additional actions with the API response
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            console.error("API Request Failed:", textStatus, errorThrown);
+                        });
+
+
+                        var dropDownStatus = "<option value='4'>Confirm</option><option value='1'>Decline</option>";
+                        $('#booking_status').html(dropDownStatus);
+
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        $('#update_booking_form').submit(function (event) {
+            event.preventDefault();
+
+            // Create a JavaScript object from the FormData
+            var formData = {
+                Paid_amount: parseFloat($('#pa').val()),
+                Remaining_amount_to_pay: parseFloat($('#rem_a').val()),
+                Booking_status: parseInt($('#booking_status').val(), 10)
+            };
+
+            var Id = new URLSearchParams(window.location.search).get('id');
+
+            // Send the update request using a PATCH method
+            $.ajax({
+                url: "/admin/update/confirm/booking/" + Id,
+                method: "PATCH",
+                data: JSON.stringify(formData), // Convert the object to a JSON string
+                contentType: 'application/json', // Set the content type to JSON
+
+                success: function (response) {
+                    alert("Booking Details updated successfully!");
+                    // Redirect or perform other actions upon success
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    // Handle the error, e.g., display an error message
+                }
+            });
+        });
+    });
+
+</script>

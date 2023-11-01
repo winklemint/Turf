@@ -59,7 +59,32 @@ func RegisterAdminPanelCreateBranch(router *gin.Engine) {
 		})
 	})
 }
+func RegisterAdminPanelNavbar(router *gin.Engine) {
+	// Load HTML templates for the admin panel
+	//router.LoadHTMLGlob("templates/*.html")
+	router.LoadHTMLGlob("templates/*.html")
 
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/navbar", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "navbar.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+func RegisterAdminPanelOtherContent(router *gin.Engine) {
+	// Load HTML templates for the admin panel
+	//router.LoadHTMLGlob("templates/*.html")
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/other", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "othercontent.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
 func RegisterAdminPanelAllBranch(router *gin.Engine) {
 	// Load HTML templates for the admin panel
 	//router.LoadHTMLGlob("templates/*.html")
@@ -148,6 +173,34 @@ func RegisterAdminPanelUpdatebranchs(router *gin.Engine) {
 
 		// Render your HTML template (updatetestimonials.html) with the data
 		c.HTML(http.StatusOK, "branchupdate.html", gin.H{"id": id})
+	})
+
+}
+func RegisterAdminPanelUpdateNavbar(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/update/navbar", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request UR
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "navbarupdate.html", gin.H{"id": id})
+	})
+
+}
+func RegisterAdminPanelUpdateOtherContent(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/update/other/content", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request UR
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "othercontentupdate.html", gin.H{"id": id})
 	})
 
 }
@@ -307,6 +360,22 @@ func RegisterAdminPanelConfirmed_bookings(router *gin.Engine) {
 		})
 	})
 }
+
+func RegisterAdminPanelUpdatebookings(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/admin/update/confirm/booking", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request UR
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "updatebooking.html", gin.H{"id": id})
+	})
+
+}
+
 
 // Serve all files first
 
