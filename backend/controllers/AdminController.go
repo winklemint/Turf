@@ -28,13 +28,14 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name        string
-		Contact     string
-		Password    string
-		Email       string
-		Role        int
-		Status      string
-		Branch_name string
+		Name          string
+		Contact       string
+		Password      string
+		Email         string
+		Role          int
+		Status        string
+		Branch_name   string
+		Authorization []int
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -54,9 +55,7 @@ func AdminSignup(c *gin.Context) {
 		})
 		return
 	}
-	if body.Status == "Super Admin" {
-		body.Role = 1
-	} else if body.Status == "Admin" {
+	if body.Status == "Admin" {
 		body.Role = 2
 	} else if body.Status == "Staff" {
 		body.Role = 3
@@ -86,6 +85,7 @@ func AdminSignup(c *gin.Context) {
 		Email:          body.Email,
 		Role:           body.Role,
 		Turf_branch_id: branch.ID,
+		Authorization:  body.Authorization,
 	}
 
 	result = config.DB.Create(&bodys)

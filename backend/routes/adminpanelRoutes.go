@@ -449,3 +449,15 @@ func IsAuthenticated() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func RegisterAdminPanelAddstaff(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/add/staff", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "addstaff.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
