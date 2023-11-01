@@ -4013,6 +4013,10 @@ func Multiple_slot_booking(c *gin.Context) {
 		return
 	}
 
+	id := c.Param("id")
+
+	ID, _ := strconv.Atoi(id)
+
 	var body struct {
 		Start_date string
 		End_date   string
@@ -4066,6 +4070,7 @@ func Multiple_slot_booking(c *gin.Context) {
 			price25 := percent.PercentFloat(25.0, price.Price)
 
 			booking := models.Turf_Bookings{
+				User_id:                  uint(ID),
 				Date:                     currentDate.Format("02-01-2006"),
 				Slot_id:                  body.Slots[i],
 				Package_slot_relation_id: int(psr.ID),
@@ -4124,5 +4129,125 @@ func Multiple_slot_booking(c *gin.Context) {
 		"status":  200,
 		"success": "Slots reserved successfully",
 		"data":    booking,
+	})
+}
+
+func Get_Available_slots_Multi_Dates(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var body struct {
+		Start_date string
+		End_date   string
+		Branch_id  int
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Fetch all time slots
+	var slots []models.Time_Slot
+	result := config.DB.Find(&slots)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return
+	}
+
+	// Create a slice to store the final response for all dates
+	var response []gin.H
+
+	// Parse start and end dates as time objects
+	startDate, err := time.Parse("02-01-2006", body.Start_date)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Invalid start date format",
+			"data":   "null",
+		})
+		return
+	}
+
+	endDate, err := time.Parse("02-01-2006", body.End_date)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "400",
+			"error":  "Invalid end date format",
+			"data":   "null",
+		})
+		return
+	}
+
+	// Loop through dates within the range
+	for currentDate := startDate; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
+		// Fetch booked slots for the current date
+		var bookedSlots []models.Turf_Bookings
+		result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", currentDate.Format("02-01-2006"), body.Branch_id).Find(&bookedSlots)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Failed to find booked slots for date",
+			})
+			return
+		}
+
+		// Create a map to store booked slots with their is_booked status
+		bookedSlotMap := make(map[int]int)
+		for _, bookedSlot := range bookedSlots {
+			bookedSlotMap[bookedSlot.Slot_id] = bookedSlot.Is_booked
+		}
+
+		// Create a slice to store available slots for the current date
+		var availableSlots []gin.H
+		for _, slot := range slots {
+			isBooked, exists := bookedSlotMap[int(slot.ID)]
+			if !exists {
+				isBooked = 1
+			}
+
+			var psr models.Package_slot_relationship
+			result = config.DB.Where("slot_id = ?", slot.ID).Find(&psr)
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "Failed to find Package_slot_relationship for slot",
+				})
+				return
+			}
+
+			var price models.Package
+			result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "Failed to find Package for slot",
+				})
+				return
+			}
+
+			availableSlots = append(availableSlots, gin.H{
+				"Slot":      slot,
+				"Is_booked": isBooked,
+				"Package":   price.Name,
+				"Price":     price.Price,
+			})
+		}
+
+		response = append(response, gin.H{
+			"Date":            currentDate.Format("02-01-2006"),
+			"Available_slots": availableSlots,
+		})
+	}
+
+	// Return the available slots for each date within the range
+	c.JSON(http.StatusOK, gin.H{
+		"available_slots": response,
 	})
 }
