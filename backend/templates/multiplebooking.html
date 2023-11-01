@@ -247,123 +247,130 @@
 
 
 <script>
-$(document).ready(function () {
-    // Function to format the date from "yyyy-MM-dd" to "dd-MM-yyyy"
-    function formatDateToDDMMYYYY(dateString) {
-        var parts = dateString.split('-');
-        if (parts.length === 3) {
-            var year = parts[0];
-            var month = parts[1];
-            var day = parts[2];
-            return day + '-' + month + '-' + year;
+    $(document).ready(function () {
+        // Function to format the date from "yyyy-MM-dd" to "dd-MM-yyyy"
+        function formatDateToDDMMYYYY(dateString) {
+            var parts = dateString.split('-');
+            if (parts.length === 3) {
+                var year = parts[0];
+                var month = parts[1];
+                var day = parts[2];
+                return day + '-' + month + '-' + year;
+            }
+            return dateString; // Return as is if the format is not "yyyy-MM-dd"
         }
-        return dateString; // Return as is if the format is not "yyyy-MM-dd"
-    }
 
-    // Event listener to format the Start Date input
-    $("#start-date").on('change', function () {
-        var startDate = $(this).val();
-        var formattedStartDate = formatDateToDDMMYYYY(startDate);
-        updateInputField("#start-date", formattedStartDate);
+        // Event listener to format the Start Date input
+        $("#start-date").on('change', function () {
+            var startDate = $(this).val();
+            var formattedStartDate = formatDateToDDMMYYYY(startDate);
+            updateInputField("#start-date", formattedStartDate);
+        });
+
+        // Event listener to format the End Date input
+        $("#end-date").on('change', function () {
+            var endDate = $(this).val();
+            var formattedEndDate = formatDateToDDMMYYYY(endDate);
+            updateInputField("#end-date", formattedEndDate);
+        });
+
+        $.ajax({
+            url: '/admin/get/branch',
+            method: 'GET',
+            dataType: 'json',
+            success: function (res) {
+                $("#branchSelect").html('');
+                appendDataToSelect(res.data);
+            },
+            error: function () {
+                console.error('Failed to retrieve data from the server');
+            }
+        });
+
+        function appendDataToSelect(data) {
+            const element = "<option value=''>Select Branch</option>";
+            $("#branchSelect").append(element);
+            for (let index = 0; index < data.length; index++) {
+                var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
+                $("#branchSelect").append(element_other);
+            }
+        }
+
+        // Function to check if all fields have values
+        function allFieldsFilled() {
+            var startDate = $("#start-date").val();
+            var endDate = $("#end-date").val();
+            var branchName = $("#branchSelect").val();
+            return startDate && endDate && branchName;
+        }
+
+        // Function to handle the AJAX request
+        function makeAjaxRequest() {
+            if (allFieldsFilled()) {
+                var formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
+                var formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
+
+                // All fields are filled, so make the AJAX request with formatted dates
+                $.ajax({
+                    url: '/admin/get/avl/multi/slot',
+                    method: 'POST',
+                    data: {
+                        Start_date: formattedStartDate,
+                        End_date: formattedEndDate,
+                        Branch_id: parseInt($("#branchSelect").val())
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+
+                        $("#slot_date_container").empty();
+
+                        // Iterate over the response array
+                        response.available_slots.forEach(function (slotsData) {
+                            const date = slotsData.Date;
+
+                            const availableSlots = slotsData.Available_slots;
+
+                            // Create a container for each date
+                            const dateContainer = $('<div></div>').addClass('date-container');
+                            dateContainer.append('<h5>' + date + '</h5>');
+
+                            // Check if availableSlots is an array
+                            if (Array.isArray(availableSlots)) {
+                                // Iterate over the inner array (availableSlots)
+                                availableSlots.forEach(function (slot) {
+
+                                    const slotID = slot.Slot.ID;
+                                    const slotName = slot.Slot.Start_time + " - " + slot.Slot.End_time;
+                                    const checkbox = $('<input type="checkbox">')
+                                        .attr('id', slotID)
+                                        .attr('value', slotID)
+                                        .attr('name', 'slots[]');
+
+                                    const label = $('<label></label>').text(slotName);
+                                    label.prepend(checkbox);
+
+                                    const div = $('<div></div>').addClass('checkbox-item');
+                                    div.append(label);
+
+                                    dateContainer.append(div); // Append the slot to the dateContainer
+                                });
+                            } else {
+                                // Handle no data or invalid response
+                                dateContainer.append("No available slots");
+                            }
+
+                            $("#slot_date_container").append(dateContainer);
+                        });
+                    }
+                });
+            }
+        }
+
+
+        // Add input event listeners to the fields
+        $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
     });
-
-    // Event listener to format the End Date input
-    $("#end-date").on('change', function () {
-        var endDate = $(this).val();
-        var formattedEndDate = formatDateToDDMMYYYY(endDate);
-        updateInputField("#end-date", formattedEndDate);
-    });
-
-    $.ajax({
-        url: '/admin/get/branch',
-        method: 'GET',
-        dataType: 'json',
-        success: function (res) {
-            $("#branchSelect").html('');
-            appendDataToSelect(res.data);
-        },
-        error: function () {
-            console.error('Failed to retrieve data from the server');
-        }
-    });
-
-    function appendDataToSelect(data) {
-        const element = "<option value=''>Select Branch</option>";
-        $("#branchSelect").append(element);
-        for (let index = 0; index < data.length; index++) {
-            var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
-            $("#branchSelect").append(element_other);
-        }
-    }
-
-    // Function to check if all fields have values
-    function allFieldsFilled() {
-        var startDate = $("#start-date").val();
-        var endDate = $("#end-date").val();
-        var branchName = $("#branchSelect").val();
-        return startDate && endDate && branchName;
-    }
-
-    // Function to handle the AJAX request
-    function makeAjaxRequest() {
-        if (allFieldsFilled()) {
-            var formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
-            var formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
-
-            // All fields are filled, so make the AJAX request with formatted dates
-            $.ajax({
-                url: '/admin/get/avl/multi/slot',
-                method: 'POST',
-                data: {
-                    Start_date: formattedStartDate,
-                    End_date: formattedEndDate,
-                    Branch_id: parseInt($("#branchSelect").val())
-                },
-                dataType: 'json',
-                success: function (response) {
-                    console.log(response);
-
-                    
-                    $("#slot_date_container").empty();
-
-                    // Iterate over the response array
-                    response.available_slots.forEach(function (slotsData) {
-                        const date = slotsData.Date;
-                        const availableSlots = slotsData.Available_slots;
-
-                        // Check if availableSlots is an array
-                        if (Array.isArray(availableSlots)) {
-                            // Iterate over the inner array (availableSlots)
-                            availableSlots.forEach(function (slot) {
-                                const slotID = slot.Slot.ID;
-                                const slotName = slot.Slot.Start_time + " - " + slot.Slot.End_time;
-                                const checkbox = $('<input type="checkbox">')
-                                    .attr('id', slotID)
-                                    .attr('value', slotID)
-                                    .attr('name', 'slots[]');
-
-                                const label = $('<label></label>').text(slotName);
-                                label.prepend(checkbox);
-
-                                const div = $('<div></div>').addClass('checkbox-item');
-                                div.append(label);
-
-                                $("#slot_date_container").append(div);
-                            });
-                        } else {
-                            // Handle no data or invalid response
-                            $("#slot_date_container").html("No available slots");
-                        }
-                    });
-                }
-            });
-        }
-    }
-
-
-    // Add input event listeners to the fields
-    $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
-});
 </script>
 </body>
 
