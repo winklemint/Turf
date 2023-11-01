@@ -37,7 +37,7 @@
             <div class="clearfix">
                 <div class="pull-left">
                     <h4 class="text-blue h4">Package</h4>
-                   
+
                 </div>
                 <!-- <div class="pull-right">
                             <a
@@ -68,8 +68,16 @@
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
                     <div class="col-sm-12 col-md-10">
                         <select class="custom-select col-12" id="branchSelect" required>
-                           
+
                         </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Available Slots</label>
+                    <div class="col-sm-12 col-md-10" id="slot_date_container">
+                        <!-- Checkboxes will be appended here -->
                     </div>
                 </div>
 
@@ -188,143 +196,175 @@
 
                 <div> -->
 
-                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
 
-                </div>
+        </div>
 
-            </form>
-            <div class="collapse collapse-box" id="basic-form1">
-                <div class="code-box">
-                    <div class="clearfix">
-                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
-                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
-                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
-                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
-                    </div>
-                    <pre><code class="xml copy-pre" id="copy-pre"></code></pre>
+        </form>
+        <div class="collapse collapse-box" id="basic-form1">
+            <div class="code-box">
+                <div class="clearfix">
+                    <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                        data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                    <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                        data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
                 </div>
+                <pre><code class="xml copy-pre" id="copy-pre"></code></pre>
             </div>
         </div>
-        <!-- Default Basic Forms End -->
     </div>
-    <div class="footer-wrap pd-20 mb-20 card-box">
-        DeskApp - Bootstrap 4 Admin Template By
-        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-    </div>
+    <!-- Default Basic Forms End -->
+</div>
+<div class="footer-wrap pd-20 mb-20 card-box">
+    DeskApp - Bootstrap 4 Admin Template By
+    <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+</div>
 </div>
 
 
 
 {{template "footer.html"}}
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    var startDateInput = document.getElementById("start-date");
-    var endDateInput = document.getElementById("end-date");
+    document.addEventListener("DOMContentLoaded", function () {
+        var startDateInput = document.getElementById("start-date");
+        var endDateInput = document.getElementById("end-date");
 
-    // Add an event listener to the start date input
-    startDateInput.addEventListener("change", function() {
-        // Get the selected start date
-        var selectedStartDate = new Date(startDateInput.value);
+        // Add an event listener to the start date input
+        startDateInput.addEventListener("change", function () {
+            // Get the selected start date
+            var selectedStartDate = new Date(startDateInput.value);
 
-        // Disable all dates before the selected start date in the end date input
-        endDateInput.min = startDateInput.value;
+            // Disable all dates before the selected start date in the end date input
+            endDateInput.min = startDateInput.value;
 
-        // If the selected end date is before the selected start date, reset the end date
-        if (new Date(endDateInput.value) < selectedStartDate) {
-            endDateInput.value = startDateInput.value;
-        }
+            // If the selected end date is before the selected start date, reset the end date
+            if (new Date(endDateInput.value) < selectedStartDate) {
+                endDateInput.value = startDateInput.value;
+            }
+        });
     });
-});
 </script>
 
 
 <script>
-    $(document).ready(function () {
-        // Function to format the date from "yyyy-MM-dd" to "dd-MM-yyyy"
-        function formatDateToDDMMYYYY(dateString) {
-            var parts = dateString.split('-');
-            if (parts.length === 3) {
-                var year = parts[0];
-                var month = parts[1];
-                var day = parts[2];
-                return day + '-' + month + '-' + year;
-            }
-            return dateString; // Return as is if the format is not "yyyy-MM-dd"
+$(document).ready(function () {
+    // Function to format the date from "yyyy-MM-dd" to "dd-MM-yyyy"
+    function formatDateToDDMMYYYY(dateString) {
+        var parts = dateString.split('-');
+        if (parts.length === 3) {
+            var year = parts[0];
+            var month = parts[1];
+            var day = parts[2];
+            return day + '-' + month + '-' + year;
         }
-
-        // Event listener to format the Start Date input
-        $("#start-date").on('change', function () {
-            var startDate = $(this).val();
-            var formattedStartDate = formatDateToDDMMYYYY(startDate);
-            updateInputField("#start-date", formattedStartDate);
-        });
-
-        // Event listener to format the End Date input
-        $("#end-date").on('change', function () {
-            var endDate = $(this).val();
-            var formattedEndDate = formatDateToDDMMYYYY(endDate);
-            updateInputField("#end-date", formattedEndDate);
-        });
-
-        $.ajax({
-            url: '/admin/get/branch',
-            method: 'GET',
-            dataType: 'json',
-            success: function (res) {
-                $("#branchSelect").html('');
-                appendDataToSelect(res.data);
-            },
-            error: function () {
-                console.error('Failed to retrieve data from the server');
-            }
-        });
-
-        function appendDataToSelect(data) {
-            const element = "<option value=''>Select Branch</option>";
-            $("#branchSelect").append(element);
-            for (let index = 0; index < data.length; index++) {
-                var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
-                $("#branchSelect").append(element_other);
-            }
-        }
-
-        // Function to check if all fields have values
-        function allFieldsFilled() {
-            var startDate = $("#start-date").val();
-            var endDate = $("#end-date").val();
-            var branchName = $("#branchSelect").val();
-            return startDate && endDate && branchName;
-        }
-
-        // Function to handle the AJAX request
-        function makeAjaxRequest() {
-    if (allFieldsFilled()) {
-        var formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
-        var formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
-        
-        // All fields are filled, so make the AJAX request with formatted dates
-        $.ajax({
-            url: '/admin/get/avl/multi/slot',
-            method: 'POST',
-            data: {
-                Start_date: formattedStartDate,
-                End_date: formattedEndDate,
-                Branch_id: parseInt($("#branchSelect").val())
-            },
-            dataType: 'json',
-            success: function (response) {
-                console.log(response);
-            }
-        });
+        return dateString; // Return as is if the format is not "yyyy-MM-dd"
     }
-}
 
-        // Add input event listeners to the fields
-        $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
+    // Event listener to format the Start Date input
+    $("#start-date").on('change', function () {
+        var startDate = $(this).val();
+        var formattedStartDate = formatDateToDDMMYYYY(startDate);
+        updateInputField("#start-date", formattedStartDate);
     });
+
+    // Event listener to format the End Date input
+    $("#end-date").on('change', function () {
+        var endDate = $(this).val();
+        var formattedEndDate = formatDateToDDMMYYYY(endDate);
+        updateInputField("#end-date", formattedEndDate);
+    });
+
+    $.ajax({
+        url: '/admin/get/branch',
+        method: 'GET',
+        dataType: 'json',
+        success: function (res) {
+            $("#branchSelect").html('');
+            appendDataToSelect(res.data);
+        },
+        error: function () {
+            console.error('Failed to retrieve data from the server');
+        }
+    });
+
+    function appendDataToSelect(data) {
+        const element = "<option value=''>Select Branch</option>";
+        $("#branchSelect").append(element);
+        for (let index = 0; index < data.length; index++) {
+            var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
+            $("#branchSelect").append(element_other);
+        }
+    }
+
+    // Function to check if all fields have values
+    function allFieldsFilled() {
+        var startDate = $("#start-date").val();
+        var endDate = $("#end-date").val();
+        var branchName = $("#branchSelect").val();
+        return startDate && endDate && branchName;
+    }
+
+    // Function to handle the AJAX request
+    function makeAjaxRequest() {
+        if (allFieldsFilled()) {
+            var formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
+            var formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
+
+            // All fields are filled, so make the AJAX request with formatted dates
+            $.ajax({
+                url: '/admin/get/avl/multi/slot',
+                method: 'POST',
+                data: {
+                    Start_date: formattedStartDate,
+                    End_date: formattedEndDate,
+                    Branch_id: parseInt($("#branchSelect").val())
+                },
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+
+                    
+                    $("#slot_date_container").empty();
+
+                    // Iterate over the response array
+                    response.available_slots.forEach(function (slotsData) {
+                        const date = slotsData.Date;
+                        const availableSlots = slotsData.Available_slots;
+
+                        // Check if availableSlots is an array
+                        if (Array.isArray(availableSlots)) {
+                            // Iterate over the inner array (availableSlots)
+                            availableSlots.forEach(function (slot) {
+                                const slotID = slot.Slot.ID;
+                                const slotName = slot.Slot.Start_time + " - " + slot.Slot.End_time;
+                                const checkbox = $('<input type="checkbox">')
+                                    .attr('id', slotID)
+                                    .attr('value', slotID)
+                                    .attr('name', 'slots[]');
+
+                                const label = $('<label></label>').text(slotName);
+                                label.prepend(checkbox);
+
+                                const div = $('<div></div>').addClass('checkbox-item');
+                                div.append(label);
+
+                                $("#slot_date_container").append(div);
+                            });
+                        } else {
+                            // Handle no data or invalid response
+                            $("#slot_date_container").html("No available slots");
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+
+    // Add input event listeners to the fields
+    $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
+});
 </script>
 </body>
+
 </html>
-
-
-
