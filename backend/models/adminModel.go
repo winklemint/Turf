@@ -15,7 +15,8 @@ type Admin struct {
 	Role           int
 	LastLogin      time.Time
 	Turf_branch_id uint
-	Authorization  []int
+	Authorization  string
+	Status         int
 }
 type Content struct {
 	gorm.Model
