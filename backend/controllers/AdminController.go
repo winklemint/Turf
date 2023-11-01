@@ -33,9 +33,9 @@ func AdminSignup(c *gin.Context) {
 		Password      string
 		Email         string
 		Role          int
-		Status        string
+		Status        int
 		Branch_name   string
-		Authorization []int
+		Authorization string
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -55,18 +55,7 @@ func AdminSignup(c *gin.Context) {
 		})
 		return
 	}
-	if body.Status == "Admin" {
-		body.Role = 2
-	} else if body.Status == "Staff" {
-		body.Role = 3
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Select a Valid Role",
-			"data":   "null",
-		})
-		return
-	}
+
 	var branch models.Branch_info_management
 	result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
 	if result.Error != nil {
@@ -85,6 +74,7 @@ func AdminSignup(c *gin.Context) {
 		Email:          body.Email,
 		Role:           body.Role,
 		Turf_branch_id: branch.ID,
+		Status:         1,
 		Authorization:  body.Authorization,
 	}
 
@@ -105,6 +95,7 @@ func AdminSignup(c *gin.Context) {
 		"data":    bodys,
 	})
 }
+
 func GetConfirmBookingTop5(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
