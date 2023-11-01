@@ -75,6 +75,9 @@ func main() {
 	route.RegisterAdminPanelSocialIcon(r)
 	route.RegisterAdminPanelUpdateIcon(r)
 
+	//staff
+	route.RegisterAdminPanelAddstaff(r)
+
 	r.Run(":8080")
 }
 

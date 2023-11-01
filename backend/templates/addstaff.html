@@ -1,0 +1,365 @@
+{{template "header.html"}}
+        <div class="pd-ltr-20 xs-pd-20-10">
+            <div class="min-height-200px">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="title">
+                                <h4>Form</h4>
+                            </div>
+                            <nav aria-label="breadcrumb" role="navigation">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        Form Basic
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-right">
+                            <div class="dropdown">
+                                <a
+                                    class="btn btn-secondary dropdown-toggle"
+                                    href="#"
+                                    role="button"
+                                    data-toggle="dropdown"
+                                >
+                                    January 2018
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">Export List</a>
+                                    <a class="dropdown-item" href="#">Policies</a>
+                                    <a class="dropdown-item" href="#">View Assets</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms Start -->
+                <div class="pd-20 card-box mb-30">
+                    <div class="clearfix">
+                        <div class="pull-left">
+                            <h4 class="text-blue h4">Add Staff</h4>
+                            <!-- <p class="mb-30">All bootstrap element classies</p> -->
+                        </div>
+                        <!-- <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> -->
+                    </div>
+                    <form  id = "branch_form">
+                        
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Name</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id = "name"
+                                    class="form-control"
+                                    placeholder="Enter Name"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Email</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="email"
+                                    class="form-control"
+                                    placeholder="bootstrap@example.com"
+                                    type="email"
+                                />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label"
+                                >Contact Number</label
+                            >
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="contact"
+                                    class="form-control"
+                                    placeholder="1-(111)-111-1111"
+                                    type="tel"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Password</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="password"
+                                    class="form-control"
+                                    placeholder="***********"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                      <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Role</label>
+                            <div class="col-sm-12 col-md-10">
+                                <select class="custom-select col-12" id="branch_status">
+                                    <option selected="">Choose...</option>
+                                    <option value="2">Admin</option>
+                                    <option value="3">Staff</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                            <div class="col-sm-12 col-md-10">
+                                <select class="custom-select col-12" id="branchSelect" required>
+                                   
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Authourization</label>
+                            <div class="col-sm-12 col-md-10 d-flex justify-content-around">
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck1">
+                                    <label class="custom-control-label" for="customCheck1">All Authorization</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck2" value="1">
+                                    <label class="custom-control-label" for="customCheck2">Branch</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck3" value="2">
+                                    <label class="custom-control-label" for="customCheck3">Slot</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck4" value="3">
+                                    <label class="custom-control-label" for="customCheck4">Packages</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck5" value="4">
+                                    <label class="custom-control-label" for="customCheck5">testimonials</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck6" value="5">
+                                    <label class="custom-control-label" for="customCheck6">Content</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck7" value="6">
+                                    <label class="custom-control-label" for="customCheck7">User</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck8" value="7">
+                                    <label class="custom-control-label" for="customCheck8">Staff</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck8" value="8">
+                                    <label class="custom-control-label" for="customCheck8">Slot Allocation</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck8" value="9">
+                                    <label class="custom-control-label" for="customCheck8">Booking</label>
+                                </div>
+                                <div class="custom-control custom-checkbox d-inline">
+                                    <input type="checkbox" class="custom-control-input packageDays" id="customCheck8" value="10">
+                                    <label class="custom-control-label" for="customCheck8">Other</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                           
+                            <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                            
+                        </div>
+                       
+                    </form>
+                    <div class="collapse collapse-box" id="basic-form1">
+                        <div class="code-box">
+                            <div class="clearfix">
+                                <a
+                                    href="javascript:;"
+                                    class="btn btn-primary btn-sm code-copy pull-left"
+                                    data-clipboard-target="#copy-pre"
+                                    ><i class="fa fa-clipboard"></i> Copy Code</a
+                                >
+                                <a
+                                    href="#basic-form1"
+                                    class="btn btn-primary btn-sm pull-right"
+                                    rel="content-y"
+                                    data-toggle="collapse"
+                                    role="button"
+                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
+                                >
+                            </div>
+                            <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms End -->
+            </div>
+            <div class="footer-wrap pd-20 mb-20 card-box">
+                DeskApp - Bootstrap 4 Admin Template By
+                <a href="https://github.com/dropways" target="_blank"
+                    >Ankit Hingarajiya</a
+                >
+            </div>
+        </div>
+
+
+   
+    {{template "footer.html"}}
+    <script>
+        $(document).ready(function () {
+    
+            $.ajax({
+                url: '/admin/get/branch',
+                method: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    // The "data" variable contains the data received from the server
+                    // You can now append the data to the <select> element
+                        
+                    $("#branchSelect").html('');
+                    appendDataToSelect(res.data);
+                },
+                error: function () {
+                    console.error('Failed to retrieve data from the server');
+                }
+            });
+    
+    
+            function appendDataToSelect(data) 
+            {
+                const element = "<option value=''>Select Branch</option>";
+                $("#branchSelect").append(element);
+                for (let index = 0; index < data.length; index++) 
+                {
+                    var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+                    $("#branchSelect").append(element_other);
+                    console.log(element_other);
+                }
+            }
+    
+    
+    
+            // Function to close all slots for a specific day
+            function closeAllSlots(day) {
+                $("#slot_div_" + day).html(''); // Clear the slots for the specified day
+            }
+    
+            // Function to show the slots container for a specific day
+            function showSlotsContainer(day) {
+                $("#slot_" + day).show(); // Show the slots container for the specified day
+            }
+    
+            // Function to hide the slots container for a specific day
+            function hideSlotsContainer(day) {
+                $("#slot_" + day).hide(); // Hide the slots container for the specified day
+            }
+    
+            // When the "All" checkbox is clicked
+            $('#customCheck1').change(function () {
+                var allChecked = this.checked;
+                // Check or uncheck all the checkboxes with the class 'packageDays'
+                $('.packageDays').prop('checked', allChecked);
+    
+                // Handle slots for all selected days
+                $('.packageDays').each(function () {
+                    var checkboxId = $(this).attr('id');
+                    var dayName = $('label[for="' + checkboxId + '"]').text().toLowerCase();
+                    if (dayName !== 'all days') {
+                        if (allChecked) {
+                            sendCheckboxStateToAPI(dayName);
+                            showSlotsContainer(dayName);
+                        } else {
+                            closeAllSlots(dayName);
+                            hideSlotsContainer(dayName); // Hide the slots container when unchecked
+                        }
+                    }
+                });
+            });
+    
+            // When any of the other checkboxes are clicked
+            $('.packageDays').change(function () {
+                // Check if all checkboxes with the class 'packageDays' are checked
+                if ($('.packageDays:checked').length === $('.packageDays').length) {
+                    // Check the "All" checkbox
+                    $('#customCheck1').prop('checked', true);
+                } else {
+                    // Uncheck the "All" checkbox
+                    $('#customCheck1').prop('checked', false);
+                }
+    
+                // Handle slots for the specific day
+                var checkboxId = $(this).attr('id');
+                var dayName = $('label[for="' + checkboxId + '"]').text().toLowerCase();
+                if ($(this).is(':checked')) {
+                    // Show slots for the selected day
+                    sendCheckboxStateToAPI(dayName);
+                    showSlotsContainer(dayName);
+                } else {
+                    // Remove slots for the unselected day
+                    closeAllSlots(dayName);
+                    hideSlotsContainer(dayName); // Hide the slots container when unchecked
+                }
+            });
+    
+            function sendCheckboxStateToAPI(selectedDays) {
+                var payload = {
+                    "day": [selectedDays] // Send the array of selected days
+                }
+    
+                // Make an AJAX request to your API with the updated payload
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/get/slot/by/day',
+    
+                    data: JSON.stringify(payload),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        var data = response.data;
+    
+                        for (var day in data) {
+                            var slot_div = $("#slot_div_" + day);
+                            slot_div.html(''); // Clear slots for the current day
+    
+                            var current_day_slot_data = data[day];
+                            for (let j = 0; j < current_day_slot_data.length; j++) {
+                                var slotData = current_day_slot_data[j];
+    
+                                if (slotData.PSR_id > 0) {
+                                    var checkbox_disabled = "disabled";
+                                    var onClickString = "onclick='alert(\"this slot is already occupied by s\")'";
+    
+                                } else {
+                                    var checkbox_disabled = "";
+    
+                                }
+                                var current_cb = "<div class='custom-control custom-checkbox d-inline' " + onClickString + "><input " + checkbox_disabled + " data-value= '" + slotData.ID + "' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "' ><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
+                                slot_div.append(current_cb);
+                            }
+                        }
+                    },
+                    error: function (error) {
+    
+                    }
+                });
+            }
+        });
+    </script>  
+   
+    
+      
+
+</body>
+</html>
+
+    
