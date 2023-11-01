@@ -20,6 +20,9 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/slot", controllers.GetAllSlot)
 		adminRoutes.POST("/get/slot/:id", controllers.Get_Package)
 		adminRoutes.DELETE("/delete/slot/:id", controllers.DeleteSlot)
+		adminRoutes.POST("/get/avl/multi/slot", controllers.Get_Available_slots_Multi_Dates)
+
+		
 		//package
 		adminRoutes.POST("/add/package", controllers.AddPackage)
 		adminRoutes.PATCH("/update/package/:id", controllers.UpdatePackage)
@@ -39,7 +42,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/pending/bookings/:id", controllers.Pending_bookings_by_ID)
 		adminRoutes.GET("/payments/:id", controllers.GetpaymentimagesById)
 
-		adminRoutes.POST("/multi/bookings", controllers.Multiple_slot_booking)
+		adminRoutes.POST("/multi/bookings/:id", controllers.Multiple_slot_booking)
 
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)

@@ -4067,7 +4067,7 @@ func Multiple_slot_booking(c *gin.Context) {
 			price25 := percent.PercentFloat(25.0, price.Price)
 
 			booking := models.Turf_Bookings{
-				User_id:                  Id,
+				User_id:                  uint(ID),
 				Date:                     currentDate.Format("02-01-2006"),
 				Slot_id:                  body.Slots[i],
 				Package_slot_relation_id: int(psr.ID),
@@ -4191,7 +4191,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		// Fetch booked slots for the current date
 		var bookedSlots []models.Turf_Bookings
 		result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", currentDate.Format("02-01-2006"), body.Branch_id).Find(&bookedSlots)
-
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Failed to find booked slots for date",

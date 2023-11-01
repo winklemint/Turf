@@ -63,6 +63,7 @@ func main() {
 	route.RegisterAdminPanelAll_bookings(r)
 	route.RegisterAdminPanelConfirmed_bookings(r)
 	route.RegisterAdminPanelUpdatebookings(r)
+	route.RegisterAdminPanelMultiBooking(r)
 
 	//Remaining Amount
 	route.RemainingAmountForAdminPanel(r)

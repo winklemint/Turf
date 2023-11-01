@@ -1,0 +1,330 @@
+{{template "header.html"}}
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            January 2018
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Export List</a>
+                            <a class="dropdown-item" href="#">Policies</a>
+                            <a class="dropdown-item" href="#">View Assets</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+        <div class="pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">Package</h4>
+                   
+                </div>
+                <!-- <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> -->
+            </div>
+            <form id="package_form">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Start Date</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="start-date" class="form-control" type="date" placeholder="Start Date" required />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">End Date</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="end-date" class="form-control" placeholder="End Date" type="date" required />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="branchSelect" required>
+                           
+                        </select>
+                    </div>
+                </div>
+
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="status" required>
+                            <option selected="" selected disabled>Choose...</option>
+                            <option value=1>Active</option>
+                            <option value=2>Disabled</option>
+                        </select>
+                    </div>
+                </div> -->
+
+
+                <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12">
+                            <option selected="">Choose...</option>
+                            <option value="1">Enable</option>
+                            <option value="2">Disable</option>
+
+                        </select>
+                    </div>
+
+
+                </div> -->
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Days</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-around">
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">All Days</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck2">
+                            <label class="custom-control-label" for="customCheck2">Sunday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck3">
+                            <label class="custom-control-label" for="customCheck3">Monday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck4">
+                            <label class="custom-control-label" for="customCheck4">Tuesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                            <label class="custom-control-label" for="customCheck5">Wednesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck6">
+                            <label class="custom-control-label" for="customCheck6">Thursday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck7">
+                            <label class="custom-control-label" for="customCheck7">Friday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck8">
+                            <label class="custom-control-label" for="customCheck8">Saturday</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_sunday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Sunday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_sunday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_monday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Monday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_monday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_tuesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Tuesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_tuesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_wednesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Wednesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_wednesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_thursday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Thursday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_thursday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_friday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Friday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_friday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_saturday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Saturday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_saturday"></div>
+                </div>
+
+
+                <div> -->
+
+                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+
+                </div>
+
+            </form>
+            <div class="collapse collapse-box" id="basic-form1">
+                <div class="code-box">
+                    <div class="clearfix">
+                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                    </div>
+                    <pre><code class="xml copy-pre" id="copy-pre"></code></pre>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms End -->
+    </div>
+    <div class="footer-wrap pd-20 mb-20 card-box">
+        DeskApp - Bootstrap 4 Admin Template By
+        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
+</div>
+
+
+
+{{template "footer.html"}}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var startDateInput = document.getElementById("start-date");
+    var endDateInput = document.getElementById("end-date");
+
+    // Add an event listener to the start date input
+    startDateInput.addEventListener("change", function() {
+        // Get the selected start date
+        var selectedStartDate = new Date(startDateInput.value);
+
+        // Disable all dates before the selected start date in the end date input
+        endDateInput.min = startDateInput.value;
+
+        // If the selected end date is before the selected start date, reset the end date
+        if (new Date(endDateInput.value) < selectedStartDate) {
+            endDateInput.value = startDateInput.value;
+        }
+    });
+});
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        // Function to format the date from "yyyy-MM-dd" to "dd-MM-yyyy"
+        function formatDateToDDMMYYYY(dateString) {
+            var parts = dateString.split('-');
+            if (parts.length === 3) {
+                var year = parts[0];
+                var month = parts[1];
+                var day = parts[2];
+                return day + '-' + month + '-' + year;
+            }
+            return dateString; // Return as is if the format is not "yyyy-MM-dd"
+        }
+
+        // Event listener to format the Start Date input
+        $("#start-date").on('change', function () {
+            var startDate = $(this).val();
+            var formattedStartDate = formatDateToDDMMYYYY(startDate);
+            updateInputField("#start-date", formattedStartDate);
+        });
+
+        // Event listener to format the End Date input
+        $("#end-date").on('change', function () {
+            var endDate = $(this).val();
+            var formattedEndDate = formatDateToDDMMYYYY(endDate);
+            updateInputField("#end-date", formattedEndDate);
+        });
+
+        $.ajax({
+            url: '/admin/get/branch',
+            method: 'GET',
+            dataType: 'json',
+            success: function (res) {
+                $("#branchSelect").html('');
+                appendDataToSelect(res.data);
+            },
+            error: function () {
+                console.error('Failed to retrieve data from the server');
+            }
+        });
+
+        function appendDataToSelect(data) {
+            const element = "<option value=''>Select Branch</option>";
+            $("#branchSelect").append(element);
+            for (let index = 0; index < data.length; index++) {
+                var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
+                $("#branchSelect").append(element_other);
+            }
+        }
+
+        // Function to check if all fields have values
+        function allFieldsFilled() {
+            var startDate = $("#start-date").val();
+            var endDate = $("#end-date").val();
+            var branchName = $("#branchSelect").val();
+            return startDate && endDate && branchName;
+        }
+
+        // Function to handle the AJAX request
+        function makeAjaxRequest() {
+    if (allFieldsFilled()) {
+        var formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
+        var formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
+        
+        // All fields are filled, so make the AJAX request with formatted dates
+        $.ajax({
+            url: '/admin/get/avl/multi/slot',
+            method: 'POST',
+            data: {
+                Start_date: formattedStartDate,
+                End_date: formattedEndDate,
+                Branch_id: parseInt($("#branchSelect").val())
+            },
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    }
+}
+
+        // Add input event listeners to the fields
+        $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
+    });
+</script>
+</body>
+</html>
+
+
+
