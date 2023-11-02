@@ -339,52 +339,11 @@
                     success: function (response) {
                         console.log(response);
                         $("#slot_date_container").empty();
-                        var available_slots = response.available_slots;
-                        for (let i = 0; i < available_slots.length; i++) 
-                        {
-                            var this_slot_data = available_slots[i];
-                            var this_slot_date =   this_slot_data.date;
-
-                            var this_avail_slot_data = this_slot_data.Available_slots;
-
-                            for (let j = 0; j < this_avail_slot_data.length; j++)
-                            {
-                                
-                                var j_avail_slot_data = this_avail_slot_data[j];
-
-
-                                var j_is_booked = j_avail_slot_data.Is_booked;
-                                var j_slot_id = j_avail_slot_data.Slot.ID;
-                                var j_slot_start_time = j_avail_slot_data.Slot.Start_time;
-                                var j_slot_end_time = j_avail_slot_data.Slot.End_time;
-
-                                if (j_is_booked == 1)
-                                {
-                                    var checkbox = $('<input type="checkbox">')
-                                            .attr('id', slotID)
-                                            .attr('value', slotID)
-                                            .attr('name', 'slots[]');
-                                }
-                                else
-                                {
-                                    var checkbox = $('<input type="checkbox">')
-                                            .attr('id', slotID)
-                                            .attr('value', slotID)
-                                            .attr('name', 'slots[]')
-                                            .prop('disabled', false);
-                                }
-
-                            }
-
-                            
-                        }
-
-
-
+                       
                         // Iterate over the response array
                         response.available_slots.forEach(function (slotsData) {
                             const date = slotsData.Date;
-                            const Is_booked = slotsData[0].Available_slots[0].Is_booked;
+                          
 
                             const availableSlots = slotsData.Available_slots;
 
@@ -396,12 +355,12 @@
                             if (Array.isArray(availableSlots)) {
                                 // Iterate over the inner array (availableSlots)
                                 availableSlots.forEach(function (slot) {
-                                    console.log(Is_booked)
-
+                                   
+                                    const isBooked = slot.Is_booked;
                                     const slotID = slot.Slot.ID;
                                     const slotName = slot.Slot.Start_time + " - " + slot.Slot.End_time;
 
-                                    if (slotsData.Available_slots.Is_booked == 1) {
+                                    if (isBooked == 1) {
                                         var checkbox = $('<input type="checkbox">')
                                             .attr('id', slotID)
                                             .attr('value', slotID)
@@ -412,7 +371,7 @@
                                             .attr('id', slotID)
                                             .attr('value', slotID)
                                             .attr('name', 'slots[]')
-                                            .prop('disabled', false);
+                                            .prop('disabled', true);
                                     }
 
                                     const label = $('<label></label>').text(slotName);

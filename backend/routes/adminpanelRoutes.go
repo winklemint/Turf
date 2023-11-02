@@ -411,7 +411,7 @@ func RegisterAdminPanelMultiBooking(router *gin.Engine) {
 		// For example, you can use it to fetch data related to this ID.
 
 		// Render your HTML template (updatetestimonials.html) with the data
-		c.HTML(http.StatusOK, "multiplebooking.html", gin.H{"id": id})
+		c.HTML(http.StatusOK, "multiplebookingswati.html", gin.H{"id": id})
 	})
 
 }
