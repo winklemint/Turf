@@ -22,7 +22,6 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.DELETE("/delete/slot/:id", controllers.DeleteSlot)
 		adminRoutes.POST("/get/avl/multi/slot", controllers.Get_Available_slots_Multi_Dates)
 
-		
 		//package
 		adminRoutes.POST("/add/package", controllers.AddPackage)
 		adminRoutes.PATCH("/update/package/:id", controllers.UpdatePackage)

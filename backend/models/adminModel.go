@@ -9,7 +9,7 @@ import (
 type Admin struct {
 	gorm.Model
 	Name           string
-	Contact        string ` grom:"unique"`
+	Contact        string
 	Email          string `gorm:"unique"`
 	Password       string
 	Role           int
