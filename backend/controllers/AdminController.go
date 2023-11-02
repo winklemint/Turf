@@ -34,7 +34,7 @@ func AdminSignup(c *gin.Context) {
 		Email         string
 		Role          int
 		Status        int
-		Branch_name   string
+		Branch_name   int
 		Authorization string
 	}
 	if c.Bind(&body) != nil {
@@ -56,16 +56,20 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 
-	var branch models.Branch_info_management
-	result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Error finding branch id",
-			"data":   "null",
-		})
-		return
-	}
+	// var branch models.Branch_info_management
+	// result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
+	// if result.Error != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"status": 400,
+	// 		"error":  "Error finding branch id",
+	// 		"data":   "null",
+	// 	})
+	// 	return
+	// }
+
+	BranchID := uint(body.Branch_name)
+
+	fmt.Println(BranchID)
 
 	bodys := models.Admin{
 		Name:           body.Name,
@@ -73,12 +77,12 @@ func AdminSignup(c *gin.Context) {
 		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: branch.ID,
+		Turf_branch_id: BranchID,
 		Status:         1,
 		Authorization:  body.Authorization,
 	}
 
-	result = config.DB.Create(&bodys)
+	result := config.DB.Create(&bodys)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
