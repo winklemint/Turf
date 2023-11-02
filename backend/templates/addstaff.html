@@ -233,7 +233,9 @@
             });
 
             // Convert the selected permissions to a JSON string
-            var authorizationString = JSON.stringify(selectedPerm);
+           
+    
+            var authorizationString = "{" + selectedPerm.join(",") + "}";
 
             // Send the selected values in your payload
             var payload = {
