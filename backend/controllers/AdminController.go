@@ -182,8 +182,8 @@ func AdminLogin(c *gin.Context) {
 	}
 
 	var admin models.Admin
-	config.DB.Table("admins").Select("id", "name", "password").Where("name", body.Name).Scan(&admin)
 
+	config.DB.Find(&admin, "name=?", body.Name)
 	if admin.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -199,7 +199,7 @@ func AdminLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Invalid Password",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
