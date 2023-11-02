@@ -12,7 +12,7 @@ function Section2(props) {
           .then((data) => setCarouselData(data.data))
           .catch((error) => console.error('Error fetching carousel data:', error));
       }, []);
-      console.log(props.Headingdata)
+      
 
     return (
         <section className="section3">

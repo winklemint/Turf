@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import Section2 from './components/Section2';
 import Header from './components/header';
 import Section1 from './components/section1';
+import BookNowButton from './components/BookNow';
 
 
 
