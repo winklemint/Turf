@@ -4,7 +4,7 @@
 
 	<div class="xs-pd-20-10 pd-ltr-20">
 		<div class="title pb-20">
-			<h2 class="h3 mb-0">Hospital Overview</h2>
+			<h2 class="h3 mb-0">Turf Overview</h2>
 		</div>
 
 		<div class="row pb-10">	 	
@@ -436,7 +436,7 @@
 <script>
     $(document).ready(function () {
         // Make an AJAX request to fetch doctor data
-        $.get("/admin/get/branch", function (data) {
+        $.get("/admin/active/branch", function (data) {
             if (data.status === 200) {
                 // Populate the doctor list
                 renderDoctors(data.data);
@@ -450,8 +450,10 @@
         var doctorList = $("#doctorulList");
 
         doctors.forEach(function (doctor) {
-            var imageUrl = doctor.Image; // Use the correct field name for the image URL
+			var branchID = doctor.ID;
 
+			// Generate the image URL dynamically with the branch ID
+			var imageUrl = `/admin/branch/image/active/${branchID}`;
             var doctorCard = `
             <li class="d-flex align-items-center justify-content-between">
                 <div class="name-avatar d-flex align-items-center pr-2">
