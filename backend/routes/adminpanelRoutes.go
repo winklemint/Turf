@@ -24,6 +24,8 @@ func RegisterAdminPanelDashboard(router *gin.Engine) {
 	//router.LoadHTMLGlob("templates/*.html")
 	router.LoadHTMLGlob("templates/*.html")
 
+	router.Use(IsAuthenticated())
+
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/dashboard", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
@@ -35,6 +37,7 @@ func RegisterAdminPanelDashboard(router *gin.Engine) {
 func RemainingAmountForAdminPanel(router *gin.Engine) {
 	// Load HTML templates for the admin panel
 	//router.LoadHTMLGlob("templates/*.html")
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -51,6 +54,8 @@ func RegisterAdminPanelCreateBranch(router *gin.Engine) {
 	//router.LoadHTMLGlob("templates/*.html")
 	router.LoadHTMLGlob("templates/*.html")
 
+	router.Use(IsAuthenticated())
+
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/create/branch", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "createbranch.html", gin.H{
@@ -63,6 +68,8 @@ func RegisterAdminPanelNavbar(router *gin.Engine) {
 	// Load HTML templates for the admin panel
 	//router.LoadHTMLGlob("templates/*.html")
 	router.LoadHTMLGlob("templates/*.html")
+
+	router.Use(IsAuthenticated())
 
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/navbar", func(c *gin.Context) {
@@ -77,6 +84,8 @@ func RegisterAdminPanelOtherContent(router *gin.Engine) {
 	//router.LoadHTMLGlob("templates/*.html")
 	router.LoadHTMLGlob("templates/*.html")
 
+	router.Use(IsAuthenticated())
+
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/other", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "othercontent.html", gin.H{
@@ -90,6 +99,8 @@ func RegisterAdminPanelAllBranch(router *gin.Engine) {
 	//router.LoadHTMLGlob("templates/*.html")
 	router.LoadHTMLGlob("templates/*.html")
 
+	router.Use(IsAuthenticated())
+
 	// Define a route to serve the "dashboard.html" template
 	router.GET("/all/branch", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "allbranch.html", gin.H{
@@ -100,6 +111,7 @@ func RegisterAdminPanelAllBranch(router *gin.Engine) {
 }
 func RegisterAdminPanelAllTestiMonials(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
+	router.Use(IsAuthenticated())
 	router.GET("/testimonials", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "alltestimonials.html", nil)
 	})
@@ -107,6 +119,7 @@ func RegisterAdminPanelAllTestiMonials(router *gin.Engine) {
 }
 func RegisterAdminPanelUpdateTestiMonials(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
+	router.Use(IsAuthenticated())
 	router.GET("/data/testimonials", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request URL
 		id := c.DefaultQuery("id", "default_value_if_not_provided")
@@ -120,6 +133,7 @@ func RegisterAdminPanelUpdateTestiMonials(router *gin.Engine) {
 
 }
 func RegisterAdminPaneladdContent(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/content", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request URL
@@ -134,6 +148,7 @@ func RegisterAdminPaneladdContent(router *gin.Engine) {
 
 }
 func RegisterAdminPanelUpdatecarousel(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("update/carousel", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request URL
@@ -149,6 +164,7 @@ func RegisterAdminPanelUpdatecarousel(router *gin.Engine) {
 }
 
 func RegisterAdminPanelUpdateContent(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("update/content", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -163,6 +179,7 @@ func RegisterAdminPanelUpdateContent(router *gin.Engine) {
 
 }
 func RegisterAdminPanelUpdatebranchs(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/all/update/branch", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -177,6 +194,7 @@ func RegisterAdminPanelUpdatebranchs(router *gin.Engine) {
 
 }
 func RegisterAdminPanelUpdateNavbar(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/update/navbar", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -191,6 +209,7 @@ func RegisterAdminPanelUpdateNavbar(router *gin.Engine) {
 
 }
 func RegisterAdminPanelUpdateIcon(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/update/icon", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -205,6 +224,7 @@ func RegisterAdminPanelUpdateIcon(router *gin.Engine) {
 
 }
 func RegisterAdminPanelUpdateOtherContent(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/update/other/content", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -219,6 +239,7 @@ func RegisterAdminPanelUpdateOtherContent(router *gin.Engine) {
 
 }
 func RegisterAdminPanelUpdatepackage(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("update/package", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -233,6 +254,7 @@ func RegisterAdminPanelUpdatepackage(router *gin.Engine) {
 
 }
 func RegisterAdminPanelUpdateUser(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("data/user", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -248,6 +270,7 @@ func RegisterAdminPanelUpdateUser(router *gin.Engine) {
 }
 
 func RegisterAdminPanelAllPackages(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -259,6 +282,7 @@ func RegisterAdminPanelAllPackages(router *gin.Engine) {
 	})
 }
 func RegisterAdminPanelSocialIcon(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -270,6 +294,7 @@ func RegisterAdminPanelSocialIcon(router *gin.Engine) {
 	})
 }
 func RegisterAdminPanelAddCarousel(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -282,6 +307,7 @@ func RegisterAdminPanelAddCarousel(router *gin.Engine) {
 }
 
 func RegisterAdminPanelAddUser(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -293,6 +319,7 @@ func RegisterAdminPanelAddUser(router *gin.Engine) {
 	})
 }
 func RegisterAdminPanelAddTestimonials(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -304,6 +331,7 @@ func RegisterAdminPanelAddTestimonials(router *gin.Engine) {
 	})
 }
 func RegisterAdminPanelAddPackages(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -316,6 +344,7 @@ func RegisterAdminPanelAddPackages(router *gin.Engine) {
 }
 
 func RegisterAdminPanelAllSlots(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -328,6 +357,7 @@ func RegisterAdminPanelAllSlots(router *gin.Engine) {
 }
 
 func RegisterAdminPanelCreateSlots(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -339,6 +369,7 @@ func RegisterAdminPanelCreateSlots(router *gin.Engine) {
 	})
 }
 func RegisterAdminPanelAllUser(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -351,6 +382,7 @@ func RegisterAdminPanelAllUser(router *gin.Engine) {
 }
 
 func RegisterAdminPanelPSR(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -363,6 +395,7 @@ func RegisterAdminPanelPSR(router *gin.Engine) {
 }
 
 func RegisterAdminPanelAll_bookings(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -375,6 +408,7 @@ func RegisterAdminPanelAll_bookings(router *gin.Engine) {
 }
 
 func RegisterAdminPanelConfirmed_bookings(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -387,6 +421,7 @@ func RegisterAdminPanelConfirmed_bookings(router *gin.Engine) {
 }
 
 func RegisterAdminPanelUpdatebookings(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/admin/update/confirm/booking", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -402,6 +437,7 @@ func RegisterAdminPanelUpdatebookings(router *gin.Engine) {
 }
 
 func RegisterAdminPanelMultiBooking(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 	router.GET("/multi/booking", func(c *gin.Context) {
 		// Retrieve the "id" query parameter from the request UR
@@ -451,6 +487,7 @@ func IsAuthenticated() gin.HandlerFunc {
 }
 
 func RegisterAdminPanelAddstaff(router *gin.Engine) {
+	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
@@ -460,4 +497,15 @@ func RegisterAdminPanelAddstaff(router *gin.Engine) {
 			//"data": "helloworld.html",
 		})
 	})
+}
+
+func ForbidHTMLExtension(c *gin.Context) {
+	// Check if the URL path ends with ".html".
+	if len(c.Request.URL.Path) > 5 && c.Request.URL.Path[len(c.Request.URL.Path)-5:] == ".html" {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Page not found"})
+		c.Abort()
+		return
+	}
+
+	c.Next()
 }
