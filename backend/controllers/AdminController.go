@@ -379,74 +379,56 @@ func Update_Branch(c *gin.Context) {
 		Branch_contact_number string
 		GST_no                string
 		Status                int
+		Ground_Size           string
 		Image                 string
 	}
-	if c.Bind(&body) != nil {
+
+	err := c.Bind(&body)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
 			"data":   nil,
 		})
 		return
-
+	}
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status}
+	filePath := filepath.Join("./uploads/branch", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Upload the right file format (jpg or png)",
+			"data":   nil,
+		})
+		return
+	}
+	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status, Ground_Size: body.Ground_Size, Image: filePath}
 	result := config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Branch Update unsuccessfully",
+			"error":  "Branch Details Updated Unseccssfully",
 			"data":   nil,
 		})
 		return
 	}
 
-	if body.Image != "" {
-
-		file, err := c.FormFile("image")
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		filePath := filepath.Join("./uploads/branch", file.Filename)
-
-		if err := c.SaveUploadedFile(file, filePath); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-			return
-		}
-		if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Upload the right file format (jpg or png)",
-				"data":   nil,
-			})
-			return
-		}
-
-		fmt.Println(filePath)
-
-		branch = models.Branch_info_management{Image: filePath}
-		result = config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Branch Update unsuccessfully",
-				"data":   nil,
-			})
-			return
-		}
-	} else {
-		fmt.Println("n image")
-
-		c.JSON(http.StatusCreated, gin.H{
-			"status":  200,
-			"success": "Branch Successfully Updated",
-			"data":    branch,
-		})
-	}
-
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"success": "Branch Details Updated Successfully ",
+		"data":    branch,
+	})
 }
 
 func GET_All_Branch(c *gin.Context) {
