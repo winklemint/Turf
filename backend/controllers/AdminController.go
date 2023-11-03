@@ -346,9 +346,14 @@ func AdminLogin(c *gin.Context) {
 		return
 	}
 
+	adminIDString := strconv.FormatUint(uint64(admin.ID), 10)
+	adminRole := strconv.Itoa(admin.Role)
+
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 7200, "", "", true, true)
+	c.SetCookie("AID", adminIDString, 7200, "", "", true, true)
+	c.SetCookie("Role", adminRole, 7200, "", "", true, true)
 
 	admin.LastLogin = time.Now()
 	config.DB.Save(&admin)
@@ -2581,6 +2586,7 @@ func AdminLogout(c *gin.Context) {
 	}
 	// Clear the "Authorization" cookie to log out
 	c.SetCookie("Authorization", "", -1, "", "", false, true)
+	c.SetCookie("AID", "", -1, "", "", false, true)
 
 	// You can also clear any other session-related data if needed
 	c.Set("UserID", "")
@@ -4415,4 +4421,34 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"available_slots": response,
 	})
+}
+
+func GetLoggedAdmin(c *gin.Context) {
+
+	cookie, err := c.Cookie("AID")
+
+	fmt.Println("Authorization Cookie Value:", cookie)
+
+	if err != nil || cookie == "" {
+		fmt.Println("ccookie nt found")
+		return
+	}
+
+	var admin models.Admin
+
+	result := config.DB.Find(&admin, "id=?", cookie)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "nt f0und",
+			"data":   "null",
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "admin details",
+		"data":   admin,
+	})
+
 }

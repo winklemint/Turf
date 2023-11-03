@@ -227,11 +227,11 @@
                     success: function (response) {
                         console.log(response);
                         $("#slot_date_container").empty();
-                       
+
                         // Iterate over the response array
                         response.available_slots.forEach(function (slotsData) {
                             const date = slotsData.Date;
-                          
+
 
                             const availableSlots = slotsData.Available_slots;
 
@@ -243,29 +243,29 @@
                             if (Array.isArray(availableSlots)) {
                                 // Iterate over the inner array (availableSlots)
                                 availableSlots.forEach(function (slot) {
-                                   
                                     const isBooked = slot.Is_booked;
                                     const slotID = slot.Slot.ID;
                                     const slotName = slot.Slot.Start_time + " - " + slot.Slot.End_time;
 
+                                    var checkbox = $('<input type="checkbox">')
+                                        .attr('id', slotID)
+                                        .attr('value', slotID)
+                                        .attr('name', 'slots[]')
+                                        .addClass('custom-control-input auth');
+
+                                    const label = $('<label></label>')
+                                        .text(slotName)
+                                        .addClass('custom-control-label')
+                                        .attr('for', slotID);
+
                                     if (isBooked == 1) {
-                                        var checkbox = $('<input type="checkbox">')
-                                            .attr('id', slotID)
-                                            .attr('value', slotID)
-                                            .attr('name', 'slots[]')
-                                            .prop('disabled', false);
+                                        checkbox.prop('disabled', false);
                                     } else {
-                                        var checkbox = $('<input type="checkbox">')
-                                            .attr('id', slotID)
-                                            .attr('value', slotID)
-                                            .attr('name', 'slots[]')
-                                            .prop('disabled', true);
+                                        checkbox.prop('disabled', true);
                                     }
 
-                                    const label = $('<label></label>').text(slotName).addClass('custom-control-label');
-                                    label.prepend(checkbox);
-
                                     const div = $('<div></div>').addClass('custom-control custom-checkbox mb-5');
+                                    div.append(checkbox);
                                     div.append(label);
 
                                     // Add a click event listener to track selected slots
@@ -279,7 +279,8 @@
 
                                     dateContainer.append(div); // Append the slot to the dateContainer
                                 });
-                            } else {
+                            }
+                            else {
                                 // Handle no data or invalid response
                                 dateContainer.append("No available slots");
                             }

@@ -20,6 +20,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/staff/get/:id", controllers.AdminGetById)
 		adminRoutes.DELETE("/staff/delete/:id", controllers.AdminDelete)
 
+		adminRoutes.GET("/data/login", controllers.GetLoggedAdmin)
 		// Slot
 		adminRoutes.POST("/add/slot", controllers.AddSlot)
 		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)
