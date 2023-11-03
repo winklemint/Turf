@@ -323,12 +323,14 @@ func AdminLogin(c *gin.Context) {
 
 	adminIDString := strconv.FormatUint(uint64(admin.ID), 10)
 	adminRole := strconv.Itoa(admin.Role)
+	adminBranch := strconv.Itoa(int(admin.Turf_branch_id))
 
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 7200, "", "", true, true)
 	c.SetCookie("AID", adminIDString, 7200, "", "", true, true)
 	c.SetCookie("Role", adminRole, 7200, "", "", true, true)
+	c.SetCookie("branch_id", adminBranch, 7200, "", "", true, true)
 
 	admin.LastLogin = time.Now()
 	config.DB.Save(&admin)
@@ -3836,8 +3838,13 @@ func Total_Revenue(c *gin.Context) {
 		return
 	}
 
+	cookie, err := c.Cookie("branch_id")
+	if err != nil {
+		fmt.Println("nthng in cookie")
+	}
+
 	var revenue []models.Confirm_Booking_Table
-	result := config.DB.Find(&revenue)
+	result := config.DB.Find(&revenue, "branch_id=?", cookie)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
