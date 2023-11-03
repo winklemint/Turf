@@ -36,7 +36,7 @@
         <div class="pd-20 card-box mb-30">
             <div class="clearfix">
                 <div class="pull-left">
-                    <h4 class="text-blue h4">Add Staff</h4>
+                    <h4 class="text-blue h4">Staff</h4>
                     <!-- <p class="mb-30">All bootstrap element classies</p> -->
                 </div>
                 <!-- <div class="pull-right">
@@ -181,11 +181,11 @@
     $(document).ready(function() {
         // Define Id outside the if block
         var Id = new URLSearchParams(window.location.search).get('id');
-        
+
         if (Id) {
             getUserDetails(Id);
         }
-    
+
         // Helper function to retrieve user details
         function getUserDetails(Id) {
             $.ajax({
@@ -193,13 +193,17 @@
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
-                    var user = response.data;
-                    if (user) {
-                        $('#name').val(user.Name);
-                        $('#email').val(user.Email);
-                        $('#contact').val(user.Contact);
-                        $('#role').val(user.Role);
-
+                    if (response.success) {
+                        var user = response.data;
+                        if (user) {
+                            $('#name').val(user.Name);
+                            $('#email').val(user.Email);
+                            $('#contact').val(user.Contact);
+                            $('#role').val(user.Role);
+                        }
+                    } else {
+                        // Handle an error response, e.g., user not found
+                        console.log(response.message);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -207,38 +211,64 @@
                 }
             });
         }
-        $("#staff_form").submit(function(event) { 
+
+        $("#staff_form").submit(function(event) {
             event.preventDefault();
             var formData = {
-              Name: $("#name").val(),
-              Email: $("#email").val(),
-              Contact: $("#contact").val(),
-              Password: $("#password").val(),
-              Role: parseInt($('#role').val()),
-            
+                Name: $("#name").val(),
+                Email: $("#email").val(),
+                Contact: $("#contact").val(),
+                Password: $("#password").val(),
+                Role: parseInt($('#role').val())
             };
-      
+
             $.ajax({
-                url: "/admin/update/user/" + Id, // Update the URL as needed
-                method: "PATCH", // Use PATCH method for updating
+                url: "/admin/update/user/" + Id,
+                method: "PATCH",
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: function(response) {
-                    alert("User Details updated successfully!");
-                    window.location.href = "/user";
+                    if (response.success) {
+                        alert("User Details updated successfully!");
+                        window.location.href = "/user";
+                    } else {
+                        // Handle an error response, e.g., update failed
+                        console.log(response.message);
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error(error);
                 }
             });
-          });
+        });
+    });
+    function appendDataToSelect(data) {
+            
+        const element = "<option value=''>Select Branch</option>";
+        $("#branchSelect").append(element);
+        for (let index = 0; index < data.length; index++) {
+            var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
+            $("#branchSelect").append(element_other);
+        }
+    }
+
+    // When the "All" checkbox is clicked
+    $('#customCheck1').change(function () {
+        var allChecked = this.checked;
+        $('.auth').prop('checked', allChecked);
+    });
+
+    // When any of the other checkboxes are clicked
+    $('.auth').change(function () {
+        updateAllAuthorizationCheckboxState();
+    });
+
+    // Handle permissions for the specific day
+    $('.auth').change(function () {
+        var selectedPerm = getSelectedPermissions();
+        sendCheckboxStateToAPI(selectedPerm);
     });
 </script>
-
-
-
-
-
 </body>
 
 </html>
