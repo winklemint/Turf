@@ -234,7 +234,7 @@
 
     var imageInput = $('#image')[0];
     if (imageInput.files.length > 0) {
-        formData.append("Image", imageInput.files[0]);
+        formData.append(Image, imageInput.files[0]);
     }
 
     var Id = new URLSearchParams(window.location.search).get('id');

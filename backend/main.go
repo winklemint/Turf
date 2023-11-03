@@ -22,7 +22,7 @@ func main() {
 	r := gin.Default()
 	//r.GET("/proxy-react", frontend.ProxyHandlerReact)
 
-	//r.Use(forbidHTMLExtension)
+	r.Use(routes.ForbidHTMLExtension)
 
 	routes.RegisterAdminRoutes(r)
 	route.RegisterUserRoutes(r)
@@ -63,6 +63,7 @@ func main() {
 	route.RegisterAdminPanelAll_bookings(r)
 	route.RegisterAdminPanelConfirmed_bookings(r)
 	route.RegisterAdminPanelUpdatebookings(r)
+	route.RegisterAdminPanelMultiBooking(r)
 
 	//Remaining Amount
 	route.RemainingAmountForAdminPanel(r)
@@ -80,14 +81,3 @@ func main() {
 
 	r.Run(":8080")
 }
-
-// func forbidHTMLExtension(c *gin.Context) {
-// 	// Check if the URL path ends with ".html".
-// 	if len(c.Request.URL.Path) > 5 && c.Request.URL.Path[len(c.Request.URL.Path)-5:] == ".html" {
-// 		c.JSON(http.StatusNotFound, gin.H{"message": "Page not found"})
-// 		c.Abort()
-// 		return
-// 	}
-
-// 	c.Next()
-// }

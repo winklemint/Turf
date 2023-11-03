@@ -1197,7 +1197,8 @@ func Get_Available_slots(c *gin.Context) {
 	}
 
 	var body struct {
-		Date string
+		Date      string
+		Branch_id int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -1219,7 +1220,7 @@ func Get_Available_slots(c *gin.Context) {
 
 	// Fetch booked slots for the specified date
 	var bookedSlots []models.Turf_Bookings
-	result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4)", body.Date).Find(&bookedSlots)
+	result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", body.Date, body.Branch_id).Find(&bookedSlots)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to find booked slots",
