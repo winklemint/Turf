@@ -498,7 +498,33 @@ func RegisterAdminPanelAddstaff(router *gin.Engine) {
 		})
 	})
 }
+func RegisterAdminPanelAllstaff(router *gin.Engine) {
+	router.Use(IsAuthenticated())
+	router.LoadHTMLGlob("templates/*.html")
 
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/staff", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "allstaff.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
+func RegisterAdminPanelUpdateStaff(router *gin.Engine) {
+	router.Use(IsAuthenticated())
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/update/staff", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request UR
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "updatestaff.html", gin.H{"id": id})
+	})
+
+}
 func ForbidHTMLExtension(c *gin.Context) {
 	// Check if the URL path ends with ".html".
 	if len(c.Request.URL.Path) > 5 && c.Request.URL.Path[len(c.Request.URL.Path)-5:] == ".html" {
