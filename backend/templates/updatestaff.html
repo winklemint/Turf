@@ -1,0 +1,244 @@
+{{template "header.html"}}
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            January 2018
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Export List</a>
+                            <a class="dropdown-item" href="#">Policies</a>
+                            <a class="dropdown-item" href="#">View Assets</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+        <div class="pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">Add Staff</h4>
+                    <!-- <p class="mb-30">All bootstrap element classies</p> -->
+                </div>
+                <!-- <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> -->
+            </div>
+            <form id="staff_form">
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="name" class="form-control" placeholder="Enter Name" type="text" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Email</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="email" class="form-control" placeholder="bootstrap@example.com" type="email" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Contact Number</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="contact" class="form-control" placeholder="1-(111)-111-1111" type="tel" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Password</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="password" class="form-control" placeholder="***********" type="text" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Role</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="role">
+                            <option selected="">Choose...</option>
+                            <option value="2">Admin</option>
+                            <option value="3">Staff</option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="branchSelect" required>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Authourization</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-around">
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">All Authorization</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck2" value="1">
+                            <label class="custom-control-label" for="customCheck2">Branch</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck3" value="2">
+                            <label class="custom-control-label" for="customCheck3">Slot</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck4" value="3">
+                            <label class="custom-control-label" for="customCheck4">Packages</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck5" value="4">
+                            <label class="custom-control-label" for="customCheck5">testimonials</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck6" value="5">
+                            <label class="custom-control-label" for="customCheck6">Content</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck7" value="6">
+                            <label class="custom-control-label" for="customCheck7">User</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="7">
+                            <label class="custom-control-label" for="customCheck8">Staff</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="8">
+                            <label class="custom-control-label" for="customCheck8">Slot Allocation</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="9">
+                            <label class="custom-control-label" for="customCheck8">Booking</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="10">
+                            <label class="custom-control-label" for="customCheck8">Other</label>
+                        </div>
+                    </div>
+                </div>
+                <div>
+
+                    <input class="btn btn-primary" type="submit" value="Update" id="submit" />
+
+                </div>
+
+            </form>
+            <div class="collapse collapse-box" id="basic-form1">
+                <div class="code-box">
+                    <div class="clearfix">
+                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                    </div>
+                    <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                </div>
+            </div>
+        </div>
+        <!-- Default Basic Forms End -->
+    </div>
+    <div class="footer-wrap pd-20 mb-20 card-box">
+        DeskApp - Bootstrap 4 Admin Template By
+        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
+</div>
+
+
+
+{{template "footer.html"}}
+<script>
+    $(document).ready(function() {
+        // Define Id outside the if block
+        var Id = new URLSearchParams(window.location.search).get('id');
+        
+        if (Id) {
+            getUserDetails(Id);
+        }
+    
+        // Helper function to retrieve user details
+        function getUserDetails(Id) {
+            $.ajax({
+                url: "/admin/staff/get/" + Id,
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    var user = response.data;
+                    if (user) {
+                        $('#name').val(user.Name);
+                        $('#email').val(user.Email);
+                        $('#contact').val(user.Contact);
+                        $('#role').val(user.Role);
+
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+        $("#staff_form").submit(function(event) { 
+            event.preventDefault();
+            var formData = {
+              Name: $("#name").val(),
+              Email: $("#email").val(),
+              Contact: $("#contact").val(),
+              Password: $("#password").val(),
+              Role: parseInt($('#role').val()),
+            
+            };
+      
+            $.ajax({
+                url: "/admin/update/user/" + Id, // Update the URL as needed
+                method: "PATCH", // Use PATCH method for updating
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    alert("User Details updated successfully!");
+                    window.location.href = "/user";
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+          });
+    });
+</script>
+
+
+
+
+
+</body>
+
+</html>

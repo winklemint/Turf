@@ -28,12 +28,12 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name          string
-		Contact       string
-		Password      string
-		Email         string
-		Role          int
-		Status        int
+		Name     string
+		Contact  string
+		Password string
+		Email    string
+		Role     int
+
 		Branch_name   int
 		Authorization string
 	}
@@ -78,8 +78,8 @@ func AdminSignup(c *gin.Context) {
 		Email:          body.Email,
 		Role:           body.Role,
 		Turf_branch_id: BranchID,
-		Status:         1,
-		Authorization:  body.Authorization,
+
+		Authorization: body.Authorization,
 	}
 
 	result := config.DB.Create(&bodys)
@@ -99,7 +99,108 @@ func AdminSignup(c *gin.Context) {
 		"data":    bodys,
 	})
 }
+func AdminUpdateById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var body struct {
+		Name        string
+		Contact     string
+		Password    string
+		Email       string
+		Role        int
+		Branch_name int
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
 
+	password, err := bcrypt.GenerateFromPassword([]byte(body.Password), 14)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to hash password",
+			"data":   "null",
+		})
+		return
+	}
+
+	var branch models.Branch_info_management
+	result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Error finding branch id",
+			"data":   "null",
+		})
+		return
+	}
+
+	BranchID := uint(body.Branch_name)
+
+	fmt.Println(BranchID)
+
+	bodys := models.Admin{
+		Name:           body.Name,
+		Contact:        body.Contact,
+		Password:       string(password),
+		Email:          body.Email,
+		Role:           body.Role,
+		Turf_branch_id: BranchID,
+	}
+
+	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Admin Allready Exist",
+			"data":   "null",
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  201,
+		"success": "Admin Successfully Created",
+		"data":    bodys,
+	})
+}
+func AdminGetById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var staff models.Admin
+	result := config.DB.Find(&staff, "id=?", id)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed To Get Staff Details Details",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"Success": "Successfully Get Staff Details Details",
+		"Data":    staff,
+	})
+
+}
 func GetConfirmBookingTop5(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -120,7 +221,7 @@ func GetConfirmBookingTop5(c *gin.Context) {
 	var responseData []interface{}
 	for _, booking := range data {
 		var user models.User
-		result := config.DB.First(&user, booking.User_id)
+		result := config.DB.Find(&user, booking.User_id)
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
@@ -860,7 +961,7 @@ func UpdateAdmin(c *gin.Context) {
 		// 		c.JSON(http.StatusBadRequest, gin.H{
 		// 			"status": 400,
 		// 			"error":  "You are not authorised for update branch",
-		// 			"data":   "null",
+		// 			"data":   "null",/Update/staff
 		// 		})
 		// 		return
 
@@ -1072,6 +1173,56 @@ func UpdatePackage(c *gin.Context) {
 		"status":  200,
 		"success": "Package Update Successfully",
 		"data":    admin,
+	})
+
+}
+func AllStaff(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var staff []models.Admin
+	result := config.DB.Find(&staff, "role=2 OR role=3")
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to GET ALL Staff",
+			"data":   nil,
+		})
+		return
+	}
+	var response []interface{}
+	for _, stf := range staff {
+		var branch models.Branch_info_management
+		result := config.DB.Find(&branch, stf.Turf_branch_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "Failed to fetch user name",
+			})
+			return
+		}
+		staffdata := map[string]interface{}{
+			"ID":          stf.ID,
+			"Name":        stf.Name,
+			"Contact":     stf.Contact,
+			"Email":       stf.Email,
+			"Branch_name": branch.Branch_name,
+			"Role":        stf.Role,
+
+			"Turf_branch_id": stf.Turf_branch_id,
+			"Authorization":  stf.Authorization,
+		}
+		response = append(response, staffdata)
+
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 400,
+		"error":  "Failed to GET ALL Staff",
+		"data":   response,
 	})
 
 }
@@ -2727,6 +2878,7 @@ func Upadtecarousel(c *gin.Context) {
 		})
 		return
 	}
+
 	carousel := models.Carousel{Status: body.Status}
 	result := config.DB.Model(&carousel).Where("id=?", id).Updates(&carousel)
 	if result.Error != nil {
@@ -2752,7 +2904,6 @@ func UpadtecarouselImage(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	id := c.Param("id")
 	var body struct {
 		Image string
 	}
@@ -2764,27 +2915,18 @@ func UpadtecarouselImage(c *gin.Context) {
 		})
 		return
 	}
-
+	id := c.Param("id")
 	file, err := c.FormFile("image")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	var carousels models.Carousel
-	result := config.DB.Find(&carousels).Where("id = ?", id).Updates(&carousels)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to update testimonials",
-			"data":   nil,
-		})
-		return
-	}
 
 	filePath := filepath.Join("./uploads/carousel", file.Filename)
-	newImageContent, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		panic(err)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
 	}
 	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -2794,18 +2936,13 @@ func UpadtecarouselImage(c *gin.Context) {
 		})
 		return
 	}
-	err = ioutil.WriteFile(carousels.Image, newImageContent, os.ModePerm)
-	if err != nil {
-		panic(err)
-	}
-	// newFile, err := os.Create(filePath)
-	// File, err = io.Copy(newFile, file)
+
 	carousel := &models.Carousel{Image: filePath}
-	result = config.DB.Model(&carousel).Where("id = ?", id).Updates(&carousel)
+	result := config.DB.Model(&carousel).Where("id = ?", id).Updates(&carousel)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to update testimonials",
+			"error":  "failed to update carousel",
 			"data":   nil,
 		})
 		return
@@ -2813,7 +2950,7 @@ func UpadtecarouselImage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "testimonials updated successfully",
+		"success": "carousel updated successfully",
 		"data":    carousel,
 	})
 }
