@@ -4452,3 +4452,65 @@ func GetLoggedAdmin(c *gin.Context) {
 	})
 
 }
+
+func MultipleImages(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	// Get the booking_order_id from the URL
+	id := c.Param("id")
+
+	var ss []models.Screenshot
+	result := config.DB.Find(&ss, "booking_order_id=?", id)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to fetch testimonial",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Loop through the images associated with the order_id
+	for _, screenshot := range ss {
+		if strings.HasSuffix(screenshot.Payment_screenshot, ".jpg") {
+			// Set the content type for JPEG images
+			c.Header("Content-Type", "image/jpeg")
+		} else if strings.HasSuffix(screenshot.Payment_screenshot, ".png") {
+			// Set the content type for PNG images
+			c.Header("Content-Type", "image/png")
+		} else {
+			// Handle unsupported image formats
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "unsupported image format",
+				"data":   nil,
+			})
+			return
+		}
+
+		// Read the image file and send it as a response
+		imageData, err := ioutil.ReadFile(screenshot.Payment_screenshot)
+		if err != nil {
+			fmt.Println("Error reading the image file:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"status": 500,
+				"error":  "internal server error",
+				"data":   nil,
+			})
+			return
+		}
+
+		// Log the ID and file path
+		fmt.Printf("ID: %s, File Path: %s\n", id, screenshot.Payment_screenshot)
+
+		c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
+	}
+}
