@@ -147,7 +147,7 @@
 			<div class="form-group row">
 				<label class="col-sm-12 col-md-2 col-form-label"></label>
 				<div class="col-sm-12 col-md-10">
-					<select class="custom-select col-12" id="status" onchange="setNewBranch()">
+					<select class="custom-select col-12 super_branch_div" id="status" onchange="setNewBranch()">
 					</select>
 				</div>
 			</div>
@@ -365,7 +365,7 @@
 		<div class="menu-block customscroll">
 			<div class="sidebar-menu">
 				<ul id="accordion-menu">
-					<li class="dropdown">
+					<li class="dropdown" id="auth_1" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Branch</span>
 						</a>
@@ -375,7 +375,7 @@
 
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li class="dropdown" id="auth_2" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Slot</span>
 						</a>
@@ -385,7 +385,7 @@
 
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li class="dropdown" id="auth_3" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Packages</span>
 						</a>
@@ -394,7 +394,7 @@
 							<li><a href="/add/package">Create New Package</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li class="dropdown" id="auth-4" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">TestiMonials</span>
 						</a>
@@ -413,7 +413,7 @@
 							<li><a href="/add/package">Create New Package</a></li>
 						</ul>
 					</li> -->
-					<li class="dropdown">
+					<li class="dropdown" id="auth_5" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Content</span>
 						</a>
@@ -425,7 +425,7 @@
 							<li><a href="/icon">Social Icon</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li class="dropdown" id="auth_6" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">User</span>
 						</a>
@@ -434,7 +434,7 @@
 							<li><a href="/add/user">Add User</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li class="dropdown" id="auth_7" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Staff</span>
 						</a>
@@ -444,7 +444,7 @@
 						</ul>
 					</li>
 
-					<li class="dropdown">
+					<li class="dropdown" id="auth_8" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Slots Allocation</span>
 						</a>
@@ -454,7 +454,7 @@
 						</ul>
 					</li>
 
-					<li class="dropdown">
+					<li class="dropdown" id="auth_9" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Bookings</span>
 						</a>
@@ -463,7 +463,7 @@
 							<li><a href="/confirmed/bookings">Confirmed Bookings</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
+					<li class="dropdown" id="auth_10" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon bi bi-house"></span><span class="mtext">Other</span>
 						</a>

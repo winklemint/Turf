@@ -14,6 +14,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/signup", controllers.AdminSignup)
 		adminRoutes.POST("/login", controllers.AdminLogin)
 		adminRoutes.PUT("/update", controllers.UpdateAdmin)
+		adminRoutes.GET("/data/login", controllers.GetLoggedAdmin)
 		// Slot
 		adminRoutes.POST("/add/slot", controllers.AddSlot)
 		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)

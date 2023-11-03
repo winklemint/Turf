@@ -502,7 +502,10 @@ func RegisterAdminPanelAddstaff(router *gin.Engine) {
 func ForbidHTMLExtension(c *gin.Context) {
 	// Check if the URL path ends with ".html".
 	if len(c.Request.URL.Path) > 5 && c.Request.URL.Path[len(c.Request.URL.Path)-5:] == ".html" {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Page not found"})
+		c.HTML(http.StatusOK, "404.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
 		c.Abort()
 		return
 	}

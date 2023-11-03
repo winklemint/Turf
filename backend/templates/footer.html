@@ -23,42 +23,91 @@
 
 <script>
 
-$(document).ready(function () {
-    // Add a click event handler to the logout button
-    $("#logout").on("click", function (event) {
-        event.preventDefault();
+    $(document).ready(function () {
+        // Add a click event handler to the logout button
+        $("#logout").on("click", function (event) {
+            event.preventDefault();
 
-        // Send an AJAX request to the logout endpoint on your server
-        $.ajax({
-            type: "POST", // You may use GET or POST depending on your server implementation
-            url: "/admin/logout", // Replace with the actual logout URL
-            success: function (data) {
-                // Clear any local session-related data if needed
-                // For example: localStorage.removeItem("userToken");
+            // Send an AJAX request to the logout endpoint on your server
+            $.ajax({
+                type: "POST", // You may use GET or POST depending on your server implementation
+                url: "/admin/logout", // Replace with the actual logout URL
+                success: function (data) {
+                    // Clear any local session-related data if needed
+                    // For example: localStorage.removeItem("userToken");
 
-                // Redirect the user to a login page or perform any other actions
-                // You can replace "your-login-page.html" with the actual URL of your login page
-                window.location.href = "/admin/login";
-            },
-            error: function (error) {
-                // Handle any errors that may occur during the logout process
-                console.error("Logout failed: " + error.statusText);
-            }
+                    // Redirect the user to a login page or perform any other actions
+                    // You can replace "your-login-page.html" with the actual URL of your login page
+                    window.location.href = "/admin/login";
+                },
+                error: function (error) {
+                    // Handle any errors that may occur during the logout process
+                    console.error("Logout failed: " + error.statusText);
+                }
+            });
         });
     });
-});
 
 </script>
 <script>
     $(document).ready(function () {
+
+        var super_role;
+
+        $.ajax({
+            url: "/admin/data/login", // Replace with your actual API endpoint
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                console.log(response)
+
+                var authorization = response.data.Authorization;
+                console.log(response.data.Authorization);
+                super_role = response.data.Role;
+
+
+                // Check if the Authorization field is a non-empty string
+                if (authorization && typeof authorization === "string" && authorization.length > 2) {
+                    // Extract the values inside {}
+                    var matches = authorization.match(/\{(.+?)\}/);
+
+                    if (matches && matches[1]) {
+                        var authorizationArray = matches[1].split(",");
+
+                        // Iterate over the authorization values
+                        authorizationArray.forEach(function (value) {
+                            var authId = "auth_" + value.trim(); // Construct the id to match
+
+                            // Find the corresponding <li> element and display it
+                            var $authElement = $("#" + authId);
+                            $authElement.show();
+                        });
+                    }
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+
+
+
         $.ajax({
             url: "http://localhost:8080/admin/get/branch", // Replace with your actual API endpoint
             method: "GET",
             dataType: "json",
-            success: function (response) 
-            {
+            success: function (response) {
                 if (response.status === 200) {
                     var branches = response.data;
+
+                    if (super_role == 1) {
+
+                        $(".super_branch_div").show();
+                    } else {
+                        $(".super_branch_div").hide();
+                    }
 
                     var select = $('#status'); // Assuming 'status' is the ID of your dropdown
 
@@ -69,7 +118,7 @@ $(document).ready(function () {
                         });
 
                         select.append(option);
-                    });                  
+                    });
                 } else {
                     console.error("Failed to retrieve data.");
                 }
@@ -78,40 +127,65 @@ $(document).ready(function () {
                 console.error(error);
             }
         });
-    
-        function setNewBranch()
-        {
+
+        function setNewBranch() {
+            function getCookie(name) {
+                const cookieString = document.cookie;
+                const cookies = cookieString.split(';');
+
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        // Extract and return the value of the cookie
+                        return cookie.substring(name.length + 1);
+                    }
+                }
+
+                // If the cookie is not found, return null or an appropriate default value
+                return null;
+            }
+
+            // Usage to get the "Role" cookie value
+            const roleCookieValue = getCookie('Role');
+
+            if (roleCookieValue !== 1) {
+                // The "Role" cookie exists, and you can use its value
+                return false;
+            } 
+
+
+
             var selectElement = document.getElementById("status");
             var selectedOption = selectElement.options[selectElement.selectedIndex];
             var selectedBranch = selectedOption.value;
 
-                        $.ajax({
-                            url: "/admin/set/id/branch",
-                            method: "POST",
-                            data: { Branch_Name: selectedBranch }, // Include the selected branch data
-                            dataType: "json",
-                            success: function(data) {
-                                // Handle the response from the second API request
-                                console.log(data);
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(error);
-                            }
-                        });
+            $.ajax({
+                url: "/admin/set/id/branch",
+                method: "POST",
+                data: { Branch_Name: selectedBranch }, // Include the selected branch data
+                dataType: "json",
+                success: function (data) {
+                    // Handle the response from the second API request
+                    console.log(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
         }
 
     });
 </script>
 <script>
-	function convertTo24HourFormat(time12h) {
-		const date = new Date("2000-01-01 " + time12h); // Use a common date for all times to ensure consistency
-		const options = { hour: '2-digit', minute: '2-digit', hour12: false };
-		return date.toLocaleTimeString('en-US', options);
-	}
+    function convertTo24HourFormat(time12h) {
+        const date = new Date("2000-01-01 " + time12h); // Use a common date for all times to ensure consistency
+        const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+        return date.toLocaleTimeString('en-US', options);
+    }
 </script>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS" height="0" width="0"
-		style="display: none; visibility: hidden"></iframe></noscript>
+        style="display: none; visibility: hidden"></iframe></noscript>
 
 
 
