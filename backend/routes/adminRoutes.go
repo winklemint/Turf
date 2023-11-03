@@ -18,7 +18,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/data/login", controllers.GetLoggedAdmin)
 		adminRoutes.GET("/staff/get", controllers.AllStaff)
 		adminRoutes.PATCH("/staff/update/:id", controllers.AdminUpdateById)
-		adminRoutes.GET("/staff/get/:id",controllers.AdminGetById)
+		adminRoutes.GET("/staff/get/:id", controllers.AdminGetById)
 
 		// Slot
 		adminRoutes.POST("/add/slot", controllers.AddSlot)
@@ -45,9 +45,11 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/remaining/payement/booking", controllers.RemainingPaymentForUser)
 		adminRoutes.GET("/pending/bookings", controllers.Pending_bookings)
 		adminRoutes.GET("/pending/bookings/:id", controllers.Pending_bookings_by_ID)
-		adminRoutes.GET("/payments/:id", controllers.GetpaymentimagesById)
+		adminRoutes.GET("/payments/:id", controllers.MultipleImages)
 
 		adminRoutes.POST("/multi/bookings/:id", controllers.Multiple_slot_booking)
+
+		
 
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
