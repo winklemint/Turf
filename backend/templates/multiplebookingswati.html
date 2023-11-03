@@ -75,14 +75,126 @@
 
 
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Available Slots</label>
-                    <div class="col-sm-12 col-md-10" id="slot_date_container">
+                    <label class="col-sm-12 col-md-2 col-form-label ">Available Slots</label>
+                    <div class="col-sm-12 col-md-10 " id="slot_date_container">
                         <!-- Checkboxes will be appended here -->
-                        <div class="slot-grid"></div>
                     </div>
                 </div>
 
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="status" required>
+                            <option selected="" selected disabled>Choose...</option>
+                            <option value=1>Active</option>
+                            <option value=2>Disabled</option>
+                        </select>
+                    </div>
+                </div> -->
 
+
+                <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12">
+                            <option selected="">Choose...</option>
+                            <option value="1">Enable</option>
+                            <option value="2">Disable</option>
+
+                        </select>
+                    </div>
+
+
+                </div> -->
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Days</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-around">
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">All Days</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck2">
+                            <label class="custom-control-label" for="customCheck2">Sunday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck3">
+                            <label class="custom-control-label" for="customCheck3">Monday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck4">
+                            <label class="custom-control-label" for="customCheck4">Tuesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                            <label class="custom-control-label" for="customCheck5">Wednesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck6">
+                            <label class="custom-control-label" for="customCheck6">Thursday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck7">
+                            <label class="custom-control-label" for="customCheck7">Friday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck8">
+                            <label class="custom-control-label" for="customCheck8">Saturday</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_sunday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Sunday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_sunday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_monday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Monday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_monday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_tuesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Tuesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_tuesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_wednesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Wednesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_wednesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_thursday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Thursday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_thursday"></div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_friday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Friday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_friday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" style="display: none;" id="slot_saturday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Saturday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_saturday"></div>
+                </div>
+
+
+                <div> -->
 
                 <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
 
@@ -227,11 +339,11 @@
                     success: function (response) {
                         console.log(response);
                         $("#slot_date_container").empty();
-
+                       
                         // Iterate over the response array
                         response.available_slots.forEach(function (slotsData) {
                             const date = slotsData.Date;
-
+                          
 
                             const availableSlots = slotsData.Available_slots;
 
@@ -243,29 +355,31 @@
                             if (Array.isArray(availableSlots)) {
                                 // Iterate over the inner array (availableSlots)
                                 availableSlots.forEach(function (slot) {
+                                   
                                     const isBooked = slot.Is_booked;
                                     const slotID = slot.Slot.ID;
                                     const slotName = slot.Slot.Start_time + " - " + slot.Slot.End_time;
 
-                                    var checkbox = $('<input type="checkbox">')
-                                        .attr('id', slotID)
-                                        .attr('value', slotID)
-                                        .attr('name', 'slots[]')
-                                        .addClass('custom-control-input auth');
-
-                                    const label = $('<label></label>')
-                                        .text(slotName)
-                                        .addClass('custom-control-label')
-                                        .attr('for', slotID);
-
                                     if (isBooked == 1) {
-                                        checkbox.prop('disabled', false);
+                                        var checkbox = $('<input type="checkbox">')
+                                            .attr('id', slotID)
+                                            .attr('value', slotID)
+                                            .attr('name', 'slots[]')
+                                            .prop('disabled', false);
+                                            
                                     } else {
-                                        checkbox.prop('disabled', true);
+                                        var checkbox = $('<input type="checkbox">')
+                                            .attr('id', slotID)
+                                            .attr('value', slotID)
+                                            .attr('name', 'slots[]')
+                                            .prop('disabled', true);
+                                            
                                     }
 
-                                    const div = $('<div></div>').addClass('custom-control custom-checkbox mb-5');
-                                    div.append(checkbox);
+                                    const label = $('<label></label>').text(slotName);
+                                    label.prepend(checkbox);
+
+                                    const div = $('<div></div>').addClass('checkbox-item');
                                     div.append(label);
 
                                     // Add a click event listener to track selected slots
@@ -279,8 +393,7 @@
 
                                     dateContainer.append(div); // Append the slot to the dateContainer
                                 });
-                            }
-                            else {
+                            } else {
                                 // Handle no data or invalid response
                                 dateContainer.append("No available slots");
                             }
