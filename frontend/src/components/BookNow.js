@@ -1,55 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Import the date picker CSS
+import "react-datepicker/dist/react-datepicker.css";
+import "./BookNow.css";
 
-function BookingForm(props) {
-  const [selectedDate, setSelectedDate] = useState(null); // State to store the selected date
+function BookingForm() {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [dropdownOptions, setDropdownOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:8080/admin/active/branch")
+      .then((res) => res.json())
+      .then((data) => {
+        setDropdownOptions(data.data);
+      });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the form submission, e.g., send data to the server
-    console.log("Name:", e.target.name.value);
-    console.log("Mobile Number:", e.target.mobile.value);
+
     console.log("Booking Date (dd/mm/yyyy):", formatDate(selectedDate));
-    // Close the form
-    props.onClose();
+    console.log("Selected Option:", selectedOption);
+
+    // Reset text fields and close the form
+    setSelectedDate(null);
+    setSelectedOption("");
   };
 
   const formatDate = (date) => {
     if (date) {
       const day = date.getDate();
-      const month = date.getMonth() + 1; // Months are 0-indexed
+      const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      return `${day.toString().padStart(2, "0")}-${month.toString().padStart(2, "0")}-${year}`;
+      return `${day.toString().padStart(2, "0")}-${month
+        .toString()
+        .padStart(2, "0")}-${year}`;
     }
     return "";
   };
 
   return (
-    <div>
+    <div className="booking-form-container">
       <h2>Book Now</h2>
       <form onSubmit={handleSubmit}>
         <label>
-          Name:
-          <input type="text" name="name" />
-        </label>
-        <br />
-        <label>
-          Mobile Number:
-          <input type="text" name="mobile" />
+          Select Option:
+          <select
+            value={selectedOption}
+            onChange={(e) => setSelectedOption(e.target.value)}
+          >
+            <option value="">Select Branch</option>
+            {dropdownOptions.map((option) => (
+              <option key={option.ID} value={option.ID}>
+                {option.Branch_name}
+              </option>
+            ))}
+          </select>
         </label>
         <br />
         <label>
           Booking Date:
           <DatePicker
+            placeholderText="Select-Date"
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
-            dateFormat="dd/MM/yyyy"
+            dateFormat="dd-MM-yyyy"
           />
         </label>
         <br />
         <button type="submit">Submit</button>
-        <button onClick={props.onClose}>Close</button>
+        <Link to={"/"}>
+          <button type="button">Close</button>
+        </Link>
       </form>
     </div>
   );

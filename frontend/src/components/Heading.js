@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import React from "react";
 import Brandicon from "./Brandicon";
@@ -6,7 +7,6 @@ import BookingForm from "./BookNow";
 
 const Heading = () => {
   const [contant, setcontant] = useState({});
-  const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
 
 
   const fetchDataFromAPI = () => {
@@ -25,12 +25,12 @@ const Heading = () => {
     <div className="text-box ">
       <p className="text-p1">{contant.Heading}</p>
       <h3 className="text-h3">{contant.SubHeading}</h3>
-      <button className="text-button"onClick={() => setIsBookingFormVisible(true)}>
+     <Link to={'/BookNow'}><button className="text-button">
         <a href="#" className="text-btn-linkk">
           {contant.Button}
         </a>
-      </button>
-      {isBookingFormVisible && <BookingForm onClose={() => setIsBookingFormVisible(false)} />}
+      </button></Link> 
+      
       <div className="icon-sec">
         <p>Join me here</p>
         <div className="brand-icon">

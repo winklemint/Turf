@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Brandicon from "./Brandicon";
 
 function Footer(props) {
-	console.log(new Date)
   return (
     <footer className="footer">
       <div className="footer-box">
