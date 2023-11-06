@@ -210,15 +210,34 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		return
 	}
 
-	id := c.Param("id")
 	var data []models.Confirm_Booking_Table
-	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data).Where("branch_id=?", id)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 404,
-			"error":  "failed to get confirmed booking details",
-		})
-		return
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	if Role != 1 {
+
+		result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Where("branch_id=?", branchid).Find(&data)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details ",
+			})
+			return
+
+		}
+	} else {
+
+		result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get confirmed booking details",
+			})
+			return
+		}
 	}
 	var responseData []interface{}
 	for _, booking := range data {
@@ -1108,15 +1127,34 @@ func GetAllSlot(c *gin.Context) {
 		return
 	}
 	var slot []models.Time_Slot
-	result := config.DB.Find(&slot)
 
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 404,
-			"error":  "failed to get all slot",
-		})
-		return
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+	if Role != 1 {
 
+		result := config.DB.Find(&slot, "branch_id=?", branchid)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all slot",
+			})
+			return
+
+		}
+	} else {
+		result := config.DB.Find(&slot)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all slot",
+			})
+			return
+
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -1833,14 +1871,32 @@ func Today_Total_Booking(c *gin.Context) {
 	date := now.Format("02-01-2006")
 	var booking models.Confirm_Booking_Table
 	var count int64
-	result := config.DB.Model(&booking).Where("date=? AND booking_status=3", date).Count(&count)
-	if result.Error != nil || count == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Today Total  Booking Unsuccessfully",
-			"data":   0,
-		})
-		return
+
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	if Role != 1 {
+		result := config.DB.Model(&booking).Where("date=? AND booking_status = 4 AND branch_id=?", date, branchid).Count(&count)
+		if result.Error != nil || count == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Today Total  Booking Unsuccessfully",
+				"data":   0,
+			})
+			return
+		}
+	} else {
+		result := config.DB.Model(&booking).Where("date=? AND booking_status=4", date).Count(&count)
+		if result.Error != nil || count == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Today Total  Booking Unsuccessfully",
+				"data":   0,
+			})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -3416,20 +3472,38 @@ func Cnfrm_slots(c *gin.Context) {
 	}
 
 	var bookings []models.Confirm_Booking_Table
-	// var slots []models.Time_Slot
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
 
-	result := config.DB.Debug().Raw(`
-	SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4
-`).Scan(&bookings)
+	if Role != 1 {
+		result := config.DB.Debug().Raw(` SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4 AND cb.branch_id=?`, branchid).Scan(&bookings)
 
-	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
 
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   result.Error.Error(),
-			"message": "Failed to fetch package slots",
-		})
-		return
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   result.Error.Error(),
+				"message": "Failed to fetch package slots",
+			})
+			return
+		}
+	} else {
+
+		// var slots []models.Time_Slot
+
+		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4`).Scan(&bookings)
+
+		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   result.Error.Error(),
+				"message": "Failed to fetch package slots",
+			})
+			return
+		}
 	}
 	// Combine the "Package" and "Slot" data into a single array
 	for _, cbData := range bookings {
@@ -3455,20 +3529,39 @@ func Pending_bookings(c *gin.Context) {
 	}
 
 	var bookings []models.Confirm_Booking_Table
-	// var slots []models.Time_Slot
 
-	result := config.DB.Debug().Raw(`
-	SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3
-`).Scan(&bookings)
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
 
-	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+	if Role != 1 {
 
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   result.Error.Error(),
-			"message": "Failed to fetch package slots",
-		})
-		return
+		// var slots []models.Time_Slot
+
+		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.branch_id =?`, branchid).Scan(&bookings)
+
+		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   result.Error.Error(),
+				"message": "Failed to fetch package slots",
+			})
+			return
+		}
+	} else {
+		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3`).Scan(&bookings)
+
+		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   result.Error.Error(),
+				"message": "Failed to fetch package slots",
+			})
+
+		}
 	}
 	// Combine the "Package" and "Slot" data into a single array
 	for _, cbData := range bookings {
@@ -4064,7 +4157,6 @@ func Total_Sales(c *gin.Context) {
 	Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
-	
 
 	if Role != 1 {
 
