@@ -170,8 +170,8 @@ func AdminUpdateById(c *gin.Context) {
 	}
 
 	//Response
-	c.JSON(http.StatusCreated, gin.H{
-		"status":  201,
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
 		"success": "Admin Successfully Created",
 		"data":    bodys,
 	})
@@ -1334,6 +1334,7 @@ func DeleteSlot(c *gin.Context) {
 }
 
 func GetAllPackage(c *gin.Context) {
+
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
@@ -1341,22 +1342,67 @@ func GetAllPackage(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	var pkg []models.Package
-	result := config.DB.Find(&pkg)
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+	var Pkg []models.Package
+	if Role != 1 {
 
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 404,
-			"error":  "failed to get all slot",
-		})
-		return
+		result := config.DB.Find(&Pkg, "branch_id=?", branchid)
 
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details ",
+			})
+			return
+
+		}
+
+	} else {
+
+		result := config.DB.Find(&Pkg)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details",
+			})
+			return
+
+		}
+
+	}
+	var response []map[string]interface{}
+	for _, p := range Pkg {
+		var branch models.Branch_info_management
+		result := config.DB.Find(&branch, "id=?", branchid)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details",
+			})
+			return
+
+		}
+		data := map[string]interface{}{
+			"ID":        p.ID,
+			"Name":      p.Name,
+			"Price":     p.Price,
+			"Status":    p.Status,
+			"Branch_id": p.Branch_id,
+
+			"Branch_name": branch.Branch_name, // Fill in with the actual value
+		}
+		response = append(response, data)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "slot details",
-		"data":    pkg,
+		"success": "package details",
+		"data":    response, // Use the response data you built
 	})
 }
 func GetAllPackageById(c *gin.Context) {
