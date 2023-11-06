@@ -37,7 +37,7 @@
             <div class="clearfix">
                 <div class="pull-left">
                     <h4 class="text-blue h4">Package</h4>
-                   
+
                 </div>
                 <!-- <div class="pull-right">
                             <a
@@ -52,18 +52,15 @@
             </div>
             <form id="package_form">
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Package Name</label>
+                    <label class="col-sm-12 col-md-2 col-form-label">Start Date</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="name" class="form-control" type="text" placeholder="Package Name Here" required
-                            onkeyup="checkNameLength()" />
-
+                        <input id="start-date" class="form-control" type="date" placeholder="Start Date" required />
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Price</label>
+                    <label class="col-sm-12 col-md-2 col-form-label">End Date</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="price" class="form-control" placeholder="Package price Here" type="text" required
-                            onkeyup="checkPriceLength()" />
+                        <input id="end-date" class="form-control" placeholder="End Date" type="date" required />
                     </div>
                 </div>
 
@@ -71,12 +68,37 @@
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
                     <div class="col-sm-12 col-md-10">
                         <select class="custom-select col-12" id="branchSelect" required>
-                           
+
                         </select>
                     </div>
                 </div>
 
+
                 <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Available Slots</label>
+                    <div class="col-sm-12 col-md-10" id="slot_date_container">
+                        <div class="col-md-4">
+                            <div class="custom-control custom-checkbox d-inline">
+                                <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                                <label class="custom-control-label" for="customCheck5">01-01-2023</label>
+                            </div>
+                            <div class="custom-control custom-checkbox d-inline">
+                                <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                                <label class="custom-control-label" for="customCheck5">18:00 - 19:00</label>
+                            </div>
+                            <div class="custom-control custom-checkbox d-inline">
+                                <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                                <label class="custom-control-label" for="customCheck5">18:00 - 19:00</label>
+                            </div>
+                            <div class="custom-control custom-checkbox d-inline">
+                                <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                                <label class="custom-control-label" for="customCheck5">18:00 - 19:00</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                     <div class="col-sm-12 col-md-10">
                         <select class="custom-select col-12" id="status" required>
@@ -85,7 +107,7 @@
                             <option value=2>Disabled</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
 
 
                 <!-- <div class="form-group row">
@@ -108,7 +130,7 @@
 
 
                 </div> -->
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Days</label>
                     <div class="col-sm-12 col-md-10 d-flex justify-content-around">
                         <div class="custom-control custom-checkbox d-inline">
@@ -189,81 +211,107 @@
                 </div>
 
 
-                <div>
+                <div> -->
 
-                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
 
+        </div>
+
+        </form>
+        <div class="collapse collapse-box" id="basic-form1">
+            <div class="code-box">
+                <div class="clearfix">
+                    <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                        data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                    <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                        data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
                 </div>
-
-            </form>
-            <div class="collapse collapse-box" id="basic-form1">
-                <div class="code-box">
-                    <div class="clearfix">
-                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
-                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
-                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
-                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
-                    </div>
-                    <pre><code class="xml copy-pre" id="copy-pre"></code></pre>
-                </div>
+                <pre><code class="xml copy-pre" id="copy-pre"></code></pre>
             </div>
         </div>
-        <!-- Default Basic Forms End -->
     </div>
-    <div class="footer-wrap pd-20 mb-20 card-box">
-        DeskApp - Bootstrap 4 Admin Template By
-        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-    </div>
+    <!-- Default Basic Forms End -->
+</div>
+<div class="footer-wrap pd-20 mb-20 card-box">
+    DeskApp - Bootstrap 4 Admin Template By
+    <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+</div>
 </div>
 
 
 
 {{template "footer.html"}}
 <script>
-    function checkNameLength() {
-        var nameInput = document.getElementById('name');
-        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+    document.addEventListener("DOMContentLoaded", function () {
+        var startDateInput = document.getElementById("start-date");
+        var endDateInput = document.getElementById("end-date");
 
-        if (nameValue.length > 3) {
-            // The name is valid
-            nameInput.classList.remove('form-control-danger'); // Remove danger class
-            nameInput.classList.add('form-control-success'); // Add success class
-        } else {
-            // The name is too short
-            nameInput.classList.remove('form-control-success'); // Remove success class
-            nameInput.classList.add('form-control-danger'); // Add danger class
-        }
-    }
+        // Add an event listener to the start date input
+        startDateInput.addEventListener("change", function () {
+            // Get the selected start date
+            var selectedStartDate = new Date(startDateInput.value);
+
+            // Disable all dates before the selected start date in the end date input
+            endDateInput.min = startDateInput.value;
+
+            // If the selected end date is before the selected start date, reset the end date
+            if (new Date(endDateInput.value) < selectedStartDate) {
+                endDateInput.value = startDateInput.value;
+            }
+        });
+    });
 </script>
 
-<script>
-    function checkPriceLength() {
-        var priceInput = document.getElementById('price');
-        var priceValue = priceInput.value.trim(); // Trim to remove leading/trailing spaces
-
-        if (/^\d+$/.test(priceValue)) {
-            // The input is a valid integer
-            priceInput.classList.remove('form-control-danger'); // Remove danger class
-            priceInput.classList.add('form-control-success'); // Add success class
-        } else {
-            // The input is not a valid integer
-            priceInput.classList.remove('form-control-success'); // Remove success class
-            priceInput.classList.add('form-control-danger'); // Add danger class
-        }
-    }
-</script>
 
 <script>
     $(document).ready(function () {
+
+
+        var selectedSlotIDs = [];
+        var formattedStartDate; // Declare the variable here
+        var formattedEndDate;
+
+        var initialURL = window.location.href; // Replace with your actual URL
+        var idMatch = initialURL.match(/id=(\d+)/);
+
+        if (idMatch) {
+            var id = idMatch[1];
+            console.log("ID extracted:", id);
+        } else {
+            console.log("ID not found in the URL");
+        }
+
+        // Function to format the date from "yyyy-MM-dd" to "dd-MM-yyyy"
+        function formatDateToDDMMYYYY(dateString) {
+            var parts = dateString.split('-');
+            if (parts.length === 3) {
+                var year = parts[0];
+                var month = parts[1];
+                var day = parts[2];
+                return day + '-' + month + '-' + year;
+            }
+            return dateString; // Return as is if the format is not "yyyy-MM-dd"
+        }
+
+        // Event listener to format the Start Date input
+        $("#start-date").on('change', function () {
+            var startDate = $(this).val();
+            var formattedStartDate = formatDateToDDMMYYYY(startDate);
+            updateInputField("#start-date", formattedStartDate);
+        });
+
+        // Event listener to format the End Date input
+        $("#end-date").on('change', function () {
+            var endDate = $(this).val();
+            var formattedEndDate = formatDateToDDMMYYYY(endDate);
+            updateInputField("#end-date", formattedEndDate);
+        });
 
         $.ajax({
             url: '/admin/get/branch',
             method: 'GET',
             dataType: 'json',
             success: function (res) {
-                // The "data" variable contains the data received from the server
-                // You can now append the data to the <select> element
-                    
                 $("#branchSelect").html('');
                 appendDataToSelect(res.data);
             },
@@ -272,165 +320,118 @@
             }
         });
 
-
-        function appendDataToSelect(data) 
-        {
+        function appendDataToSelect(data) {
             const element = "<option value=''>Select Branch</option>";
             $("#branchSelect").append(element);
-            for (let index = 0; index < data.length; index++) 
-            {
-                var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+            for (let index = 0; index < data.length; index++) {
+                var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
                 $("#branchSelect").append(element_other);
-                console.log(element_other);
             }
         }
 
-
-
-        // Function to close all slots for a specific day
-        function closeAllSlots(day) {
-            $("#slot_div_" + day).html(''); // Clear the slots for the specified day
+        // Function to check if all fields have values
+        function allFieldsFilled() {
+            var startDate = $("#start-date").val();
+            var endDate = $("#end-date").val();
+            var branchName = $("#branchSelect").val();
+            return startDate && endDate && branchName;
         }
 
-        // Function to show the slots container for a specific day
-        function showSlotsContainer(day) {
-            $("#slot_" + day).show(); // Show the slots container for the specified day
-        }
+        // Function to handle the AJAX request
+        function makeAjaxRequest() {
+            if (allFieldsFilled()) {
+                formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
+                formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
 
-        // Function to hide the slots container for a specific day
-        function hideSlotsContainer(day) {
-            $("#slot_" + day).hide(); // Hide the slots container for the specified day
-        }
+                // All fields are filled, so make the AJAX request with formatted dates
+                $.ajax({
+                    url: '/admin/get/avl/multi/slot',
+                    method: 'POST',
+                    data: {
+                        Start_date: formattedStartDate,
+                        End_date: formattedEndDate,
+                        Branch_id: parseInt($("#branchSelect").val())
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+                        $("#slot_date_container").empty();
+                        var available_slots = response.available_slots;
+                        for (let i = 0; i < available_slots.length; i++) 
+                        {
+                            var this_slot_data = available_slots[i];
+                            var this_slot_date =   this_slot_data.date;
 
-        // When the "All" checkbox is clicked
-        $('#customCheck1').change(function () {
-            var allChecked = this.checked;
-            // Check or uncheck all the checkboxes with the class 'packageDays'
-            $('.packageDays').prop('checked', allChecked);
+                            var this_avail_slot_data = this_slot_data.Available_slots;
 
-            // Handle slots for all selected days
-            $('.packageDays').each(function () {
-                var checkboxId = $(this).attr('id');
-                var dayName = $('label[for="' + checkboxId + '"]').text().toLowerCase();
-                if (dayName !== 'all days') {
-                    if (allChecked) {
-                        sendCheckboxStateToAPI(dayName);
-                        showSlotsContainer(dayName);
-                    } else {
-                        closeAllSlots(dayName);
-                        hideSlotsContainer(dayName); // Hide the slots container when unchecked
-                    }
-                }
-            });
-        });
+                            for (let j = 0; j < this_avail_slot_data.length; j++)
+                            {
+                                
+                                var j_avail_slot_data = this_avail_slot_data[j];
 
-        // When any of the other checkboxes are clicked
-        $('.packageDays').change(function () {
-            // Check if all checkboxes with the class 'packageDays' are checked
-            if ($('.packageDays:checked').length === $('.packageDays').length) {
-                // Check the "All" checkbox
-                $('#customCheck1').prop('checked', true);
-            } else {
-                // Uncheck the "All" checkbox
-                $('#customCheck1').prop('checked', false);
-            }
 
-            // Handle slots for the specific day
-            var checkboxId = $(this).attr('id');
-            var dayName = $('label[for="' + checkboxId + '"]').text().toLowerCase();
-            if ($(this).is(':checked')) {
-                // Show slots for the selected day
-                sendCheckboxStateToAPI(dayName);
-                showSlotsContainer(dayName);
-            } else {
-                // Remove slots for the unselected day
-                closeAllSlots(dayName);
-                hideSlotsContainer(dayName); // Hide the slots container when unchecked
-            }
-        });
+                                var j_is_booked = j_avail_slot_data.Is_booked;
+                                var j_slot_id = j_avail_slot_data.Slot.ID;
+                                var j_slot_start_time = j_avail_slot_data.Slot.Start_time;
+                                var j_slot_end_time = j_avail_slot_data.Slot.End_time;
 
-        function sendCheckboxStateToAPI(selectedDays) {
-            var payload = {
-                "day": [selectedDays] // Send the array of selected days
-            }
-
-            // Make an AJAX request to your API with the updated payload
-            $.ajax({
-                type: 'POST',
-                url: '/admin/get/slot/by/day',
-
-                data: JSON.stringify(payload),
-                contentType: 'application/json',
-                success: function (response) {
-                    var data = response.data;
-
-                    for (var day in data) {
-                        var slot_div = $("#slot_div_" + day);
-                        slot_div.html(''); // Clear slots for the current day
-
-                        var current_day_slot_data = data[day];
-                        for (let j = 0; j < current_day_slot_data.length; j++) {
-                            var slotData = current_day_slot_data[j];
-
-                            if (slotData.PSR_id > 0) {
-                                var checkbox_disabled = "disabled";
-                                var onClickString = "onclick='alert(\"this slot is already occupied by s\")'";
-
-                            } else {
-                                var checkbox_disabled = "";
+                                if (j_is_booked == 1)
+                                {
+                                    var checkbox = $('<input type="checkbox">')
+                                            .attr('id', slotID)
+                                            .attr('value', slotID)
+                                            .attr('name', 'slots[]');
+                                }
+                                else
+                                {
+                                    var checkbox = $('<input type="checkbox">')
+                                            .attr('id', slotID)
+                                            .attr('value', slotID)
+                                            .attr('name', 'slots[]')
+                                            .prop('disabled', false);
+                                }
 
                             }
-                            var current_cb = "<div class='custom-control custom-checkbox d-inline' " + onClickString + "><input " + checkbox_disabled + " data-value= '" + slotData.ID + "' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "' ><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
-                            slot_div.append(current_cb);
+
+                            
                         }
                     }
-                },
-                error: function (error) {
-
-                }
-            });
+                        });
+                    }
+                });
+            }
         }
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $("#package_form").submit(function (event) {
-            event.preventDefault();
 
-            // Get the selected slot data-values
-            var selectedDataValues = [];
-            $('.packageDays:checked').each(function () {
-                var checkbox = $(this);
-                var dataValue = checkbox.data('value');
-                if (dataValue) {
-                    selectedDataValues.push(JSON.stringify(dataValue));
-                }
-            });
 
-            // Now you have an array containing all the data-values of checked checkboxes
-            console.log('Selected Data Values:', selectedDataValues);
-
-            var formData = {
-                name: $("#name").val(),
-                price: parseFloat($("#price").val()),
-                branch_id: parseInt($("#branch_id").val()),
-                status: parseInt($("#branch_status").val()),
-                slot_id: selectedDataValues // Include the selected slot data, including ID
+        // Add input event listeners to the fields
+        $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
+        // Add a click event listener to the submit button
+        $("#submit").on('click', function (e) {
+            e.preventDefault();
+            // Make the second POST request with selected slots
+            const secondPOSTData = {
+                Start_date: formattedStartDate, // Update as needed
+                End_date: formattedEndDate,   // Update as neededed
+                Branch_id: parseInt($("#branchSelect").val()),
+                Slots: selectedSlotIDs,          // Update as needed
             };
 
-            // Now you have access to the selected slot IDs and their data
-            console.log('Selected Slots:', formData);
+            const jsonString = JSON.stringify(secondPOSTData);
 
+            // Perform the second POST request here with the secondPOSTData
             $.ajax({
-                type: "POST",
-                url: "/admin/add/package",
-                data: JSON.stringify(formData),
-                contentType: "application/json", // Set the content type to JSON
-                dataType: "json",
-            }).done(function (data) {
-
-                console.log(data);
+                url: '/admin/multi/bookings/' + id,
+                method: 'POST',
+                data: jsonString,
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                }
             });
         });
     });
 </script>
+</body>
+
+</html>

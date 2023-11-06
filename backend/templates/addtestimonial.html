@@ -158,44 +158,43 @@
     {{template "footer.html"}}
    
     <script>
-    $(document).ready(function() {
-        $('#branch_form').submit(function(event) {
-            event.preventDefault();
-    
-            var formData = new FormData();
-    
-            // Add text field values to the FormData object
-            formData.append("Name", $('#name').val());
-            formData.append("Designation", $('#designation').val());
-            formData.append("Review", $('#review').val());
-    
-            // Add the image file to the FormData object
-            var imageInput = $('#image')[0];
-            if (imageInput.files.length > 0) {
-                formData.append("image", imageInput.files[0]);
-            }
-    
-            // Create a promise for the AJAX request
-            var updateTextFieldsPromise = $.ajax({
-                url: "/admin/add/testimonials",
-                method: "POST",
-                data: formData,
-                contentType: false, // Set to false to prevent jQuery from processing the data
-                processData: false, // Set to false to prevent jQuery from converting the data to a query string
-                success: function(response) {
-                    // Handle the success response here
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    // Handle errors here
-                    console.log(xhr.responseText);
+        $(document).ready(function() {
+            $('#branch_form').submit(function(event) {
+                event.preventDefault();
+        
+                var formData = new FormData();
+        
+                // Add text field values to the FormData object
+                formData.append("Name", $('#name').val());
+                formData.append("Designation", $('#designation').val());
+                formData.append("Review", $('#review').val());
+        
+                // Add the image file to the FormData object
+                var imageInput = $('#image')[0];
+                if (imageInput.files.length > 0) {
+                    formData.append("image", imageInput.files[0]);
                 }
+        
+                // Create a promise for the AJAX request
+                $.ajax({
+                    url: "/admin/add/testimonials",
+                    method: "POST",
+                    data: formData,
+                    contentType: false, // Set to false to prevent jQuery from processing the data
+                    processData: false, // Set to false to prevent jQuery from converting the data to a query string
+                    success: function(response) {
+                        // Handle the success response here
+                        window.location.href="/testimonials"
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors here
+                        console.log(xhr.responseText);
+                    }
+                });
             });
         });
-    });
-    
-</script>       
-
+        </script>
+        
 </body>
 </html>
 

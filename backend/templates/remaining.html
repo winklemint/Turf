@@ -1,0 +1,67 @@
+{{template "header.html"}}
+<div class="card-box pb-10">
+    <div class="card-box mb-30">
+        <div class="pd-20">
+            <h4 class="text-blue h4">Remaining Payment Booking</h4>
+        </div>
+        <div class="pb-20">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="remainingtable">
+                <thead>
+                    <tr>
+                        <th>Sn.</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Date</th>
+                        <th>Total Price</th>
+                        <th>Paid Amount</th>
+                        <th>Remaining Amount To Pay</th>
+                        <th>Branch Name</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{template "footer.html"}}
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable
+        var table = $('#remainingtable').DataTable({
+            "paging": true,  // Enable pagination
+            "lengthChange": true,  // Show entries per page dropdown
+            "searching": true,  // Enable search functionality
+            "info": true,  // Show table information
+            "autoWidth": false,  // Disable auto width calculation
+        });
+
+        // Make an AJAX request to fetch data from the URL
+        $.ajax({
+            url: '/admin/remaining/payement/booking', // Adjust the URL to match your API endpoint
+            method: 'POST',
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+                // Iterate through the data and append it to the table
+                $.each(response.data, function (index, branch) {
+                    // Append the data as a new row to the DataTable
+                    table.row.add([
+                        index + 1,  // Sn.
+                        branch.UserName, 
+                        branch.Contact,
+                        branch.Date,
+                        branch.TotalPrice, 
+                        branch.PaidAmount, 
+                        branch.RemainingAmountToPay, 
+                        branch.BranchName, 
+                    ]).draw(false);  // Draw without adding to the page
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching data: ' + error);
+            }
+        });
+    });
+</script>
+</body>
+</html>
