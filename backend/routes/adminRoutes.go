@@ -37,6 +37,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//booking
 		adminRoutes.GET("/get/confirm/booking", controllers.Cnfrm_slots)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
+		adminRoutes.GET("/get/confirm/booking/top5/:id", controllers.GetConfirmBookingTop5Super)
 		adminRoutes.PATCH("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
@@ -48,8 +49,6 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/payments/:id", controllers.MultipleImages)
 
 		adminRoutes.POST("/multi/bookings/:id", controllers.Multiple_slot_booking)
-
-		
 
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)

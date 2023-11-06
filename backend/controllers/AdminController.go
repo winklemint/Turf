@@ -28,12 +28,11 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name     string
-		Contact  string
-		Password string
-		Email    string
-		Role     int
-
+		Name          string
+		Contact       string
+		Password      string
+		Email         string
+		Role          int
 		Branch_name   int
 		Authorization string
 	}
@@ -56,17 +55,6 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 
-	// var branch models.Branch_info_management
-	// result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
-	// if result.Error != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"status": 400,
-	// 		"error":  "Error finding branch id",
-	// 		"data":   "null",
-	// 	})
-	// 	return
-	// }
-
 	BranchID := int(body.Branch_name)
 
 	fmt.Println(BranchID)
@@ -78,8 +66,7 @@ func AdminSignup(c *gin.Context) {
 		Email:          body.Email,
 		Role:           body.Role,
 		Turf_branch_id: BranchID,
-
-		Authorization: body.Authorization,
+		Authorization:  body.Authorization,
 	}
 
 	result := config.DB.Create(&bodys)
@@ -163,6 +150,7 @@ func AdminUpdateById(c *gin.Context) {
 		"data":    bodys,
 	})
 }
+
 func AdminGetById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -196,6 +184,69 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
+
+	id := c.Param("id")
+	var data []models.Confirm_Booking_Table
+	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data).Where("branch_id=?", id)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get confirmed booking details",
+		})
+		return
+	}
+	var responseData []interface{}
+	for _, booking := range data {
+		var user models.User
+		result := config.DB.Find(&user, booking.User_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to user name",
+			})
+			return
+		}
+		var branch models.Branch_info_management
+		result = config.DB.Find(&branch, booking.Branch_id)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to fetch  branch name",
+			})
+			return
+		}
+		bookingData := map[string]interface{}{
+			"ID":                      booking.ID,
+			"CreatedAt":               booking.CreatedAt,
+			"User_id":                 booking.User_id,
+			"User_name":               user.Full_Name,
+			"Date":                    booking.Date,
+			"Booking_order_id":        booking.Booking_order_id,
+			"Total_price":             booking.Total_price,
+			"Total_min_amount_to_pay": booking.Total_min_amount_to_pay,
+			"Paid_amount":             booking.Paid_amount,
+			"Remaining_amount_to_pay": booking.Remaining_amount_to_pay,
+			"Booking_status":          booking.Booking_status,
+			"Branch_name":             branch.Branch_name,
+		}
+		responseData = append(responseData, bookingData)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "confirmed booking details",
+		"data":    responseData,
+	})
+}
+
+func GetConfirmBookingTop5Super(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
 	var data []models.Confirm_Booking_Table
 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
 	if result.Error != nil {
@@ -247,6 +298,7 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		"data":    responseData,
 	})
 }
+
 func AdminLogin(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -315,9 +367,9 @@ func AdminLogin(c *gin.Context) {
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 7200, "", "", true, true)
-	c.SetCookie("AID", adminIDString, 7200, "", "", true, true)
-	c.SetCookie("Role", adminRole, 7200, "", "", true, true)
-	c.SetCookie("branch_id", adminBranch, 7200, "", "", true, true)
+	c.SetCookie("AID", adminIDString, 7200, "", "", false, false)
+	c.SetCookie("Role", adminRole, 7200, "", "", false, false)
+	c.SetCookie("Branch_id", adminBranch, 7200, "", "", false, false)
 
 	admin.LastLogin = time.Now()
 	config.DB.Save(&admin)

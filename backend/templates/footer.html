@@ -54,6 +54,8 @@
 
         var super_role;
 
+
+
         $.ajax({
             url: "/admin/data/login", // Replace with your actual API endpoint
             method: "GET",
@@ -86,11 +88,21 @@
 
                 }
 
+
+
             },
             error: function (xhr, status, error) {
                 console.error(error);
             }
         });
+
+        if (super_role == 1) {
+                    document.getElementById('dashboardLink').style.display = 'block';
+                    document.getElementById('adminDashboardLink').style.display = 'none';
+                } else if (super_role == 2) {
+                    document.getElementById('dashboardLink').style.display = 'none';
+                    document.getElementById('adminDashboardLink').style.display = 'block';
+                }
 
 
 
@@ -132,6 +144,7 @@
             function getCookie(name) {
                 const cookieString = document.cookie;
                 const cookies = cookieString.split(';');
+                console.log("test")
 
                 for (let i = 0; i < cookies.length; i++) {
                     const cookie = cookies[i].trim();
@@ -147,11 +160,12 @@
 
             // Usage to get the "Role" cookie value
             const roleCookieValue = getCookie('Role');
+            console.log("tyryfg", roleCookieValue)
 
             if (roleCookieValue !== 1) {
                 // The "Role" cookie exists, and you can use its value
                 return false;
-            } 
+            }
 
 
 
