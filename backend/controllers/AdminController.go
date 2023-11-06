@@ -67,7 +67,7 @@ func AdminSignup(c *gin.Context) {
 	// 	return
 	// }
 
-	BranchID := uint(body.Branch_name)
+	BranchID := int(body.Branch_name)
 
 	fmt.Println(BranchID)
 
@@ -109,12 +109,13 @@ func AdminUpdateById(c *gin.Context) {
 	}
 	id := c.Param("id")
 	var body struct {
-		Name        string
-		Contact     string
-		Password    string
-		Email       string
-		Role        int
-		Branch_name int
+		Name          string
+		Contact       string
+		Password      string
+		Email         string
+		Role          int
+		Branch_name   int
+		Authorization string
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -135,44 +136,30 @@ func AdminUpdateById(c *gin.Context) {
 		return
 	}
 
-	var branch models.Branch_info_management
-	result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Error finding branch id",
-			"data":   "null",
-		})
-		return
-	}
-
-	BranchID := uint(body.Branch_name)
-
-	fmt.Println(BranchID)
-
 	bodys := models.Admin{
 		Name:           body.Name,
 		Contact:        body.Contact,
 		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: BranchID,
+		Turf_branch_id: body.Branch_name,
+		Authorization:  body.Authorization,
 	}
 
-	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
+	result := config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Admin Allready Exist",
+			"error":  "Failed to update admin",
 			"data":   "null",
 		})
 		return
 	}
 
 	//Response
-	c.JSON(http.StatusCreated, gin.H{
-		"status":  201,
-		"success": "Admin Successfully Created",
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Admin Successfully updated",
 		"data":    bodys,
 	})
 }
