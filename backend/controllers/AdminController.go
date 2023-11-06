@@ -1383,7 +1383,7 @@ func GetAllPackage(c *gin.Context) {
 	}
 	role, _ := c.Request.Cookie("Role")
 	Role, _ := strconv.Atoi(role.Value)
-	branchID, _ := c.Request.Cookie("branch_id")
+	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 	var Pkg []models.Package
 	if Role != 1 {
