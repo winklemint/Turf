@@ -942,12 +942,12 @@ func UpdateAdmin(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name     string
-		Email    string
-		Password string
-		Contact  string
-		Role     int
-
+		Name      string
+		Email     string
+		Password  string
+		Contact   string
+		Role      string
+		Status    int
 		Branch_Id int
 		Branch    string
 	}
@@ -1000,86 +1000,54 @@ func UpdateAdmin(c *gin.Context) {
 			})
 			return
 		}
-		if body.Password != "" {
 
-			Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"status": 400,
-					"error":  "failed to hash password",
-					"data":   nil,
-				})
-				return
-			}
+		Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to hash password",
+				"data":   nil,
+			})
+			return
+		}
 
-			// if body.Branch != "" {
-			// 	if admin.Role == 1 {
-			// 		var branch models.Branch_info_management
-			// 		result := config.DB.Find(&branch).Where("id=?", body.Branch)
-			// 		if result.Error != nil {
-			// 			c.JSON(http.StatusBadRequest, gin.H{
-			// 				"status": 400,
-			// 				"error":  "failed to fetch brach detail",
-			// 				"data":   nil,
-			// 			})
-			// 			return
-			// 		}
-			// 	} else {
-			// 		c.JSON(http.StatusBadRequest, gin.H{
-			// 			"status": 400,
-			// 			"error":  "You are not authorised for update branch",
-			// 			"data":   nil,
-			// 		})
-			// 		return
-
-			// 	}
-			// }
-
-			admins := models.Admin{Name: body.Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Role: body.Role}
-			result = config.DB.Model(&admin).Where("id = ?", admin.ID).Updates(admins)
-			if result.Error != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"status": 400,
-					"error":  "Admin Update UnSuccessfully",
-					"data":   nil,
-				})
-				return
-			}
+		if body.Role == "Super Admin" {
+			body.Status = 1
 		} else {
-			// if body.Branch != "" {
-			// 	if admin.Role == 1 {
-			// 		var branch models.Branch_info_management
-			// 		result := config.DB.Find(&branch).Where("id=?", body.Branch)
-			// 		if result.Error != nil {
-			// 			c.JSON(http.StatusBadRequest, gin.H{
-			// 				"status": 400,
-			// 				"error":  "failed to fetch brach detail",
-			// 				"data":   nil,
-			// 			})
-			// 			return
-			// 		}
-			// 	} else {
-			// 		c.JSON(http.StatusBadRequest, gin.H{
-			// 			"status": 400,
-			// 			"error":  "You are not authorised for update branch",
-			// 			"data":   nil,
-			// 		})
-			// 		return
+			body.Status = 2
+		}
+		// if body.Branch != "" {
+		// 	if admin.Role == 1 {
+		// 		var branch models.Branch_info_management
+		// 		result := config.DB.Find(&branch).Where("id=?", body.Branch)
+		// 		if result.Error != nil {
+		// 			c.JSON(http.StatusBadRequest, gin.H{
+		// 				"status": 400,
+		// 				"error":  "failed to fetch brach detail",
+		// 				"data":   nil,
+		// 			})
+		// 			return
+		// 		}
+		// 	} else {
+		// 		c.JSON(http.StatusBadRequest, gin.H{
+		// 			"status": 400,
+		// 			"error":  "You are not authorised for update branch",
+		// 			"data":   nil,
+		// 		})
+		// 		return
 
-			// 	}
-			// }
+		// 	}
+		// }
 
-			admins := models.Admin{Name: body.Name, Email: body.Email, Contact: body.Contact, Role: body.Role}
-			result = config.DB.Model(&admin).Where("id = ?", admin.ID).Updates(admins)
-			if result.Error != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
-					"status": 400,
-					"error":  "Admin Update UnSuccessfully",
-					"data":   nil,
-				})
-				return
-			}
-
+		admins := models.Admin{Name: body.Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Role: body.Status}
+		result = config.DB.Model(&admin).Where("id = ?", admin.ID).Updates(admins)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Admin Update UnSuccessfully",
+				"data":   nil,
+			})
+			return
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"status":  200,
