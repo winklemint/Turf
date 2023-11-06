@@ -94,7 +94,12 @@ func AdminUpdateById(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
+
 	id := c.Param("id")
+
+	// Create an instance of the model outside of if-else scope
+	var adminToUpdate models.Admin
+
 	var body struct {
 		Name          string
 		Contact       string
@@ -104,50 +109,55 @@ func AdminUpdateById(c *gin.Context) {
 		Branch_name   int
 		Authorization string
 	}
-	if c.Bind(&body) != nil {
+
+	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(body.Password), 14)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to hash password",
-			"data":   "null",
-		})
-		return
+	// Check if 'Password' is provided, and hash it if necessary
+	if body.Password != "" {
+		// Hash the password using bcrypt
+		Password, err := bcrypt.GenerateFromPassword([]byte(body.Password), 14)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to hash password",
+				"data":   nil,
+			})
+			return
+		}
+		adminToUpdate.Password = string(Password)
 	}
 
-	bodys := models.Admin{
-		Name:           body.Name,
-		Contact:        body.Contact,
-		Password:       string(password),
-		Email:          body.Email,
-		Role:           body.Role,
-		Turf_branch_id: body.Branch_name,
-		Authorization:  body.Authorization,
-	}
+	// Update the other fields
+	adminToUpdate.Name = body.Name
+	adminToUpdate.Contact = body.Contact
+	adminToUpdate.Email = body.Email
+	adminToUpdate.Role = body.Role
+	adminToUpdate.Turf_branch_id = body.Branch_name
+	adminToUpdate.Authorization = body.Authorization
 
-	result := config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
+	// Update the admin using the provided 'id'
+	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to update admin",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
 
-	//Response
+	// Response
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "Admin Successfully updated",
-		"data":    bodys,
+		"success": "Admin successfully updated",
+		"data":    adminToUpdate,
 	})
 }
 
