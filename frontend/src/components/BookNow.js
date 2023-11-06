@@ -3,11 +3,41 @@ import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./BookNow.css";
+import availableSlot from "./Booking/AvailableSlot"
 
 function BookingForm() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
+  const [availableSlots, setAvailableSlots] = useState([]);
+
+  const Postdata = () => {
+    fetch("http://localhost:8080/user/get/avl/slots", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "branch_id": parseInt(selectedOption),
+        "date": formatDate(selectedDate)
+        
+      }),
+    })
+      .then((res) => {
+        console.log(res);
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setAvailableSlots(data.available_slots);
+      })
+      .catch((error) => {
+        console.error("Error while fetching data:", error);
+      });
+  };
 
   useEffect(() => {
     fetch("http://localhost:8080/admin/active/branch")
@@ -69,11 +99,17 @@ function BookingForm() {
           />
         </label>
         <br />
-        <button type="submit">Submit</button>
+        <button type="submit" onClick={Postdata}>
+          Submit
+        </button>
         <Link to={"/"}>
           <button type="button">Close</button>
         </Link>
       </form>
+      <div>
+        <availableSlot/>
+          
+      </div>
     </div>
   );
 }

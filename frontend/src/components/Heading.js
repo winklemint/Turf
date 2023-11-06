@@ -26,7 +26,7 @@ const Heading = () => {
       <p className="text-p1">{contant.Heading}</p>
       <h3 className="text-h3">{contant.SubHeading}</h3>
      <Link to={'/BookNow'}><button className="text-button">
-        <a href="#" className="text-btn-linkk">
+        <a className="text-btn-linkk">
           {contant.Button}
         </a>
       </button></Link> 

@@ -1188,13 +1188,18 @@ func GetAllDetailbydate(c *gin.Context) {
 }
 
 func Get_Available_slots(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	c.Writer.Header().Set("Access-Control-Max-Age", "600")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+
 	if c.Request.Method == "OPTIONS" {
-		c.JSON(http.StatusOK, gin.H{})
+		c.AbortWithStatus(204)
 		return
 	}
+
+	c.Next()
 
 	var body struct {
 		Date      string
@@ -1270,6 +1275,7 @@ func Get_Available_slots(c *gin.Context) {
 
 	// Return the available slots along with their is_booked status and associated Package information
 	c.JSON(http.StatusOK, gin.H{
-		"available_slots": response,
+		"status": 200,
+		"data":   response,
 	})
 }
