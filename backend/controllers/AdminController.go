@@ -3948,20 +3948,37 @@ func Total_Revenue(c *gin.Context) {
 		return
 	}
 
-	cookie, err := c.Cookie("branch_id")
-	if err != nil {
-		fmt.Println("nthng in cookie")
-	}
-
 	var revenue []models.Confirm_Booking_Table
-	result := config.DB.Find(&revenue, "branch_id=?", cookie)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to Delete Heading Details",
-			"data":   nil,
-		})
-		return
+
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	fmt.Println(Role)
+
+	if Role != 1 {
+
+		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details ",
+			})
+			return
+
+		}
+	} else {
+		result := config.DB.Find(&revenue)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to Delete Heading Details",
+				"data":   nil,
+			})
+			return
+		}
 	}
 
 	// Calculate the total Paid_amount
@@ -3987,14 +4004,36 @@ func Total_Remaining_amount(c *gin.Context) {
 	}
 
 	var revenue []models.Confirm_Booking_Table
-	result := config.DB.Find(&revenue)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to execute query",
-			"data":   nil,
-		})
-		return
+
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	fmt.Println(Role)
+
+	if Role != 1 {
+
+		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details ",
+			})
+			return
+
+		}
+	} else {
+		result := config.DB.Find(&revenue)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to execute query",
+				"data":   nil,
+			})
+			return
+		}
 	}
 
 	// Calculate the total Paid_amount
@@ -4020,14 +4059,35 @@ func Total_Sales(c *gin.Context) {
 	}
 
 	var revenue []models.Confirm_Booking_Table
-	result := config.DB.Find(&revenue)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to execute query",
-			"data":   nil,
-		})
-		return
+
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+	
+
+	if Role != 1 {
+
+		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details ",
+			})
+			return
+
+		}
+	} else {
+		result := config.DB.Find(&revenue)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to execute query",
+				"data":   nil,
+			})
+			return
+		}
 	}
 
 	// Calculate the total Paid_amount
