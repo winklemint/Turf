@@ -78,6 +78,8 @@ func main() {
 
 	//staff
 	route.RegisterAdminPanelAddstaff(r)
+	route.RegisterAdminPanelAllstaff(r)
+	route.RegisterAdminPanelUpdateStaff(r)
 
 	r.Run(":8080")
 }

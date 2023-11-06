@@ -11,9 +11,14 @@ func RegisterAdminRoutes(router *gin.Engine) {
 
 	adminRoutes := router.Group("/admin")
 	{
+		//Admin and Staff
 		adminRoutes.POST("/signup", controllers.AdminSignup)
 		adminRoutes.POST("/login", controllers.AdminLogin)
 		adminRoutes.PUT("/update", controllers.UpdateAdmin)
+		adminRoutes.GET("/staff/get", controllers.AllStaff)
+		adminRoutes.PATCH("/staff/update/:id", controllers.AdminUpdateById)
+		adminRoutes.GET("/staff/get/:id",controllers.AdminGetById)
+
 		// Slot
 		adminRoutes.POST("/add/slot", controllers.AddSlot)
 		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)

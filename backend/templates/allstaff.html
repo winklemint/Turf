@@ -6,15 +6,17 @@
             <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
         </div>
         <div class="pb-20">
-            <table class="table hover multiple-select-row data-table-export nowrap" id="allbranchtable">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="allstafftable">
                 <thead>
                     <tr>
                         <th>Sn.</th>
                         <th>Name</th>
-                        <th>Designation</th>
-                        <th>Review</th>
-                        <th>Image</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Role</th>
+                        <th>Brnach Name</th>
                         <th >Actions</th>
+                    
                     </tr>
                 </thead>
                
@@ -27,36 +29,45 @@
 <script>
     $(document).ready(function () {
         // Initialize DataTable
-        var table = $('#allbranchtable').DataTable();
+        var table = $('#allstafftable').DataTable();
         // Make an AJAX request to fetch data from the URL
         $.ajax({
-            url: 'http://localhost:8080/admin/get/testimonials',
+            url: '/admin/staff/get',
             method: 'GET',
             dataType: 'json',
             success: function (response) {
                 // Iterate through the data and append it to the table
-                $.each(response.data, function (index, testimonials) {
+                $.each(response.data, function (index, users) {
                     // Determine the button content based on the "Status"
-
+                    var button;
+       
+                    if (users.Role === 2) {
+                        button = "<button type='button' class='btn btn-outline-success'>Admin</button>";
+                    }else{
+                        button = "<button type='button' class='btn btn-outline-dark'>Staff</button>";
+                    }
                     var action = '<div class="dropdown">' +
-                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + testimonials.ID + '" role="button" data-toggle="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + users.ID + '" role="button" data-toggle="dropdown">' +
                         '<i class="dw dw-more"></i>' +
                         '</a>' +
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-                        '<a class="dropdown-item" href="/data/testimonials?id=' + testimonials.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/testimonials" onclick="deleteTestimonial(' + testimonials.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '<a class="dropdown-item" href="/update/staff?id=' + users.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/user" onclick="deleteUser(' +  users.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
                         '</div>' +
                         '</div>'
-
+                    var multi = '<a class="dropdown-item" href="/multi/booking?id=' + users.ID + '"><i class="dw dw-edit2"></i> Book Multiple Slots</a>'
+                       
                     // Create a new row and append it to the table
                     table.row.add([
                         index + 1, // Sn.
-                        testimonials.Name, // Name
-                        testimonials.Designation, // Designation
-                        testimonials.Review, // Review
-                        '<td data-testimonial-id="' + testimonials.ID + '"><a href="javascript:void(0);" class="testimonial-image" data-testimonial-id="' + testimonials.ID + '">View Image</a></td>',
+                        users.Name, // P
+                        users.Email, // Charges
+                        users.Contact, // Branch ID
+                        button,
+                        users.Branch_name,
+                        action,
+                      
 
-                        action, // Actions
                     ]);
                 });
 
@@ -67,20 +78,35 @@
                 console.error('Error fetching data: ' + error);
             }
         });
-
-        // Click event handler for testimonial images
-        $('body').on('click', '.testimonial-image', function() {
-            var $aElement = $(this);
-            var testimonialId = $aElement.data('testimonial-id');
-            console.log('Testimonial ID:', testimonialId);
-            var imageUrl = 'http://localhost:8080/admin/get/testimonial/image/' + testimonialId;
-            window.open(imageUrl, '_blank');
-        });
     });
-
+    
+   
+    function deleteUser(Id) {
+        var row_id = Id;
+        
+        
+        $.ajax({
+            url: "/admin/delete/user/" + Id,
+            method: "DELETE",
+            success: function (response) {
+                var rowid = 'rowN' + row_id;
+                alert(rowid);
+                var rowElement = document.getElementById(rowid);
+                if (rowElement) {
+                    rowElement.style.display = 'none';
+                    alert("Testimonial with ID: " + Id + " deleted successfully");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("Error deleting testimonial with ID: " + Id);
+            }
+        });
+    }
     function deleteTestimonial(Id) {
         var row_id = Id;
-
+        
+        
         $.ajax({
             url: "/admin/delete/testimonial/" + Id,
             method: "DELETE",
@@ -99,8 +125,11 @@
             }
         });
     }
+    
+  
+   
+    
 </script>
-
 
 </body>
 </html>
