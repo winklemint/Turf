@@ -209,9 +209,9 @@ func AdminProfile(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	var response struct {
-		Data []interface{}
-	}
+	// var response struct {
+	// 	Data []interface{}
+	// }
 	adminId, _ := c.Request.Cookie("AID")
 	id, _ := strconv.Atoi(adminId.Value)
 
@@ -227,14 +227,14 @@ func AdminProfile(c *gin.Context) {
 		})
 		return
 	}
-	for _, packageData := range admin {
-		response.Data = append(response.Data, packageData)
-	}
+	// for _, packageData := range admin {
+	// 	response.Data = append(response.Data, packageData)
+	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"Success": "Successfully Get Admin Details",
-		"Data":    response,
+		"Data":    admin,
 	})
 }
 
