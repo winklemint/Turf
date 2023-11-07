@@ -36,7 +36,7 @@
         <div class="pd-20 card-box mb-30">
             <div class="clearfix">
                 <div class="pull-left">
-                    <h4 class="text-blue h4">Add Admin</h4>
+                    <h4 class="text-blue h4">Admin Detail</h4>
                     <!-- <p class="mb-30">All bootstrap element classies</p> -->
                 </div>
                 <!-- <div class="pull-right">
@@ -50,107 +50,68 @@
                             >
                         </div> -->
             </div>
-            <form id="staff_form">
-
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Name</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input id="name" class="form-control" placeholder="Enter Name" type="text" />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Email</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input id="email" class="form-control" placeholder="bootstrap@example.com" type="email" />
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Contact Number</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input id="contact" class="form-control" placeholder="1-(111)-111-1111" type="tel" />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Password</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input id="password" class="form-control" placeholder="***********" type="text" />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Role</label>
-                    <div class="col-sm-12 col-md-10">
-                        <select class="custom-select col-12" id="role">
-                            <option selected="">Choose...</option>
-                            <option value="2">Admin</option>
-                            
-
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
-                    <div class="col-sm-12 col-md-10">
-                        <select class="custom-select col-12" id="branchSelect" required>
-
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Authourization</label>
-                    <div class="col-sm-12 col-md-10 d-flex justify-content-around">
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck1">
-                            <label class="custom-control-label" for="customCheck1">All Authorization</label>
+            <form>
+                <ul class="profile-edit-list row">
+                    <li class="weight-500 col-md-6">
+                        <h4 class="text-blue h5 mb-20">
+                            Edit Your Personal Setting
+                        </h4>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input
+                                class="form-control form-control-lg"
+                                type="text"
+                                id="name"
+                            />
                         </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck2" value="1">
-                            <label class="custom-control-label" for="customCheck2">Branch</label>
+                        
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input
+                                class="form-control form-control-lg"
+                                type="email"
+                                id="email"
+                            />
                         </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck3" value="2">
-                            <label class="custom-control-label" for="customCheck3">Slot</label>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input
+                                class="form-control form-control-lg"
+                                type="text"
+                                id="contact"
+                            />
                         </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck4" value="3">
-                            <label class="custom-control-label" for="customCheck4">Packages</label>
+                        
+                        <div class="form-group">
+                            <label>Role</label>
+                           
+                                <select class="custom-select col-12" id="role">
+                                    <option selected="">Choose...</option>
+                                    <option value="1">Super Admin</option>
+                                    <option value="2">Admin</option>
+        
+                                </select>
+                          
                         </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck5" value="4">
-                            <label class="custom-control-label" for="customCheck5">testimonials</label>
+                        <div class="form-group">
+                            <label>Branch Name</label>
+                            <input
+                                class="form-control form-control-lg"
+                                type="text"
+                                id="branch_name"
+                            />
                         </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck6" value="5">
-                            <label class="custom-control-label" for="customCheck6">Content</label>
+                        
+                        <div class="form-group mb-0">
+                            <input
+                                type="submit"
+                                class="btn btn-primary"
+                                value="Update Information"
+                            />
                         </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck7" value="6">
-                            <label class="custom-control-label" for="customCheck7">User</label>
-                        </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="7">
-                            <label class="custom-control-label" for="customCheck8">Staff</label>
-                        </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck9" value="8">
-                            <label class="custom-control-label" for="customCheck9">Slot Allocation</label>
-                        </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck10" value="9">
-                            <label class="custom-control-label" for="customCheck10">Booking</label>
-                        </div>
-                        <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck11" value="10">
-                            <label class="custom-control-label" for="customCheck11">Other</label>
-                        </div>
-                    </div>
-                </div>
-                <div>
-
-                    <input class="btn btn-primary" type="submit" value="Submit" id="submitBtn" />
-
-                </div>
-
+                    </li>
+                   
+                </ul>
             </form>
             <div class="collapse collapse-box" id="basic-form1">
                 <div class="code-box">

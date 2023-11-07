@@ -30,7 +30,7 @@ func main() {
 	route.RegisterAdminPanelRoutes(r)
 	//dashb0ard
 	route.RegisterAdminPanelDashboard(r)
-	route.RegisterAdminPanelDashAdmin(r)
+	//route.RegisterAdminPanelDashAdmin(r)
 
 	//Carousel
 	route.RegisterAdminPanelUpdatecarousel(r)

@@ -19,6 +19,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.PATCH("/staff/update/:id", controllers.AdminUpdateById)
 		adminRoutes.GET("/staff/get/:id", controllers.AdminGetById)
 		adminRoutes.DELETE("/staff/delete/:id", controllers.AdminDelete)
+		adminRoutes.GET("/profile", controllers.AdminProfile)
 
 		adminRoutes.GET("/data/login", controllers.GetLoggedAdmin)
 		// Slot
@@ -49,8 +50,6 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/payments/:id", controllers.MultipleImages)
 
 		adminRoutes.POST("/multi/bookings/:id", controllers.Multiple_slot_booking)
-
-		
 
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
