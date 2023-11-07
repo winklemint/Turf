@@ -95,5 +95,7 @@ func main() {
 	route.RegisterAdminPanelAllstaff(r)
 	route.RegisterAdminPanelUpdateStaff(r)
 
+	//Profile
+	route.RegisterAdminPanelProfile(r)
 	r.Run(":8080")
 }
