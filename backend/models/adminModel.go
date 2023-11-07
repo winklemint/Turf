@@ -14,7 +14,7 @@ type Admin struct {
 	Password       string
 	Role           int
 	LastLogin      time.Time
-	Turf_branch_id int
+	Turf_branch_id uint
 	Authorization  string
 }
 type Content struct {

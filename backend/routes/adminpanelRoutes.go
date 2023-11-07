@@ -550,16 +550,3 @@ func ForbidHTMLExtension(c *gin.Context) {
 
 	c.Next()
 }
-
-func RegisterAdminPanelDashAdmin(router *gin.Engine) {
-	router.Use(IsAuthenticated())
-	router.LoadHTMLGlob("templates/*.html")
-
-	// Define a route to serve the "dashboard.html" template
-	router.GET("/admin/dashboard", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "dash_Admin.html", gin.H{
-			// You can pass data to the template if needed
-			//"data": "helloworld.html",
-		})
-	})
-}

@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Authorization</label>
+                    <label class="col-sm-12 col-md-2 col-form-label">Authourization</label>
                     <div class="col-sm-12 col-md-10 d-flex justify-content-around">
                         <div class="custom-control custom-checkbox d-inline">
                             <input type="checkbox" class="custom-control-input auth" id="customCheck1">
@@ -132,22 +132,22 @@
                             <label class="custom-control-label" for="customCheck8">Staff</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck9" value="8">
-                            <label class="custom-control-label" for="customCheck9">Slot Allocation</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="8">
+                            <label class="custom-control-label" for="customCheck8">Slot Allocation</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck10" value="9">
-                            <label class="custom-control-label" for="customCheck10">Booking</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="9">
+                            <label class="custom-control-label" for="customCheck8">Booking</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck11" value="10">
-                            <label class="custom-control-label" for="customCheck11">Other</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="10">
+                            <label class="custom-control-label" for="customCheck8">Other</label>
                         </div>
                     </div>
                 </div>
                 <div>
 
-                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                    <input class="btn btn-primary" type="submit" value="Update" id="submit" />
 
                 </div>
 
@@ -178,74 +178,72 @@
 
 {{template "footer.html"}}
 <script>
-    $(document).ready(function () {
-    // Define Id outside the if block
-    var Id = new URLSearchParams(window.location.search).get('id');
+    $(document).ready(function() {
+        // Define Id outside the if block
+        var Id = new URLSearchParams(window.location.search).get('id');
 
-    if (Id) {
-        getUserDetails(Id);
-    }
-
-    // Helper function to retrieve user details
-    function getUserDetails(Id) {
-        $.ajax({
-            url: "/admin/staff/get/" + Id,
-            method: "GET",
-            dataType: "json",
-            success: function (response) {
-                var user = response.Data;
-                console.log(response.Data);
-                if (user) {
-                    $('#name').val(user.Name);
-                    $('#email').val(user.Email);
-                    $('#contact').val(user.Contact);
-                   
-                    $('#role').val(user.Role);
-                    $('#branch_select').val(user.Turf_branch_id);
-
-                    var authorizationValues = user.Authorization;
-
-                    // Loop through each checkbox element
-                    $('.auth').each(function () {
-                        var checkboxValue = parseInt($(this).attr('value')); // Convert the checkbox value to an integer
-                        if (authorizationValues.includes(checkboxValue)) {
-                            $(this).prop('checked', true); // Check the checkbox if the value matches
-                        } else {
-                            $(this).prop('checked', false); // Uncheck the checkbox if the value doesn't match
-                        }
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
-
-    $.ajax({
-        url: '/admin/get/branch',
-        method: 'GET',
-        dataType: 'json',
-        success: function (res) {
-            // Save the selected branch value if it's already set
-            var selectedBranch = $("#branchSelect").val();
-
-            // Clear the existing options in the dropdown
-            $("#branchSelect").html('');
-
-            appendDataToSelect(res.data);
-
-            // Set the selected branch value back
-            if (selectedBranch) {
-                $("#branchSelect").val(selectedBranch);
-            }
-        },
-        error: function () {
-            console.error('Failed to retrieve data from the server');
+        if (Id) {
+            getUserDetails(Id);
         }
-    });
 
+        // Helper function to retrieve user details
+        function getUserDetails(Id) {
+            $.ajax({
+                url: "/admin/staff/get/" + Id,
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        var user = response.data;
+                        if (user) {
+                            $('#name').val(user.Name);
+                            $('#email').val(user.Email);
+                            $('#contact').val(user.Contact);
+                            $('#role').val(user.Role);
+                        }
+                    } else {
+                        // Handle an error response, e.g., user not found
+                        console.log(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        $("#staff_form").submit(function(event) {
+            event.preventDefault();
+            var formData = {
+                Name: $("#name").val(),
+                Email: $("#email").val(),
+                Contact: $("#contact").val(),
+                Password: $("#password").val(),
+                Role: parseInt($('#role').val())
+            };
+
+            $.ajax({
+                url: "/admin/update/user/" + Id,
+                method: "PATCH",
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    if (response.success) {
+                        alert("User Details updated successfully!");
+                        window.location.href = "/user";
+                    } else {
+                        // Handle an error response, e.g., update failed
+                        console.log(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
     function appendDataToSelect(data) {
+            
         const element = "<option value=''>Select Branch</option>";
         $("#branchSelect").append(element);
         for (let index = 0; index < data.length; index++) {
@@ -268,68 +266,8 @@
     // Handle permissions for the specific day
     $('.auth').change(function () {
         var selectedPerm = getSelectedPermissions();
-       
+        sendCheckboxStateToAPI(selectedPerm);
     });
-
-   
-
-    $("#staff_form").submit(function (event) {
-        event.preventDefault();
-
-        var selectedPerm = getSelectedPermissions().filter(function (permission) {
-            return permission !== 'on'; // Filter out the 'on' value
-        }).map(function (permission) {
-            return parseInt(permission, 10); // Parse each permission as an integer
-        });
-
-        // Convert the selected permissions to a JSON string
-        var authorizationString = "{" + selectedPerm.join(",") + "}";
-
-        var formData = {
-            name: $("#name").val(),
-            email: $("#email").val(),
-            contact: $("#contact").val(),
-            password: $("#password").val(),
-            role: parseInt($('#role').val()),
-            branch_name: parseInt($("#branchSelect").val()),
-            authorization: authorizationString,
-        };
-
-        formData = JSON.stringify(formData);
-
-        console.log(formData);
-
-        $.ajax({
-            url: "/admin/staff/update/" + Id, // Update the URL as needed
-            method: "PATCH", // Use PATCH method for updating
-            data: formData,
-            contentType: 'application/json',
-            success: function (response) {
-                alert("Staff Details updated successfully!");
-                window.location.href = "/staff";
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-        });
-    });
-
-    function updateAllAuthorizationCheckboxState() {
-        if ($('.auth:checked').length === $('.auth').length) {
-            $('#customCheck1').prop('checked', true);
-        } else {
-            $('#customCheck1').prop('checked', false);
-        }
-    }
-
-    function getSelectedPermissions() {
-        var selectedPerm = $('.auth:checked').map(function () {
-            return $(this).val();
-        }).get();
-        return selectedPerm;
-    }
-});
- 
 </script>
 </body>
 
