@@ -191,6 +191,25 @@
     });
 </script>
 <script>
+    $(document).ready(function () {
+        // Make an AJAX request to fetch the admin's profile
+        $.ajax({
+            url: "/admin/profile", // Replace with the actual API endpoint
+            method: "GET",
+            dataType: 'json',
+            success: function (data) {
+                var admin = data.Data[0];
+                console.log(admin.Name);
+                $('#admin-name .user-name').text(admin.Name); // Set the text of the .user-name element
+            },
+            error: function (error) {
+                $('#admin-name .user-name').text("Admin Name Not Found");
+            }
+        });
+    });
+    
+</script>
+<script>
     function convertTo24HourFormat(time12h) {
         const date = new Date("2000-01-01 " + time12h); // Use a common date for all times to ensure consistency
         const options = { hour: '2-digit', minute: '2-digit', hour12: false };
