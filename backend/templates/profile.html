@@ -50,7 +50,7 @@
                             >
                         </div> -->
             </div>
-            <form>
+            <form id="admin_form">
                 <ul class="profile-edit-list row">
                     <li class="weight-500 col-md-6">
                         <h4 class="text-blue h5 mb-20">
@@ -84,21 +84,18 @@
                         
                         <div class="form-group">
                             <label>Role</label>
-                           
-                                <select class="custom-select col-12" id="role">
-                                    <option selected="">Choose...</option>
-                                    <option value="1">Super Admin</option>
-                                    <option value="2">Admin</option>
-        
-                                </select>
-                          
+                            <input
+                                class="form-control form-control-lg"
+                                type="text"
+                                id="role" readonly
+                            />
                         </div>
                         <div class="form-group">
                             <label>Branch Name</label>
                             <input
                                 class="form-control form-control-lg"
                                 type="text"
-                                id="branch_name"
+                                id="branch_name" readonly
                             />
                         </div>
                         
@@ -107,6 +104,7 @@
                                 type="submit"
                                 class="btn btn-primary"
                                 value="Update Information"
+                                id="submit"
                             />
                         </div>
                     </li>
@@ -138,7 +136,69 @@
 
 
 {{template "footer.html"}}
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "/admin/profile",
+            method: "GET",
+            dataType: "json",
+            success: function(response) {
+                var user = response.Data[0]; 
+                if (response.status === 200) {
+                    if (user) {
+                        $('#name').val(user.Name );
+                        $('#email').val(user.Email);
+                        $('#contact').val(user.Contact);
+                        if (user.Role == "1") {
+                        role = "Super Admin";
+                        } else {
+                        role = "Admin";
+                        }
+                        $('#role').val(role)
+                        $('#branch_name').val(user.Branch_name);
+                        
+                        
+                    }
+                } else {
+                    // Handle an error response, e.g., user not found
+                    console.log(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+    $("#admin_form").submit(function(event) {
+        event.preventDefault();
+        var formData = {
+            Name: $("#name").val(),
+            Email: $("#email").val(),
+            Contact: $("#contact").val(),
+            
+        };
 
+        $.ajax({
+            url: "/admin/update/profile/",
+            method: "PATCH",
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            success: function(response) {
+                if (response.success) {
+                    alert("Admin Details updated successfully!");
+                    window.location.href = "/dashboard";
+                } else {
+                    // Handle an error response, e.g., update failed
+                    console.log(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+
+</script>
 </body>
 
 </html>

@@ -237,7 +237,54 @@ func AdminProfile(c *gin.Context) {
 		"Data":    admin,
 	})
 }
+func UpdateProfile(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	adminId, _ := c.Request.Cookie("AID")
+	id, _ := strconv.Atoi(adminId.Value)
+	var body struct {
+		Name    string
+		Contact string
+		Email   string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   "null",
+		})
+		return
+	}
 
+	bodys := models.Admin{
+		Name:    body.Name,
+		Contact: body.Contact,
+		Email:   body.Email,
+	}
+
+	result := config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Admin Allready Exist",
+			"data":   nil,
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Admin Successfully Updated",
+		"data":    bodys,
+	})
+
+}
 func AdminDelete(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
