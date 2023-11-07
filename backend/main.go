@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"turf/config"
 
 	"turf/routes"
 	route "turf/routes"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -24,15 +21,6 @@ func main() {
 	// go controllers.MainCalendar()
 	r := gin.Default()
 	//r.GET("/proxy-react", frontend.ProxyHandlerReact)
-
-	file, err := os.OpenFile("logrus.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		fmt.Println("Failed to create logrus.log")
-		panic(err)
-	}
-
-	logrus.SetOutput(file)
-	logrus.SetLevel(logrus.TraceLevel)
 
 	r.Use(routes.ForbidHTMLExtension)
 
