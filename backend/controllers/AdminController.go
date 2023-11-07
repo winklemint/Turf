@@ -40,8 +40,8 @@ func AdminSignup(c *gin.Context) {
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -50,8 +50,8 @@ func AdminSignup(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to hash password",
-			"data":   "null",
+			"error":  "Failed To Hashed Password",
+			"data":   nil,
 		})
 		return
 	}
@@ -87,7 +87,7 @@ func AdminSignup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Admin Allready Exist",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -119,8 +119,8 @@ func AdminUpdateById(c *gin.Context) {
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -129,8 +129,8 @@ func AdminUpdateById(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to hash password",
-			"data":   "null",
+			"error":  "Failed To Hashed Password",
+			"data":   nil,
 		})
 		return
 	}
@@ -140,8 +140,8 @@ func AdminUpdateById(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Error finding branch id",
-			"data":   "null",
+			"error":  "Error Finding Branch Id",
+			"data":   nil,
 		})
 		return
 	}
@@ -163,8 +163,8 @@ func AdminUpdateById(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Admin Allready Exist",
-			"data":   "null",
+			"error":  "Failed To Updated Admin Details",
+			"data":   nil,
 		})
 		return
 	}
@@ -172,7 +172,7 @@ func AdminUpdateById(c *gin.Context) {
 	//Response
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "Admin Successfully Created",
+		"success": "Successfully Updated Admin Details",
 		"data":    bodys,
 	})
 }
@@ -190,13 +190,14 @@ func AdminGetById(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed To Get Staff Details Details",
+			"error":  "Failed To Get Admin Details",
+			"data":   nil,
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"Success": "Successfully Get Staff Details Details",
+		"Success": "Successfully Get Admin Details",
 		"Data":    staff,
 	})
 
@@ -255,8 +256,8 @@ func UpdateProfile(c *gin.Context) {
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -299,14 +300,14 @@ func AdminDelete(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "unsuccessfully Deleted Staff",
-			"data":   "null",
+			"error":  "Unsuccessfully Deleted Staff",
+			"data":   nil,
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "successfully Deleted Staff",
+		"success": "Successfully Deleted Staff",
 		"data":    nil,
 	})
 }
@@ -324,7 +325,8 @@ func GetConfirmBookingTop5(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 404,
-			"error":  "failed to get confirmed booking details",
+			"error":  "Failed To Get Confirmed Booking Details",
+			"data":   nil,
 		})
 		return
 	}
@@ -335,7 +337,8 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "failed to user name",
+				"error":  "Failed To User Name",
+				"data":   nil,
 			})
 			return
 		}
@@ -344,7 +347,8 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "failed to fetch  branch name",
+				"error":  "Failed To Fetch  Branch Name",
+				"data":   nil,
 			})
 			return
 		}
@@ -366,7 +370,7 @@ func GetConfirmBookingTop5(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "confirmed booking details",
+		"success": "Confirmed Booking Details",
 		"data":    responseData,
 	})
 }
@@ -386,8 +390,8 @@ func AdminLogin(c *gin.Context) {
 	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to hash password",
-			"data":   "null",
+			"error":  "Failed To Hashed  Password",
+			"data":   nil,
 		})
 		return
 	}
@@ -399,7 +403,7 @@ func AdminLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"Error":  "Admin Does Not Exist",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -425,8 +429,8 @@ func AdminLogin(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to create token",
-			"data":   "null",
+			"error":  "Failed To Create Token",
+			"data":   nil,
 		})
 		return
 	}
@@ -541,8 +545,8 @@ func Add_Branch(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -561,8 +565,8 @@ func Add_Branch(c *gin.Context) {
 	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Upload the right file format (jpg or png)",
-			"data":   "null",
+			"error":  "Upload The Right File Format (jpg or png)",
+			"data":   nil,
 		})
 		return
 	}
@@ -572,7 +576,7 @@ func Add_Branch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Branch Already Exist",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -606,8 +610,8 @@ func Update_Branch(c *gin.Context) {
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 
@@ -618,8 +622,8 @@ func Update_Branch(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Branch Update unsuccessfully",
-			"data":   "null",
+			"error":  "Branch Updated Unsuccessfully",
+			"data":   nil,
 		})
 		return
 	}
@@ -641,8 +645,8 @@ func Update_Branch(c *gin.Context) {
 		if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Upload the right file format (jpg or png)",
-				"data":   "null",
+				"error":  "Upload The Right File Format (jpg or png)",
+				"data":   nil,
 			})
 			return
 		}
@@ -654,8 +658,8 @@ func Update_Branch(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Branch Update unsuccessfully",
-				"data":   "null",
+				"error":  "Branch Update Unsuccessfully",
+				"data":   nil,
 			})
 			return
 		}
@@ -686,7 +690,7 @@ func GET_All_Branch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "No Branch Found",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -694,7 +698,7 @@ func GET_All_Branch(c *gin.Context) {
 	//Response
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  200,
-		"success": "All Branch  Successfully",
+		"success": "Get All Branch Successfully",
 		"data":    branch,
 	})
 
@@ -714,7 +718,7 @@ func ActiveBranch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "No Branch Found",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -767,7 +771,7 @@ func GET_All_Branch_Id(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "No Branch Found",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -775,7 +779,7 @@ func GET_All_Branch_Id(c *gin.Context) {
 	//Response
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  200,
-		"success": "All Branch  Successfully",
+		"success": "Get Branch Details Successfully",
 		"data":    branch,
 	})
 
@@ -794,14 +798,14 @@ func Delete_Branch(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "unsuccessfully Deleted Branch",
-			"data":   "null",
+			"error":  "Unsuccessfully Deleted Branch",
+			"data":   nil,
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "successfully Deleted Branch",
+		"success": "Successfully Deleted Branch",
 		"data":    nil,
 	})
 }
@@ -821,8 +825,8 @@ func GetBranchimagesById(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch testimonial",
-			"data":   "null",
+			"error":  "Failed To Fetch Branch Image",
+			"data":   nil,
 		})
 		return
 	}
@@ -839,8 +843,8 @@ func GetBranchimagesById(c *gin.Context) {
 		// Handle unsupported image formats
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "unsupported image format",
-			"data":   "null",
+			"error":  "Unsupported Image Format",
+			"data":   nil,
 		})
 		return
 	}
@@ -851,8 +855,8 @@ func GetBranchimagesById(c *gin.Context) {
 		fmt.Println("Error reading the image file:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": 500,
-			"error":  "internal server error",
-			"data":   "null",
+			"error":  "Internal Server Error",
+			"data":   nil,
 		})
 		return
 	}
@@ -878,8 +882,8 @@ func AddSlot(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -890,8 +894,8 @@ func AddSlot(c *gin.Context) {
 	if result.Error == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Slot already exists",
-			"data":   "null",
+			"error":  "Slot Already Exists",
+			"data":   nil,
 		})
 		return
 	}
@@ -946,8 +950,8 @@ func AddPackage(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -957,8 +961,8 @@ func AddPackage(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "package Allready Exist",
-			"data":   "null",
+			"error":  "Package Allready Exist",
+			"data":   nil,
 		})
 		return
 	}
@@ -1001,8 +1005,8 @@ func UpdateAdmin(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -1042,7 +1046,7 @@ func UpdateAdmin(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Admin Update UnSuccessfully",
-				"data":   "null",
+				"data":   nil,
 			})
 			return
 		}
@@ -1051,8 +1055,8 @@ func UpdateAdmin(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "failed to hash password",
-				"data":   "null",
+				"error":  "Failed To Hashed Password",
+				"data":   nil,
 			})
 			return
 		}
@@ -1091,7 +1095,7 @@ func UpdateAdmin(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Admin Update UnSuccessfully",
-				"data":   "null",
+				"data":   nil,
 			})
 			return
 		}
@@ -1122,8 +1126,8 @@ func UpdateSlot(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -1134,7 +1138,7 @@ func UpdateSlot(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Slot Update UnSuccessfully",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -1159,7 +1163,8 @@ func GetAllSlot(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 404,
-			"error":  "failed to get all slot",
+			"error":  "Failed To Get All Slot",
+			"data":   nil,
 		})
 		return
 
@@ -1167,7 +1172,7 @@ func GetAllSlot(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "slot details",
+		"success": "Slot Details",
 		"data":    slot,
 	})
 
@@ -1189,8 +1194,8 @@ func Get_Slot_by_day(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read body",
+			"data":   nil,
 		})
 		return
 	}
@@ -1214,8 +1219,8 @@ func Get_Slot_by_day(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "failed to get slots for " + body.Day[i],
-				"data":   "null",
+				"error":  "Failed To Get Slots For " + body.Day[i],
+				"data":   nil,
 			})
 			return
 		}
@@ -1226,7 +1231,7 @@ func Get_Slot_by_day(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "slot details",
+		"success": "Slot Details By Day",
 		"data":    days,
 	})
 }
@@ -1251,8 +1256,8 @@ func UpdatePackage(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -1263,7 +1268,7 @@ func UpdatePackage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Package Update Unsuccessful",
-			"data":   "sry",
+			"data":   nil,
 		})
 		return
 	}
@@ -1281,14 +1286,14 @@ func UpdatePackage(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Package Update UnSuccessfully",
-				"data":   "null",
+				"data":   nil,
 			})
 			return
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "Package Update Successfully",
+		"success": "Package Updated Successfully",
 		"data":    admin,
 	})
 
@@ -1306,7 +1311,7 @@ func AllStaff(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to GET ALL Staff",
+			"error":  "Failed To Get All Admin",
 			"data":   nil,
 		})
 		return
@@ -1318,7 +1323,7 @@ func AllStaff(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "Failed to fetch user name",
+				"error":  "Failed To Fetch Branch Name",
 			})
 			return
 		}
@@ -1337,9 +1342,9 @@ func AllStaff(c *gin.Context) {
 
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"status": 400,
-		"error":  "Failed to GET ALL Staff",
-		"data":   response,
+		"status":  200,
+		"Success": " All  Admin",
+		"data":    response,
 	})
 
 }
@@ -1375,7 +1380,7 @@ func Get_Package(c *gin.Context) {
 		} `json:"data"`
 	}{
 		Status:  200,
-		Success: "Data retrieved successfully",
+		Success: "Data Retrieved Successfully",
 		Data: struct {
 			Pack []models.Package `json:"pack"`
 			Slot []string         `json:"slot"`
@@ -1413,7 +1418,7 @@ func DeleteSlot(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "Successfully deleted slot",
+		"success": "Successfully Deleted Slot",
 		"data":    nil,
 	})
 }
@@ -1438,8 +1443,9 @@ func GetAllPackage(c *gin.Context) {
 
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all branch details ",
+				"status": 400,
+				"error":  "Failed To Get All Branch Details ",
+				"data":   nil,
 			})
 			return
 
@@ -1451,8 +1457,8 @@ func GetAllPackage(c *gin.Context) {
 
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all branch details",
+				"status": 400,
+				"error":  "Failed To Get Package Details",
 			})
 			return
 
@@ -1466,8 +1472,9 @@ func GetAllPackage(c *gin.Context) {
 
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all branch details",
+				"status": 400,
+				"error":  "Failed To Get All Branch Details",
+				"Data":   nil,
 			})
 			return
 
@@ -1486,7 +1493,7 @@ func GetAllPackage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "package details",
+		"success": "Package Details",
 		"data":    response, // Use the response data you built
 	})
 }
@@ -1504,8 +1511,8 @@ func GetAllPackageById(c *gin.Context) {
 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 404,
-			"error":  "failed to get package",
+			"status": 400,
+			"error":  "Failed To Get Package",
 			"data":   nil,
 		})
 		return
@@ -1514,7 +1521,7 @@ func GetAllPackageById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "Package details",
+		"success": "Package Details",
 		"data":    pkg,
 	})
 }
@@ -1531,8 +1538,8 @@ func DeletePackage(c *gin.Context) {
 	result := config.DB.Model(&packages).Where("id=?", Id).Delete(&packages)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 404,
-			"error":  "failed to Delete package",
+			"status": 400,
+			"error":  "Failed To Delete Package",
 			"data":   nil,
 		})
 		return
@@ -1561,7 +1568,8 @@ func GetConfirmBooking(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 404,
-			"error":  "failed to get all booking details",
+			"error":  "Failed To Get All Booking Details",
+			"data":   nil,
 		})
 		return
 	}
@@ -1571,8 +1579,9 @@ func GetConfirmBooking(c *gin.Context) {
 
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all detail",
+				"status": 400,
+				"error":  "Failed To Get Slot Detail",
+				"data":   nil,
 			})
 			return
 		}
@@ -1585,7 +1594,9 @@ func GetConfirmBooking(c *gin.Context) {
 
 			if result.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": "Failed to find slot by start_slot",
+					"status": 400,
+					"error":  "Failed To Find Slot By Start_Slot",
+					"data":   nil,
 				})
 				return
 			}
@@ -1602,7 +1613,7 @@ func GetConfirmBooking(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "confirmed booking details",
+		"success": "Confirmed Booking Details",
 		"data":    Package,
 	})
 }
@@ -1625,8 +1636,8 @@ func UpdatecomfirmDetails(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "Failed To Read Body",
+			"data":   nil,
 		})
 		return
 	}
@@ -1643,8 +1654,8 @@ func UpdatecomfirmDetails(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "confirm table Update UnSuccessfully",
-			"data":   "null",
+			"error":  "Confirm Table Update UnSuccessfully",
+			"data":   nil,
 		})
 		return
 	}
@@ -1708,7 +1719,7 @@ func GetAllUsersById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "success to load user details",
+		"success": "user details",
 		"data":    users,
 	})
 }
@@ -1727,7 +1738,7 @@ func DeleteUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "User Delete UnSuccessfully",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -1755,7 +1766,9 @@ func AddUser(c *gin.Context) {
 
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to read body",
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
 		})
 		return
 	}
@@ -1764,7 +1777,9 @@ func AddUser(c *gin.Context) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to hash password",
+			"status": 400,
+			"error":  "failed to hash password",
+			"data":   nil,
 		})
 		return
 	}
@@ -1782,8 +1797,8 @@ func AddUser(c *gin.Context) {
 
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  201,
 		"message": "user successfully created",
 		"data":    user,
 	})
@@ -1811,14 +1826,16 @@ func UpdateUserDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
 	Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to hash password",
+			"status": 400,
+			"error":  "failed to hash password",
+			"data":   nil,
 		})
 		return
 	}
@@ -1829,7 +1846,7 @@ func UpdateUserDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "User Update UnSuccessfully",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -1856,7 +1873,7 @@ func CountUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Total User Count Unsuccessfully",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -1937,8 +1954,8 @@ func AdminAddScreenshot(c *gin.Context) {
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Invalid Request",
-			"data":   "null",
+			"error":  "Invalid Request To Payload",
+			"data":   nil,
 		})
 		return
 
@@ -1961,8 +1978,8 @@ func AdminAddScreenshot(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to insert",
-			"data":   "null",
+			"error":  "failed to insert screeshot",
+			"data":   nil,
 		})
 		return
 	} else {
@@ -1974,8 +1991,8 @@ func AdminAddScreenshot(c *gin.Context) {
 		if status.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "failed to insert",
-				"data":   "null",
+				"error":  "failed to upadte confirm boooking details",
+				"data":   nil,
 			})
 			return
 		}
@@ -1988,15 +2005,15 @@ func AdminAddScreenshot(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "failed to insert",
-				"data":   "null",
+				"error":  "failed to upadte boooking details",
+				"data":   nil,
 			})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"status":  200,
-			"message": "Successfully upladed",
+			"message": "Successfully uploaded",
 			"data":    payment,
 		})
 
@@ -2046,7 +2063,7 @@ func AddSlotForUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -2056,8 +2073,8 @@ func AddSlotForUser(c *gin.Context) {
 	if rows.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
+			"error":  "failed to add slot for user",
+			"data":   nil,
 		})
 		return
 	}
@@ -2111,8 +2128,8 @@ func AddSlotForUser(c *gin.Context) {
 			if result.Error != nil {
 				c.JSON(http.StatusOK, gin.H{
 					"status": 400,
-					"error":  "Slot Allready Exist",
-					"data":   "null",
+					"error":  "Slot Allready booked",
+					"data":   nil,
 				})
 				return
 			}
@@ -2138,8 +2155,8 @@ func AddSlotForUser(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Slot Allready Exist",
-				"data":   "null",
+				"error":  "Slot Allready Booked",
+				"data":   nil,
 			})
 			return
 		}
@@ -2175,8 +2192,8 @@ func AddSlotForUser(c *gin.Context) {
 			if result.Error != nil {
 				c.JSON(http.StatusOK, gin.H{
 					"status": 400,
-					"error":  "Slot Allready Exist",
-					"data":   "null",
+					"error":  "Slot Allready booked",
+					"data":   nil,
 				})
 				return
 			}
@@ -2202,8 +2219,8 @@ func AddSlotForUser(c *gin.Context) {
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Slot Allready Exist",
-				"data":   "null",
+				"error":  "Slot Allready boooked",
+				"data":   nil,
 			})
 			return
 		}
@@ -2218,7 +2235,7 @@ func AddSlotForUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Slot is allready booked",
-			"data":   "null",
+			"data":   nil,
 		})
 	}
 }
