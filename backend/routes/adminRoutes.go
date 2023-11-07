@@ -20,6 +20,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.PATCH("/staff/update/:id", controllers.AdminUpdateById)
 		adminRoutes.GET("/staff/get/:id", controllers.AdminGetById)
 		adminRoutes.DELETE("/staff/delete/:id", controllers.AdminDelete)
+		adminRoutes.GET("/profile", controllers.AdminProfile)
 
 		// Slot
 		adminRoutes.POST("/add/slot", controllers.AddSlot)

@@ -194,6 +194,43 @@ func AdminGetById(c *gin.Context) {
 	})
 
 }
+func AdminProfile(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var response struct {
+		Data []interface{}
+	}
+	adminId, _ := c.Request.Cookie("AID")
+	id, _ := strconv.Atoi(adminId.Value)
+
+	// Initialize Admin and Branch models
+	var admin []models.Admin
+
+	// Create a database query to join Admin and Branch tables and select only branch_name
+	result := config.DB.Debug().Raw(`SELECT admins.name, admins.contact, admins.email, admins.role, admins.turf_branch_id, admins.id, branch_info_managements.branch_name FROM admins JOIN branch_info_managements ON admins.turf_branch_id = branch_info_managements.id WHERE admins.id = ?`, id).Scan(&admin)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed To Get Admin Details",
+		})
+		return
+	}
+	for _, packageData := range admin {
+		response.Data = append(response.Data, packageData)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"Success": "Successfully Get Admin Details",
+		"Data":    response,
+	})
+}
+
 func AdminDelete(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -220,6 +257,7 @@ func AdminDelete(c *gin.Context) {
 		"data":    nil,
 	})
 }
+
 func GetConfirmBookingTop5(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
