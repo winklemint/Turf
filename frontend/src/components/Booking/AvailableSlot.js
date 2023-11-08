@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 function SlotBooking() {
+  const [loading, setLoading] = useState(true);
+  const [availableSlots, setAvailableSlots] = useState([]);
   
  
   return (
