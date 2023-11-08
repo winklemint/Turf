@@ -111,12 +111,9 @@ func AdminUpdateById(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-
 	id := c.Param("id")
-
 	// Create an instance of the model outside of if-else scope
 	var adminToUpdate models.Admin
-
 	var body struct {
 		Name          string
 		Contact       string
@@ -126,7 +123,6 @@ func AdminUpdateById(c *gin.Context) {
 		Branch_name   int
 		Authorization string
 	}
-
 	if err := c.Bind(&body); err != nil {
 		logrus.Infoln("failed t0 read b0dy AdminUpdateById")
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -136,11 +132,10 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-
 	// Check if 'Password' is provided, and hash it if necessary
 	if body.Password != "" {
 		// Hash the password using bcrypt
-		Password, err := bcrypt.GenerateFromPassword([]byte(body.Password), 14)
+		password, err := bcrypt.GenerateFromPassword([]byte(body.Password), 14)
 		if err != nil {
 			logrus.Infoln("AdminUpdateById-", err)
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -150,9 +145,8 @@ func AdminUpdateById(c *gin.Context) {
 			})
 			return
 		}
-		adminToUpdate.Password = string(Password)
+		adminToUpdate.Password = string(password)
 	}
-
 	// Update the other fields
 	adminToUpdate.Name = body.Name
 	adminToUpdate.Contact = body.Contact
@@ -160,7 +154,6 @@ func AdminUpdateById(c *gin.Context) {
 	adminToUpdate.Role = body.Role
 	adminToUpdate.Turf_branch_id = uint(body.Branch_name)
 	adminToUpdate.Authorization = body.Authorization
-
 	// Update the admin using the provided 'id'
 	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
 	if result.Error != nil {
@@ -172,31 +165,16 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-
-	var branch models.Branch_info_management
-	result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Error Finding Branch Id",
-			"data":   nil,
-		})
-		return
-	}
-
 	BranchID := uint(body.Branch_name)
-
 	fmt.Println(BranchID)
-
 	bodys := models.Admin{
 		Name:           body.Name,
 		Contact:        body.Contact,
-		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
 		Turf_branch_id: BranchID,
+		Authorization:  body.Authorization,
 	}
-
 	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -206,7 +184,6 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-
 	//Response
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -264,6 +241,7 @@ func AdminProfile(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed To Get Admin Details",
+			"data":   nil,
 		})
 		return
 	}
@@ -1437,6 +1415,7 @@ func Get_Slot_by_day(c *gin.Context) {
 			Scan(&slot)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to Get Slot By Day %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Failed To Get Slots For " + body.Day[i],
@@ -1474,6 +1453,7 @@ func UpdatePackage(c *gin.Context) {
 	}
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed to Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed To Read Body",
@@ -1485,7 +1465,9 @@ func UpdatePackage(c *gin.Context) {
 	admin := models.Package{Name: body.Name, Price: body.Price, Status: body.Status}
 	result := config.DB.Model(&admin).Where("id = ?", Id).Updates(admin)
 	if result.Error != nil {
+		logrus.Infof("Failed to Upadte Package Details %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
+
 			"status": 400,
 			"error":  "Package Update Unsuccessful",
 			"data":   nil,
@@ -1503,6 +1485,7 @@ func UpdatePackage(c *gin.Context) {
 		psr := models.Package_slot_relationship{Package_id: IDuint, Slot_id: body.Slot_id[i]}
 		result := config.DB.Create(&psr)
 		if result.Error != nil {
+			logrus.Infof("Failed to Upadte Package Details %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Package Update UnSuccessfully",
@@ -1529,6 +1512,7 @@ func AllStaff(c *gin.Context) {
 	var staff []models.Admin
 	result := config.DB.Find(&staff, "role=2 OR role=3")
 	if result.Error != nil {
+		logrus.Infof("Failed to Get All Admin %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed To Get All Admin",
@@ -1541,9 +1525,11 @@ func AllStaff(c *gin.Context) {
 		var branch models.Branch_info_management
 		result := config.DB.Find(&branch, stf.Turf_branch_id)
 		if result.Error != nil {
+			logrus.Infof("Failed to Fetch Branch Name %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
 				"error":  "Failed To Fetch Branch Name",
+				"data":   nil,
 			})
 			return
 		}
@@ -1662,6 +1648,7 @@ func GetAllPackage(c *gin.Context) {
 		result := config.DB.Find(&Pkg, "branch_id=?", branchid)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to Get All Branch Details %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Failed To Get All Branch Details ",
@@ -1676,6 +1663,7 @@ func GetAllPackage(c *gin.Context) {
 		result := config.DB.Find(&Pkg)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to GET Package Details %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Failed To Get Package Details",
@@ -1691,6 +1679,7 @@ func GetAllPackage(c *gin.Context) {
 		result := config.DB.Find(&branch, "id=?", branchid)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to Get All Branch Details %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Failed To Get All Branch Details",
@@ -1730,6 +1719,7 @@ func GetAllPackageById(c *gin.Context) {
 	result := config.DB.Find(&pkg).Where("id=?", Id)
 
 	if result.Error != nil {
+		logrus.Infof("Failed to Get Package Detail %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed To Get Package",
@@ -1757,6 +1747,7 @@ func DeletePackage(c *gin.Context) {
 	var packages models.Package
 	result := config.DB.Model(&packages).Where("id=?", Id).Delete(&packages)
 	if result.Error != nil {
+		logrus.Infof("Failed to Delete Package %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed To Delete Package",
@@ -1786,6 +1777,7 @@ func GetConfirmBooking(c *gin.Context) {
 	var Package []interface{}
 	result := config.DB.Find(&Pkg)
 	if result.Error != nil {
+		logrus.Infof("Failed to Get Confirm Booking Details %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 404,
 			"error":  "Failed To Get All Booking Details",
@@ -1798,6 +1790,7 @@ func GetConfirmBooking(c *gin.Context) {
 		result := config.DB.Model(&models.Turf_Bookings{}).Where("order_id = ?", Pkg[i].Booking_order_id).Pluck("slot_id", &slot_id)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to Get slot Details %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Failed To Get Slot Detail",
@@ -1813,6 +1806,7 @@ func GetConfirmBooking(c *gin.Context) {
 			result := config.DB.Where("id = ? ", s).Find(&slt)
 
 			if result.Error != nil {
+				logrus.Infof("Failed To Find Slot By Start_Slot  %v\n", result.Error)
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": 400,
 					"error":  "Failed To Find Slot By Start_Slot",
@@ -1854,6 +1848,7 @@ func UpdatecomfirmDetails(c *gin.Context) {
 	}
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed To Read Body",
@@ -1872,6 +1867,7 @@ func UpdatecomfirmDetails(c *gin.Context) {
 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Where("id = ?", Id).Updates(&confirm_booking)
 	// result = config.DB.Exec(result)
 	if result.Error != nil {
+		logrus.Infof("Failed To Update Confirm Booking Details %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Confirm Table Update UnSuccessfully",
@@ -1900,6 +1896,7 @@ func GetAllUsers(c *gin.Context) {
 	var users []models.User
 	result := config.DB.Find(&users)
 	if result.Error != nil {
+		logrus.Infof("Failed To Get All User %v\n", result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": http.StatusInternalServerError,
 			"error":  "Failed to load user details",
@@ -1928,10 +1925,11 @@ func GetAllUsersById(c *gin.Context) {
 	result := config.DB.Find(&users, "id=?", Id)
 
 	if result.Error != nil {
+		logrus.Infof("Failed To Get User Details By Id %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to load user details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 
@@ -1955,6 +1953,7 @@ func DeleteUser(c *gin.Context) {
 	var users models.User
 	result := config.DB.Model(&users).Where("id=?", Id).Delete(&users)
 	if result.Error != nil {
+		logrus.Infof("Failed To Deleted User %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "User Delete UnSuccessfully",
@@ -1983,8 +1982,9 @@ func AddUser(c *gin.Context) {
 		Password  string
 		Contact   string
 	}
-
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -1996,6 +1996,7 @@ func AddUser(c *gin.Context) {
 	//Hashing password
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
+		logrus.Infof("Failed To Hash Password %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to hash password",
@@ -2009,6 +2010,7 @@ func AddUser(c *gin.Context) {
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
+		logrus.Infof("Failed To Created User %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
 			"message": "user Unsuccessfully created",
@@ -2043,6 +2045,7 @@ func UpdateUserDetails(c *gin.Context) {
 	}
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -2052,6 +2055,7 @@ func UpdateUserDetails(c *gin.Context) {
 	}
 	Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
+		logrus.Infof("Failed To Hash Passowrd %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to hash password",
@@ -2063,6 +2067,7 @@ func UpdateUserDetails(c *gin.Context) {
 	users := models.User{Full_Name: body.Full_Name, Email: body.Email, Contact: body.Contact, Password: string(Hash), Account_Status: body.Account_Status}
 	result := config.DB.Model(&users).Where("id = ?", Id).Updates(users)
 	if result.Error != nil {
+		logrus.Infof("Failed To User Detail Updated %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "User Update UnSuccessfully",
@@ -2090,6 +2095,7 @@ func CountUser(c *gin.Context) {
 	result := config.DB.Model(&user).Count(&count)
 
 	if result.Error != nil {
+		logrus.Infof("Failed To User Count Detail %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Total User Count Unsuccessfully",
@@ -2125,6 +2131,7 @@ func Today_Total_Booking(c *gin.Context) {
 	if Role != 1 {
 		result := config.DB.Model(&booking).Where("date=? AND booking_status = 4 AND branch_id=?", date, branchid).Count(&count)
 		if result.Error != nil || count == 0 {
+			logrus.Infof("Failed To Load Today Total Booking %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Today Total  Booking Unsuccessfully",
@@ -2135,6 +2142,7 @@ func Today_Total_Booking(c *gin.Context) {
 	} else {
 		result := config.DB.Model(&booking).Where("date=? AND booking_status=4", date).Count(&count)
 		if result.Error != nil || count == 0 {
+			logrus.Infof("Failed To Load Total Booking %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Today Total  Booking Unsuccessfully",
@@ -2189,7 +2197,9 @@ func AdminAddScreenshot(c *gin.Context) {
 	var body struct {
 		Amount float64
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Invalid Request To Payload",
@@ -2214,6 +2224,7 @@ func AdminAddScreenshot(c *gin.Context) {
 	payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: id}
 	result := config.DB.Create(&payment)
 	if result.Error != nil {
+		logrus.Infof("Failed To Insert Screenshot %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to insert screeshot",
@@ -2227,6 +2238,7 @@ func AdminAddScreenshot(c *gin.Context) {
 		var booking models.Confirm_Booking_Table
 		status := config.DB.Model(&booking).Where("booking_order_id = ?", booking.Booking_order_id).Updates(changed_status)
 		if status.Error != nil {
+			logrus.Infof("Failed To Update Confirm Detail %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "failed to upadte confirm boooking details",
@@ -2241,6 +2253,7 @@ func AdminAddScreenshot(c *gin.Context) {
 		}
 		result := config.DB.Model(&turf_book).Where("order_id = ?", booking.Booking_order_id).Updates(is_booked)
 		if result.Error != nil {
+			logrus.Infof("Failed To Update Boooking Detail %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "failed to upadte boooking details",
@@ -2298,6 +2311,7 @@ func AddSlotForUser(c *gin.Context) {
 	var Slots []int
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -2309,6 +2323,7 @@ func AddSlotForUser(c *gin.Context) {
 	rows := config.DB.Model(&models.Turf_Bookings{}).Where("date = ?", body.Date).Pluck("slot_id", &Slots)
 
 	if rows.Error != nil {
+		logrus.Infof("Failed To Add Slot For User %v\n", rows.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to add slot for user",
@@ -2364,6 +2379,7 @@ func AddSlotForUser(c *gin.Context) {
 			booking := models.Turf_Bookings{Date: body.Date, Slot_id: body.Slot[i], User_id: uint(ID), Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
 			result := config.DB.Create(&booking)
 			if result.Error != nil {
+				logrus.Infof("Failed To Add Slot For User %v\n", result.Error)
 				c.JSON(http.StatusOK, gin.H{
 					"status": 400,
 					"error":  "Slot Allready booked",
@@ -2391,6 +2407,7 @@ func AddSlotForUser(c *gin.Context) {
 
 		result := config.DB.Create(&confirm_booking)
 		if result.Error != nil {
+			logrus.Infof("Failed To Add Slot For User %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Slot Allready Booked",
@@ -2428,6 +2445,7 @@ func AddSlotForUser(c *gin.Context) {
 			booking := models.Turf_Bookings{Date: body.Date, Slot_id: uniqueslots[i], User_id: uint(ID), Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id}
 			result := config.DB.Create(&booking)
 			if result.Error != nil {
+				logrus.Infof("Failed To Add Slot For User %v\n", result.Error)
 				c.JSON(http.StatusOK, gin.H{
 					"status": 400,
 					"error":  "Slot Allready booked",
@@ -2455,6 +2473,7 @@ func AddSlotForUser(c *gin.Context) {
 
 		result := config.DB.Create(&confirm_booking)
 		if result.Error != nil {
+			logrus.Infof("Failed To Add Slot For User %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Slot Allready boooked",
@@ -2533,7 +2552,9 @@ func LiveUser(c *gin.Context) {
 
 	// Find the time slot for the current time
 	var slot models.Time_Slot
-	if result := config.DB.Where("start_time <= ? AND end_time >= ? AND branch_id = ? ", currentTime, currentTime, admin.Turf_branch_id).First(&slot); result.Error != nil {
+	result := config.DB.Where("start_time <= ? AND end_time >= ? AND branch_id = ? ", currentTime, currentTime, admin.Turf_branch_id).First(&slot)
+	if result.Error != nil {
+		logrus.Infof("Failed To Get Live User %v\n", result.Error)
 		c.JSON(http.StatusOK, gin.H{
 			"status": 400,
 			"error":  "Slot is not found",
@@ -2544,7 +2565,9 @@ func LiveUser(c *gin.Context) {
 
 	// Find the booking details for the current date and time slot
 	var booking models.Turf_Bookings
-	if result := config.DB.Where("date = ? AND slot_id = ? AND branch_id = ? ", date, slot.ID, admin.Turf_branch_id).First(&booking); result.Error != nil {
+	result = config.DB.Where("date = ? AND slot_id = ? AND branch_id = ? ", date, slot.ID, admin.Turf_branch_id).First(&booking)
+	if result.Error != nil {
+		logrus.Infof("Failed To Get Live User %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Booking details not found",
@@ -2556,6 +2579,7 @@ func LiveUser(c *gin.Context) {
 	// Find the user associated with the booking
 	var user models.User
 	if result := config.DB.Where("id = ?", booking.User_id).First(&user); result.Error != nil {
+		logrus.Infof("Failed To Get Live User %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "User not found",
@@ -2592,7 +2616,9 @@ func Testimonials(c *gin.Context) {
 		Review      string
 		Image       string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "faild to read body",
@@ -2614,10 +2640,11 @@ func Testimonials(c *gin.Context) {
 		return
 	}
 	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		logrus.Infof("Failed To Upload Image %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Upload the right file format (jpg or png)",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -2625,6 +2652,7 @@ func Testimonials(c *gin.Context) {
 	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: filePath}
 	result := config.DB.Create(&testimonial)
 	if result.Error != nil {
+		logrus.Infof("Failed To Create Testimonials %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to create testimonials",
@@ -2639,7 +2667,7 @@ func Testimonials(c *gin.Context) {
 		"data":    testimonial,
 	})
 }
-func Upadte_TestiMonilas(c *gin.Context) {
+func Upadte_Testimonials(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
@@ -2654,7 +2682,9 @@ func Upadte_TestiMonilas(c *gin.Context) {
 		Review      string
 		Image       string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "faild to read body",
@@ -2667,18 +2697,18 @@ func Upadte_TestiMonilas(c *gin.Context) {
 	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review}
 	result := config.DB.Model(&testimonial).Where("id=?", id).Updates(&testimonial)
 	if result.Error != nil {
+		logrus.Infof("Failed To Update Testimonials Details %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to create testimonials",
-			"data":   "null",
+			"error":  "failed to Update testimonials Details",
+			"data":   nil,
 		})
 		return
 	}
-	fmt.Println(testimonial)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "testimonials create successfully",
+		"success": "Testimonials Upadted Successfully",
 		"data":    testimonial,
 	})
 
@@ -2695,7 +2725,9 @@ func UpdateImageForTestimonials(c *gin.Context) {
 	var body struct {
 		Image string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -2717,6 +2749,7 @@ func UpdateImageForTestimonials(c *gin.Context) {
 		return
 	}
 	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		logrus.Infof("Failed To Upload Right File Format %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Upload the right file format (jpg or png)",
@@ -2728,9 +2761,10 @@ func UpdateImageForTestimonials(c *gin.Context) {
 	testimonial := &models.Testi_Monial{Image: filePath}
 	result := config.DB.Model(&testimonial).Where("id = ?", id).Updates(&testimonial)
 	if result.Error != nil {
+		logrus.Infof("Failed To Update Testimonials Image %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to update testimonials",
+			"error":  "failed to update testimonials Image",
 			"data":   nil,
 		})
 		return
@@ -2738,7 +2772,7 @@ func UpdateImageForTestimonials(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "testimonials updated successfully",
+		"success": "testimonials Image updated successfully",
 		"data":    testimonial,
 	})
 }
@@ -2753,7 +2787,9 @@ func UpdateImageForTestimonials2(c *gin.Context) {
 	var body struct {
 		Image string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -2774,7 +2810,9 @@ func UpdateImageForTestimonials2(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
 	}
+
 	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+		logrus.Infof("Failed To Upload Right File Format %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Upload the right file format (jpg or png)",
@@ -2785,6 +2823,7 @@ func UpdateImageForTestimonials2(c *gin.Context) {
 	var testimonials models.Testi_Monial
 	result := config.DB.Find(&testimonials)
 	if result.Error != nil {
+		logrus.Infof("Failed To Update Testimonials Image %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to update testimonials",
@@ -2796,6 +2835,7 @@ func UpdateImageForTestimonials2(c *gin.Context) {
 	testimonial := &models.Testi_Monial{Image: filePath}
 	result = config.DB.Model(&testimonial).Where("id = ?", testimonials.ID).Updates(&testimonial)
 	if result.Error != nil {
+		logrus.Infof("Failed To Update Testimonials Image %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to update testimonials",
@@ -2806,7 +2846,7 @@ func UpdateImageForTestimonials2(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "testimonials updated successfully",
+		"success": "testimonials Images updated successfully",
 		"data":    testimonial,
 	})
 }
@@ -2821,17 +2861,18 @@ func AllTestimonials(c *gin.Context) {
 	var testimonials []models.Testi_Monial
 	result := config.DB.Find(&testimonials)
 	if result.Error != nil {
+		logrus.Infof("Failed To Get All Testimonials %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to fetch testimonials",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "testimonials fetch successfully",
+		"success": "testimonials details fetch successfully",
 		"data":    testimonials,
 	})
 
@@ -2852,17 +2893,18 @@ func GETTestimonialsById(c *gin.Context) {
 	fmt.Println(testimonials.Image)
 
 	if result.Error != nil {
+		logrus.Infof("Failed To Get Testimonials By Id %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch testimonial",
-			"data":   "null",
+			"error":  "failed to fetch testimonial by id",
+			"data":   nil,
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "testimonial fetch successfully",
+		"success": "testimonial fetch successfully by id",
 		"data":    testimonials,
 	})
 
@@ -2882,10 +2924,11 @@ func GETTestimonialsimagesById(c *gin.Context) {
 	result := config.DB.Find(&testimonials, "id=?", id)
 
 	if result.Error != nil {
+		logrus.Infof("Failed To Get Testimonials Image %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch testimonial",
-			"data":   "null",
+			"error":  "failed to fetch testimonial image",
+			"data":   nil,
 		})
 		return
 	}
@@ -2899,11 +2942,11 @@ func GETTestimonialsimagesById(c *gin.Context) {
 		filePath = testimonials.Image
 		c.Header("Content-Type", "image/png")
 	} else {
-		// Handle unsupported image formats
+		logrus.Infof("Failed To Get  Testimonials image %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "unsupported image format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -2911,11 +2954,11 @@ func GETTestimonialsimagesById(c *gin.Context) {
 	// Read the image file
 	imageData, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		fmt.Println("Error reading the image file:", err)
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": 500,
 			"error":  "internal server error",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -2935,10 +2978,11 @@ func DeleteTestimonials(c *gin.Context) {
 	var testimonial models.Testi_Monial
 	result := config.DB.Model(&testimonial).Where("id=?", id).Delete(&testimonial)
 	if result.RowsAffected == 0 {
+		logrus.Infof("Failed To Delete Testimonials %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "unsuccessfully Deleted Testimonial",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -2997,7 +3041,9 @@ func AddContent(c *gin.Context) {
 		SubHeading string
 		Button     string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to read body",
@@ -3008,6 +3054,7 @@ func AddContent(c *gin.Context) {
 	content := &models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button}
 	result := config.DB.Create(&content)
 	if result.Error != nil {
+		logrus.Infof("Failed To Create Content %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to create content",
@@ -3033,6 +3080,7 @@ func GETContent(c *gin.Context) {
 	var content []models.Content
 	result := config.DB.Find(&content)
 	if result.Error != nil {
+		logrus.Infof("Failed To Get All Content %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to get content",
@@ -3062,7 +3110,9 @@ func UpdateContent(c *gin.Context) {
 		Button     string
 		Status     string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed To Read Body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to read body",
@@ -3073,6 +3123,7 @@ func UpdateContent(c *gin.Context) {
 	content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button, Status: body.Status}
 	result := config.DB.Model(&content).Where("id=?", Id).Updates(&content)
 	if result.Error != nil {
+		logrus.Infof("Failed To Upadte Content %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Failed to update content",
@@ -3132,7 +3183,7 @@ func ActiveContent(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to get content",
+			"error":  "Failed to get active content",
 			"data":   nil,
 		})
 		return
@@ -3140,7 +3191,7 @@ func ActiveContent(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"message": "Success to get content",
+		"message": "Success to get active content",
 		"data":    content,
 	})
 }
@@ -3211,24 +3262,24 @@ func AddImageForCarousel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Upload the right file format (jpg or png)",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
 	carousel := &models.Carousel{Image: filePath, Status: "1"}
 	result := config.DB.Create(&carousel)
 	if result.Error != nil {
-		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		logrus.Infof("Failed to add data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to create content",
+			"error":  "Failed to add image for carousel",
 			"data":   nil,
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status": 200,
-		"error":  "Success to create content",
+		"error":  "Success to add image for carousel",
 		"data":   carousel,
 	})
 }
@@ -3248,14 +3299,14 @@ func GetAllImageCarousel(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to get content",
+			"error":  "Failed to get all carousel",
 			"data":   nil,
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status": 200,
-		"error":  "Success to get content",
+		"error":  "Success to get all carousel",
 		"data":   carousel,
 	})
 
@@ -3275,7 +3326,7 @@ func GetActiveImageCarousel(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to get carousel",
+			"error":  "Failed to get active carousel",
 			"data":   nil,
 		})
 		return
@@ -3283,7 +3334,7 @@ func GetActiveImageCarousel(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"message": "Success to get carousel",
+		"message": "Success to get active carousel",
 		"data":    carousel,
 	})
 
@@ -3379,7 +3430,7 @@ func UpadtecarouselImage(c *gin.Context) {
 		logrus.WithField("err", result.Error).Warnf("Could not update carousel with id %v", id)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to update carousel",
+			"error":  "failed to update image for carousel",
 			"data":   nil,
 		})
 		return
@@ -3387,7 +3438,7 @@ func UpadtecarouselImage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "carousel updated successfully",
+		"success": "carousel updated image for successfully",
 		"data":    carousel,
 	})
 }
@@ -3406,14 +3457,14 @@ func DeleteCarousel(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "unsuccessfully Deleted Testimonial",
+			"error":  "unsuccessfully Deleted Carousel",
 			"data":   "null",
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "successfully Deleted Testimonial",
+		"success": "successfully Deleted  Carousel",
 		"data":    nil,
 	})
 }
@@ -3536,7 +3587,7 @@ func GETCarouselActiveImages(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch carousels",
+			"error":  "failed to fetch active image for carousels",
 			"data":   "null",
 		})
 		return
@@ -3689,8 +3740,8 @@ func GetCarouselimagesById(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch testimonial",
-			"data":   "null",
+			"error":  "failed to fetch carousel image for id",
+			"data":   nil,
 		})
 		return
 	}
@@ -3709,7 +3760,7 @@ func GetCarouselimagesById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "unsupported image format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -3721,7 +3772,7 @@ func GetCarouselimagesById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": 500,
 			"error":  "internal server error",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -3757,7 +3808,7 @@ func Cnfrm_slots(c *gin.Context) {
 			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error":   result.Error.Error(),
-				"message": "Failed to fetch package slots",
+				"message": "Failed to fetch Confirm slots",
 			})
 			return
 		}
@@ -3773,7 +3824,7 @@ func Cnfrm_slots(c *gin.Context) {
 			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error":   result.Error.Error(),
-				"message": "Failed to fetch package slots",
+				"message": "Failed to fetch confirm slots",
 			})
 			return
 		}
@@ -3785,7 +3836,7 @@ func Cnfrm_slots(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "package names and slots",
+		"success": "Confirm Slot",
 		"data":    response,
 	})
 }
@@ -3820,7 +3871,7 @@ func Pending_bookings(c *gin.Context) {
 			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error":   result.Error.Error(),
-				"message": "Failed to fetch package slots",
+				"message": "Failed to fetch pending booking",
 			})
 			return
 		}
@@ -3833,7 +3884,7 @@ func Pending_bookings(c *gin.Context) {
 			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error":   result.Error.Error(),
-				"message": "Failed to fetch package slots",
+				"message": "Failed to fetch pending booking",
 			})
 
 		}
@@ -3845,7 +3896,7 @@ func Pending_bookings(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "package names and slots",
+		"success": "pending booking",
 		"data":    response,
 	})
 }
@@ -3877,7 +3928,7 @@ func Pending_bookings_by_ID(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   result.Error.Error(),
-			"message": "Failed to fetch package slots",
+			"message": "Failed to fetch pending booking by id",
 		})
 		return
 	}
@@ -3888,7 +3939,7 @@ func Pending_bookings_by_ID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": "package names and slots",
+		"success": "pending booking by id",
 		"data":    response,
 	})
 }
@@ -3914,8 +3965,8 @@ func GetpaymentimagesById(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch testimonial",
-			"data":   "null",
+			"error":  "failed to fetch Payment Image",
+			"data":   nil,
 		})
 		return
 	}
@@ -3923,7 +3974,7 @@ func GetpaymentimagesById(c *gin.Context) {
 	// Handle unsupported image formats
 	c.JSON(http.StatusOK, gin.H{
 		"status": 200,
-		"msg":    "success",
+		"msg":    "Payment Image",
 		"data":   payment,
 	})
 	return
@@ -4009,7 +4060,7 @@ func GetActiveNavbar(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to Get Navbar Details",
+			"error":  "failed to Get active Navbar Details",
 			"data":   nil,
 		})
 		return
@@ -4027,7 +4078,7 @@ func GetActiveNavbar(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
-		"success": " Get Navabar Details successfully",
+		"success": " Get active Navabar Details successfully",
 		"data":    navbars,
 	})
 }
@@ -4045,7 +4096,9 @@ func UpadateNavbar(c *gin.Context) {
 		Link   string
 		Status string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -4056,6 +4109,7 @@ func UpadateNavbar(c *gin.Context) {
 	navbar := models.Navbar{Name: body.Name, Link: body.Link, Status: body.Status}
 	result := config.DB.Model(&navbar).Where("id=?", id).Updates(&navbar)
 	if result.Error != nil {
+		logrus.Infof("Failed to update data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Update navbar",
@@ -4083,10 +4137,11 @@ func GetNavbarById(c *gin.Context) {
 	var navbars models.Navbar
 	result := config.DB.Find(&navbars, "id=?", id)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Navbar Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4109,6 +4164,7 @@ func DeleteNavbar(c *gin.Context) {
 	var navbars models.Navbar
 	result := config.DB.Model(&navbars).Where("id=?", id).Delete(&navbars)
 	if result.Error != nil {
+		logrus.Infof("Failed to delete data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Delete Navbar Details",
@@ -4136,7 +4192,9 @@ func AddHeading(c *gin.Context) {
 		Footer       string
 		Status       string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -4147,6 +4205,7 @@ func AddHeading(c *gin.Context) {
 	heading := models.Heading{Slider: body.Slider, Testimonials: body.Testimonials, Footer: body.Footer, Status: "2"}
 	result := config.DB.Create(&heading)
 	if result.Error != nil {
+		logrus.Infof("Failed to add data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Add Heading",
@@ -4173,6 +4232,7 @@ func GetAllHeading(c *gin.Context) {
 	var headings []models.Heading
 	result := config.DB.Find(&headings)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Headings Details",
@@ -4198,6 +4258,7 @@ func GetActiveHeading(c *gin.Context) {
 	var headings models.Heading
 	result := config.DB.Find(&headings, "status=1")
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Avtive Heading Details",
@@ -4236,7 +4297,9 @@ func UpadateHeading(c *gin.Context) {
 		Footer       string
 		Status       string
 	}
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -4247,6 +4310,7 @@ func UpadateHeading(c *gin.Context) {
 	heading := models.Heading{Slider: body.Slider, Testimonials: body.Testimonials, Footer: body.Footer, Status: body.Status}
 	result := config.DB.Model(&heading).Where("id=?", id).Updates(&heading)
 	if result.Error != nil {
+		logrus.Infof("Failed to update data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Update heading",
@@ -4274,6 +4338,7 @@ func GetHeadingById(c *gin.Context) {
 	var heading models.Heading
 	result := config.DB.Find(&heading, "id=?", id)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Heading Details",
@@ -4300,10 +4365,11 @@ func DeleteHeading(c *gin.Context) {
 	var heading models.Heading
 	result := config.DB.Model(&heading).Where("id=?", id).Delete(&heading)
 	if result.Error != nil {
+		logrus.Infof("Failed to delete data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Delete Heading Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4337,9 +4403,11 @@ func Total_Revenue(c *gin.Context) {
 		result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "failed to get all branch details ",
+				"error":  "failed to get total revenue ",
+				"data":   nil,
 			})
 			return
 
@@ -4347,9 +4415,10 @@ func Total_Revenue(c *gin.Context) {
 	} else {
 		result := config.DB.Find(&revenue)
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "failed to Delete Heading Details",
+				"status": 404,
+				"error":  "failed to get total revenue ",
 				"data":   nil,
 			})
 			return
@@ -4392,9 +4461,11 @@ func Total_Remaining_amount(c *gin.Context) {
 		result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "failed to get all branch details ",
+				"error":  "failed to get Total_Remaining_amount ",
+				"data":   nil,
 			})
 			return
 
@@ -4402,9 +4473,10 @@ func Total_Remaining_amount(c *gin.Context) {
 	} else {
 		result := config.DB.Find(&revenue)
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "failed to execute query",
+				"status": 404,
+				"error":  "failed to get Total_Remaining_amount ",
 				"data":   nil,
 			})
 			return
@@ -4419,7 +4491,7 @@ func Total_Remaining_amount(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": 200,
-		"msg":    "remaining amt",
+		"msg":    "Total_Remaining_amount",
 		"data":   totalRemainingAmount,
 	})
 }
@@ -4445,9 +4517,11 @@ func Total_Sales(c *gin.Context) {
 		result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 404,
-				"error":  "failed to get all branch details ",
+				"error":  "failed to get total sales ",
+				"data":   nil,
 			})
 			return
 
@@ -4455,9 +4529,10 @@ func Total_Sales(c *gin.Context) {
 	} else {
 		result := config.DB.Find(&revenue)
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "failed to execute query",
+				"error":  "failed to get total sales",
 				"data":   nil,
 			})
 			return

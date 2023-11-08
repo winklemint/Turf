@@ -79,7 +79,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
 		//tetsimonials
 		adminRoutes.POST("/add/testimonials", controllers.Testimonials)
-		adminRoutes.PATCH("/update/testimonials/:id", controllers.Upadte_TestiMonilas)
+		adminRoutes.PATCH("/update/testimonials/:id", controllers.Upadte_Testimonials)
 		adminRoutes.PATCH("/update/image/testimonials/:id", controllers.UpdateImageForTestimonials)
 		adminRoutes.PATCH("/update/image/last/testimonials", controllers.UpdateImageForTestimonials2)
 		adminRoutes.GET("/get/testimonials", controllers.AllTestimonials)
