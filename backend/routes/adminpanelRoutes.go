@@ -510,6 +510,18 @@ func RegisterAdminPanelAllstaff(router *gin.Engine) {
 		})
 	})
 }
+func RegisterAdminPanelProfile(router *gin.Engine) {
+	router.Use(IsAuthenticated())
+	router.LoadHTMLGlob("templates/*.html")
+
+	// Define a route to serve the "dashboard.html" template
+	router.GET("/profile", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "profile.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
+	})
+}
 func RegisterAdminPanelUpdateStaff(router *gin.Engine) {
 	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")
@@ -528,7 +540,10 @@ func RegisterAdminPanelUpdateStaff(router *gin.Engine) {
 func ForbidHTMLExtension(c *gin.Context) {
 	// Check if the URL path ends with ".html".
 	if len(c.Request.URL.Path) > 5 && c.Request.URL.Path[len(c.Request.URL.Path)-5:] == ".html" {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Page not found"})
+		c.HTML(http.StatusOK, "404.html", gin.H{
+			// You can pass data to the template if needed
+			//"data": "helloworld.html",
+		})
 		c.Abort()
 		return
 	}

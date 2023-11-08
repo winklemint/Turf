@@ -86,7 +86,7 @@
         
         
         $.ajax({
-            url: "/admin/delete/user/" + Id,
+            url: "/admin/staff/delete/" + Id,
             method: "DELETE",
             success: function (response) {
                 var rowid = 'rowN' + row_id;
@@ -116,12 +116,12 @@
                 var rowElement = document.getElementById(rowid);
                 if (rowElement) {
                     rowElement.style.display = 'none';
-                    alert("Testimonial with ID: " + Id + " deleted successfully");
+                    alert("Staff with ID: " + Id + " deleted successfully");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("Error deleting testimonial with ID: " + Id);
+                alert("Error deleting Staff with ID: " + Id);
             }
         });
     }
