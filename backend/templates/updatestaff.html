@@ -182,8 +182,66 @@
         // Define Id outside the if block
         var Id = new URLSearchParams(window.location.search).get('id');
 
-        if (Id) {
-            getUserDetails(Id);
+    if (Id) {
+        getUserDetails(Id);
+    }
+
+    // Helper function to retrieve user details
+    function getUserDetails(Id) {
+        $.ajax({
+            url: "/admin/staff/get/" + Id,
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                var user = response.Data;
+                console.log(response.Data);
+                if (user) {
+                    $('#name').val(user.Name);
+                    $('#email').val(user.Email);
+                    $('#contact').val(user.Contact);
+                   
+                    $('#role').val(user.Role);
+                    $('#branch_select').val(user.Turf_branch_id);
+
+                    var authorizationValues = user.Authorization;
+
+                    // Loop through each checkbox element
+                    $('.auth').each(function () {
+                        var checkboxValue = parseInt($(this).attr('value')); // Convert the checkbox value to an integer
+                        if (authorizationValues.includes(checkboxValue)) {
+                            $(this).prop('checked', true); // Check the checkbox if the value matches
+                        } else {
+                            $(this).prop('checked', false); // Uncheck the checkbox if the value doesn't match
+                        }
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    $.ajax({
+        url: '/admin/get/branch',
+        method: 'GET',
+        dataType: 'json',
+        success: function (res) {
+            // Save the selected branch value if it's already set
+            var selectedBranch = $("#branchSelect").val();
+
+            // Clear the existing options in the dropdown
+            $("#branchSelect").html('');
+
+            appendDataToSelect(res.data);
+
+            // Set the selected branch value back
+            if (selectedBranch) {
+                $("#branchSelect").val(selectedBranch);
+            }
+        },
+        error: function () {
+            console.error('Failed to retrieve data from the server');
         }
 
         // Helper function to retrieve user details
