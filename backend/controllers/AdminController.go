@@ -98,12 +98,9 @@ func AdminUpdateById(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-
 	id := c.Param("id")
-
 	// Create an instance of the model outside of if-else scope
 	var adminToUpdate models.Admin
-
 	var body struct {
 		Name          string
 		Contact       string
@@ -113,7 +110,6 @@ func AdminUpdateById(c *gin.Context) {
 		Branch_name   int
 		Authorization string
 	}
-
 	if err := c.Bind(&body); err != nil {
 		logrus.Infoln("failed t0 read b0dy AdminUpdateById")
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -123,11 +119,10 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-
 	// Check if 'Password' is provided, and hash it if necessary
 	if body.Password != "" {
 		// Hash the password using bcrypt
-		Password, err := bcrypt.GenerateFromPassword([]byte(body.Password), 14)
+		password, err := bcrypt.GenerateFromPassword([]byte(body.Password), 14)
 		if err != nil {
 			logrus.Infoln("AdminUpdateById-", err)
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -137,9 +132,8 @@ func AdminUpdateById(c *gin.Context) {
 			})
 			return
 		}
-		adminToUpdate.Password = string(Password)
+		adminToUpdate.Password = string(password)
 	}
-
 	// Update the other fields
 	adminToUpdate.Name = body.Name
 	adminToUpdate.Contact = body.Contact
@@ -147,7 +141,6 @@ func AdminUpdateById(c *gin.Context) {
 	adminToUpdate.Role = body.Role
 	adminToUpdate.Turf_branch_id = body.Branch_name
 	adminToUpdate.Authorization = body.Authorization
-
 	// Update the admin using the provided 'id'
 	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
 	if result.Error != nil {
@@ -159,20 +152,16 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-
-	BranchID := uint(body.Branch_name)
-
-	fmt.Println(BranchID)
-
+	// BranchID := uint(body.Branch_name)
+	// fmt.Println(BranchID)
 	bodys := models.Admin{
 		Name:           body.Name,
 		Contact:        body.Contact,
-		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: BranchID,
+		Turf_branch_id: body.Branch_name,
+		Authorization:  body.Authorization,
 	}
-
 	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -182,7 +171,6 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-
 	//Response
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -4978,4 +4966,100 @@ func MultipleImages(c *gin.Context) {
 
 		c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
 	}
+}
+
+func Graph_API(c *gin.Context) {
+
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var revenue []models.Confirm_Booking_Table
+	var count int64
+
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	fmt.Println(Role)
+
+	if Role != 1 {
+
+		var user models.User
+
+		result := config.DB.Model(&user).Count(&count)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Total User Count Unsuccessfully",
+				"data":   nil,
+			})
+			return
+		}
+
+		result = config.DB.Find(&revenue, "branch_id=?", branchid)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details ",
+			})
+			return
+
+		}
+	} else {
+
+		var user models.User
+
+		result := config.DB.Model(&user).Count(&count)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Total User Count Unsuccessfully",
+				"data":   nil,
+			})
+			return
+		}
+
+		result = config.DB.Find(&revenue)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to Delete Heading Details",
+				"data":   nil,
+			})
+			return
+		}
+	}
+
+	//Calculate the total Paid_amount
+	totalPaidAmount := 0.0
+	for _, booking := range revenue {
+		totalPaidAmount += booking.Paid_amount
+	}
+
+	totalSales := 0.0
+	for _, booking := range revenue {
+		totalSales += booking.Total_price
+	}
+
+	totalUser := float64(count)
+
+	rati0 := (totalSales / totalUser)
+
+	Average_Revenue_per_User := (totalPaidAmount / totalUser)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":           200,
+		"msg":              "revenue",
+		"data":             rati0,
+		"Revenue_per_User": Average_Revenue_per_User,
+	})
 }
