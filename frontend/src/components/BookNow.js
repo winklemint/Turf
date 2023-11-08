@@ -12,11 +12,9 @@ function BookingForm() {
   const [availableSlots, setAvailableSlots] = useState([]);
 
   const Postdata = () => {
-    fetch("http://localhost:8080/user/get/avl/slots", {
+    fetch("http://127.0.0.1:8080/user/get/avl/slots", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      
       body: JSON.stringify({
         "branch_id": parseInt(selectedOption),
         "date": formatDate(selectedDate)
@@ -24,14 +22,14 @@ function BookingForm() {
       }),
     })
       .then((res) => {
-        console.log(res);
+        console.log(res.data[0].Is_booked);
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        console.log(data.Slots);
         setAvailableSlots(data.available_slots);
       })
       .catch((error) => {
