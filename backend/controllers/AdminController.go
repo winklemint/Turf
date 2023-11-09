@@ -5130,3 +5130,99 @@ func MultipleImages(c *gin.Context) {
 		c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
 	}
 }
+
+func Graph_API(c *gin.Context) {
+
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var revenue []models.Confirm_Booking_Table
+	var count int64
+
+	role, _ := c.Request.Cookie("Role")
+	Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	fmt.Println(Role)
+
+	if Role != 1 {
+
+		var user models.User
+
+		result := config.DB.Model(&user).Count(&count)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Total User Count Unsuccessfully",
+				"data":   nil,
+			})
+			return
+		}
+
+		result = config.DB.Find(&revenue, "branch_id=?", branchid)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 404,
+				"error":  "failed to get all branch details ",
+			})
+			return
+
+		}
+	} else {
+
+		var user models.User
+
+		result := config.DB.Model(&user).Count(&count)
+
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Total User Count Unsuccessfully",
+				"data":   nil,
+			})
+			return
+		}
+
+		result = config.DB.Find(&revenue)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "failed to Delete Heading Details",
+				"data":   nil,
+			})
+			return
+		}
+	}
+
+	//Calculate the total Paid_amount
+	totalPaidAmount := 0.0
+	for _, booking := range revenue {
+		totalPaidAmount += booking.Paid_amount
+	}
+
+	totalSales := 0.0
+	for _, booking := range revenue {
+		totalSales += booking.Total_price
+	}
+
+	totalUser := float64(count)
+
+	rati0 := (totalSales / totalUser)
+
+	Average_Revenue_per_User := (totalPaidAmount / totalUser)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":           200,
+		"msg":              "revenue",
+		"data":             rati0,
+		"Revenue_per_User": Average_Revenue_per_User,
+	})
+}
