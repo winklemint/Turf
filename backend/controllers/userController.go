@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/gomail.v2"
 )
@@ -37,10 +38,13 @@ func Signup(c *gin.Context) {
 		Contact   string
 		Is_active int
 	}
-
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to read body",
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
 		})
 		return
 	}
@@ -48,8 +52,11 @@ func Signup(c *gin.Context) {
 	//Hashing password
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
+		logrus.Infof("Failed to hash password %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to hash password",
+			"status": 400,
+			"error":  "failed to hash password",
+			"data":   nil,
 		})
 		return
 	}
@@ -59,7 +66,9 @@ func Signup(c *gin.Context) {
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
+		logrus.Infof("Failed to create data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
 			"error": "failed to create user",
 		})
 
