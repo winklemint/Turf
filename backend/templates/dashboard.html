@@ -104,7 +104,8 @@
 									data-linecap="round" data-thickness="0.12" data-bgColor="#fff"
 									data-fgColor="#1b00ff" data-angleOffset="180" readonly />
 								<h5 class="text-blue padding-top-10 h5">Average Sales per User</h5>
-								<p class="smaller-header">This KPI indicates the average sales generated per user or customer</p>
+								<p class="smaller-header">This KPI indicates the average sales generated per user or
+									customer</p>
 								<span class="d-block">80% Average <i class="fa fa-line-chart text-blue"></i></span>
 							</div>
 						</div>
@@ -117,7 +118,8 @@
 									data-linecap="round" data-thickness="0.12" data-bgColor="#fff"
 									data-fgColor="#a683eb" data-angleOffset="180" readonly />
 								<h5 class="text-light-purple padding-top-10 h5">Average Revenue per User</h5>
-								<p class="smaller-header">This KPI shows the average revenue generated per user or customer</p>
+								<p class="smaller-header">This KPI shows the average revenue generated per user or
+									customer</p>
 								<span class="d-block">65% Average
 									<i class="fa text-light-purple fa-line-chart"></i></span>
 							</div>
@@ -253,11 +255,11 @@
 					<th>Name</th>
 					<th>Date</th>
 					<th>Total Price</th>
-					
+
 					<th>Paid Amount</th>
-					
+
 					<th>Booking Status</th>
-				
+
 
 				</tr>
 			</thead>
@@ -274,7 +276,8 @@
 		<div class="col-md-4 mb-20">
 			<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
 				<div class="img pb-30">
-					<img src="https://dropways.github.io/deskapp/vendors/images/medicine-bro.svg" alt="" />
+					<img src="https://plus.unsplash.com/premium_photo-1678677940496-e59d14825181?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nzd8fGFzdHJvJTIwdHVyZnxlbnwwfHwwfHx8MA%3D%3D"
+						alt="" />
 				</div>
 				<div class="content">
 					<h3 class="h4">Services</h3>
@@ -287,7 +290,8 @@
 		<div class="col-md-4 mb-20">
 			<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
 				<div class="img pb-30">
-					<img src="https://dropways.github.io/deskapp/vendors/images/remedy-amico.svg" alt="" />
+					<img src="https://images.unsplash.com/photo-1570498839593-e565b39455fc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dHVyZnxlbnwwfHwwfHx8MA%3D%3D"
+						alt="" />
 				</div>
 				<div class="content">
 					<h3 class="h4">Medications</h3>
@@ -300,7 +304,8 @@
 		<div class="col-md-4 mb-20">
 			<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
 				<div class="img pb-30">
-					<img src="https://dropways.github.io/deskapp/vendors/images/paper-map-cuate.svg" alt="" />
+					<img src="https://plus.unsplash.com/premium_photo-1678677943695-d121953beafa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTd8fGFzdHJvJTIwdHVyZnxlbnwwfHwwfHx8MA%3D%3D"
+						alt="" />
 				</div>
 				<div class="content">
 					<h3 class="h4">Locations</h3>
@@ -315,10 +320,78 @@
 	{{template "footer.html"}}
 
 
+	<script>
+		// Initial options for the chart
+		var options = {
+			series: [],
+			chart: {
+				height: 300,
+				type: 'line',
+				// other chart options...
+			},
+			xaxis: {
+				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+				labels: {
+					style: {
+						colors: '#8c9094'
+					}
+				}
+			},
+			// other options...
+		};
 
+		// Create the chart
+		var chart = new ApexCharts(document.querySelector("#activities-chart"), options);
+		chart.render();
+
+		// Function to update the chart with new data
+		function updateChart(newData) {
+			// Update the series data with new values
+			chart.updateSeries(newData.series);
+
+			// You can also update other options if needed
+			chart.updateOptions({
+				// new options...
+			});
+		}
+
+		// Fetch data using AJAX
+		fetch('http://localhost:8080/admin/count/user/monthly')
+			.then(response => response.json())
+			.then(data => {
+				// Extract the relevant data from the API response
+				const monthlyData = data.data;
+
+				console.log("mdhjdjkd",monthlyData);
+
+				// Create an array to store the length of data for each month
+				const userCountData = [];
+
+				// Loop through each month in the API response
+				options.xaxis.categories.forEach(month => {
+					// Get the length of data for the current month
+					const userCount = monthlyData[month] ? monthlyData[month].length : 0;
+
+					// Push the user count to the array
+					userCountData.push(userCount);
+				});
+
+				// Update the series with the new user count data
+				const newData = {
+					series: [{
+						data: userCountData,
+					}],
+				};
+
+				// Call the updateChart function to update the chart with new data
+				updateChart(newData);
+			})
+			.catch(error => console.error('Error fetching data:', error));
+	</script>
 
 
 	<script>
+
 		$(document).ready(function () {
 			// Initialize DataTable
 			var table = $('#confirm-booking-table').DataTable();
@@ -355,7 +428,7 @@
 							index + 1, // Sn.
 							branchs.User_name,
 							branchs.Date,
-							branchs.Total_price,		
+							branchs.Total_price,
 							branchs.Paid_amount,
 							button,
 
@@ -403,7 +476,7 @@
 			success: function (data) {
 				// Update the HTML with the fetched count
 				$('#total-user-count').text(data.data);
-				
+
 			},
 			error: function (error) {
 				$('#total-user-count').text("0");
@@ -420,7 +493,7 @@
 				// Update the HTML with the fetched count
 
 				$('#total-remaining').text(data.data);
-				
+
 			},
 			error: function (error) {
 				$('#total-remaining').text("0");
@@ -436,7 +509,7 @@
 			success: function (data) {
 				// Update the HTML with the fetched count
 				$('#total-sales').text(data.data);
-				
+
 			},
 			error: function (error) {
 				$('#total-sales').text("0");
@@ -508,11 +581,11 @@
 			dataType: "json",
 			success: function (data) {
 				// Animate and set values for each knob based on the data received
-				
+
 				animateKnob(".dial1", data.data);
 				animateKnob(".dial2", data.Average_Revenue_per_User);
-				
-				
+
+
 			},
 			error: function (xhr, status, error) {
 				console.log(error);

@@ -60,6 +60,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/user/:id", controllers.GetAllUsersById)
 		adminRoutes.DELETE("/delete/user/:id", controllers.DeleteUser)
 		adminRoutes.GET("user/count", controllers.CountUser)
+		adminRoutes.GET("/count/user/monthly", controllers.GetMonthlyUsers)
 		// adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 		//adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
