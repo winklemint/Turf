@@ -24,3 +24,6 @@ go.work
 .env
 
 connectToDB.go
+
+#
+.log
