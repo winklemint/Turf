@@ -328,36 +328,36 @@ func GetConfirmBookingTop5(c *gin.Context) {
 	}
 
 	var data []models.Confirm_Booking_Table
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Where("branch_id=?", branchid).Find(&data)
+	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Where("branch_id=?", branchid).Find(&data)
 
-		if result.Error != nil {
-			logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all branch details ",
-			})
-			return
+	if result.Error != nil {
+		logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all branch details ",
+		})
+		return
 
-		}
-	} else {
-
-		result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
-		if result.Error != nil {
-			logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get confirmed booking details",
-			})
-			return
-		}
 	}
+	// } else {
+
+	// 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
+	// 	if result.Error != nil {
+	// 		logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get confirmed booking details",
+	// 		})
+	// 		return
+	// 	}
+	// }
 	var responseData []interface{}
 	for _, booking := range data {
 		var user models.User
@@ -867,7 +867,7 @@ func Get_IdBy_Branch_NAme(c *gin.Context) {
 	}
 
 	Id := strconv.FormatUint(uint64(branches.ID), 10)
-	c.SetCookie("Branch_Id", Id, 3600*4, "/", "", false, true)
+	c.SetCookie("Branch_id", Id, 7200, "", "", false, false)
 
 }
 func GET_All_Branch_Id(c *gin.Context) {
@@ -1322,36 +1322,36 @@ func GetAllSlot(c *gin.Context) {
 	}
 	var slot []models.Time_Slot
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&slot, "branch_id=?", branchid)
+	result := config.DB.Find(&slot, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all slot",
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all slot",
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&slot)
-
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all slot",
-			})
-			return
-
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&slot)
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get all slot",
+	// 		})
+	// 		return
+
+	// 	}
+	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -1624,41 +1624,41 @@ func GetAllPackage(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 	var Pkg []models.Package
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&Pkg, "branch_id=?", branchid)
+	result := config.DB.Find(&Pkg, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to Get All Branch Details %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Failed To Get All Branch Details ",
-				"data":   nil,
-			})
-			return
-
-		}
-
-	} else {
-
-		result := config.DB.Find(&Pkg)
-
-		if result.Error != nil {
-			logrus.Infof("Failed to GET Package Details %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Failed To Get Package Details",
-			})
-			return
-
-		}
+	if result.Error != nil {
+		logrus.Infof("Failed to Get All Branch Details %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed To Get All Branch Details ",
+			"data":   nil,
+		})
+		return
 
 	}
+
+	// } else {
+
+	// 	result := config.DB.Find(&Pkg)
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to GET Package Details %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "Failed To Get Package Details",
+	// 		})
+	// 		return
+
+	// 	}
+
+	// }
 	var response []map[string]interface{}
 	for _, p := range Pkg {
 		var branch models.Branch_info_management
@@ -2109,34 +2109,34 @@ func Today_Total_Booking(c *gin.Context) {
 	var booking models.Confirm_Booking_Table
 	var count int64
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
-		result := config.DB.Model(&booking).Where("date=? AND booking_status = 4 AND branch_id=?", date, branchid).Count(&count)
-		if result.Error != nil || count == 0 {
-			logrus.Infof("Failed To Load Today Total Booking %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Today Total  Booking Unsuccessfully",
-				"data":   0,
-			})
-			return
-		}
-	} else {
-		result := config.DB.Model(&booking).Where("date=? AND booking_status=4", date).Count(&count)
-		if result.Error != nil || count == 0 {
-			logrus.Infof("Failed To Load Total Booking %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Today Total  Booking Unsuccessfully",
-				"data":   0,
-			})
-			return
-		}
+	// if Role != 1 {
+	result := config.DB.Model(&booking).Where("date=? AND booking_status = 4 AND branch_id=?", date, branchid).Count(&count)
+	if result.Error != nil || count == 0 {
+		logrus.Infof("Failed To Load Today Total Booking %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Today Total  Booking Unsuccessfully",
+			"data":   0,
+		})
+		return
 	}
+	// } else {
+	// 	result := config.DB.Model(&booking).Where("date=? AND booking_status=4", date).Count(&count)
+	// 	if result.Error != nil || count == 0 {
+	// 		logrus.Infof("Failed To Load Total Booking %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "Today Total  Booking Unsuccessfully",
+	// 			"data":   0,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -3005,6 +3005,9 @@ func AdminLogout(c *gin.Context) {
 	// Clear the "Authorization" cookie to log out
 	c.SetCookie("Authorization", "", -1, "", "", false, true)
 	c.SetCookie("AID", "", -1, "", "", false, true)
+	c.SetCookie("Role", "", -1, "", "", false, true)
+	c.SetCookie("Branch_id", "", -1, "", "", false, true)
+	c.SetCookie("logged_in", "", -1, "", "", false, true)
 
 	// You can also clear any other session-related data if needed
 	c.Set("UserID", "")
@@ -3780,41 +3783,41 @@ func Cnfrm_slots(c *gin.Context) {
 	}
 
 	var bookings []models.Confirm_Booking_Table
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
-		result := config.DB.Debug().Raw(` SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4 AND cb.branch_id=?`, branchid).Scan(&bookings)
+	// if Role != 1 {
+	result := config.DB.Debug().Raw(` SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4 AND cb.branch_id=?`, branchid).Scan(&bookings)
 
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch Confirm slots",
-			})
-			return
-		}
-	} else {
-
-		// var slots []models.Time_Slot
-
-		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4`).Scan(&bookings)
-
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
-
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch confirm slots",
-			})
-			return
-		}
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch Confirm slots",
+		})
+		return
 	}
+	// } else {
+
+	// 	// var slots []models.Time_Slot
+
+	// 	result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4`).Scan(&bookings)
+
+	// 	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusInternalServerError, gin.H{
+	// 			"error":   result.Error.Error(),
+	// 			"message": "Failed to fetch confirm slots",
+	// 		})
+	// 		return
+	// 	}
+	// }
 	// Combine the "Package" and "Slot" data into a single array
 	for _, cbData := range bookings {
 		response.Data = append(response.Data, cbData)
@@ -3840,41 +3843,41 @@ func Pending_bookings(c *gin.Context) {
 
 	var bookings []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		// var slots []models.Time_Slot
+	// var slots []models.Time_Slot
 
-		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.branch_id =?`, branchid).Scan(&bookings)
+	result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.branch_id =?`, branchid).Scan(&bookings)
 
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch pending booking",
-			})
-			return
-		}
-	} else {
-		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3`).Scan(&bookings)
-
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
-
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch pending booking",
-			})
-
-		}
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch pending booking",
+		})
+		return
 	}
+	// } else {
+	// 	result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3`).Scan(&bookings)
+
+	// 	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusInternalServerError, gin.H{
+	// 			"error":   result.Error.Error(),
+	// 			"message": "Failed to fetch pending booking",
+	// 		})
+
+	// 	}
+	// }
 	// Combine the "Package" and "Slot" data into a single array
 	for _, cbData := range bookings {
 		response.Data = append(response.Data, cbData)
@@ -4377,39 +4380,39 @@ func Total_Revenue(c *gin.Context) {
 
 	var revenue []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	fmt.Println(Role)
+	// fmt.Println(Role)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+	result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get total revenue ",
-				"data":   nil,
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get total revenue ",
+			"data":   nil,
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&revenue)
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get total revenue ",
-				"data":   nil,
-			})
-			return
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get total revenue ",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	// Calculate the total Paid_amount
 	totalPaidAmount := 0.0
@@ -4435,39 +4438,39 @@ func Total_Remaining_amount(c *gin.Context) {
 
 	var revenue []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	fmt.Println(Role)
+	// fmt.Println(Role)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+	result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get Total_Remaining_amount ",
-				"data":   nil,
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get Total_Remaining_amount ",
+			"data":   nil,
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&revenue)
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get Total_Remaining_amount ",
-				"data":   nil,
-			})
-			return
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get Total_Remaining_amount ",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	// Calculate the total Paid_amount
 	totalRemainingAmount := 0.0
@@ -4493,37 +4496,37 @@ func Total_Sales(c *gin.Context) {
 
 	var revenue []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+	result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get total sales ",
-				"data":   nil,
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get total sales ",
+			"data":   nil,
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&revenue)
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "failed to get total sales",
-				"data":   nil,
-			})
-			return
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "failed to get total sales",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	// Calculate the total Paid_amount
 	totalSales := 0.0
@@ -4547,9 +4550,12 @@ func Total_Monthly_revenue(c *gin.Context) {
 		return
 	}
 
-	sqlQuery := "SELECT * FROM `confirm_booking_tables` WHERE Year(created_at) = Year(CURRENT_DATE) AND MONTH(CURRENT_DATE) = MONTH(CURRENT_DATE);"
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	sqlQuery := "SELECT * FROM `confirm_booking_tables` WHERE Year(created_at) = Year(CURRENT_DATE) AND MONTH(created_at) = MONTH(CURRENT_DATE) AND branch_id = ?"
 	var monthlyRevenue []models.Confirm_Booking_Table
-	result := config.DB.Raw(sqlQuery).Scan(&monthlyRevenue)
+	result := config.DB.Raw(sqlQuery, branchid).Scan(&monthlyRevenue)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -5095,63 +5101,63 @@ func Graph_API(c *gin.Context) {
 	var revenue []models.Confirm_Booking_Table
 	var count int64
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	fmt.Println(Role)
+	// fmt.Println(Role)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		var user models.User
+	var user models.User
 
-		result := config.DB.Model(&user).Count(&count)
+	result := config.DB.Model(&user).Count(&count)
 
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Total User Count Unsuccessfully",
-				"data":   nil,
-			})
-			return
-		}
-
-		result = config.DB.Find(&revenue, "branch_id=?", branchid)
-
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all branch details ",
-			})
-			return
-
-		}
-	} else {
-
-		var user models.User
-
-		result := config.DB.Model(&user).Count(&count)
-
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Total User Count Unsuccessfully",
-				"data":   nil,
-			})
-			return
-		}
-
-		result = config.DB.Find(&revenue)
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "failed to Delete Heading Details",
-				"data":   nil,
-			})
-			return
-		}
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Total User Count Unsuccessfully",
+			"data":   nil,
+		})
+		return
 	}
+
+	result = config.DB.Find(&revenue, "branch_id=?", branchid)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all branch details ",
+		})
+		return
+
+	}
+	// } else {
+
+	// 	var user models.User
+
+	// 	result := config.DB.Model(&user).Count(&count)
+
+	// 	if result.Error != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "Total User Count Unsuccessfully",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+
+	// 	result = config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "failed to Delete Heading Details",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	//Calculate the total Paid_amount
 	totalPaidAmount := 0.0
