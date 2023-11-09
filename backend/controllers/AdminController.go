@@ -3574,7 +3574,7 @@ func GETCarouselActiveImages(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to fetch active image for carousels",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
