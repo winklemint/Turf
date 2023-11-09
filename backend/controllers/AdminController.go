@@ -541,8 +541,6 @@ func AdminLogin(c *gin.Context) {
 	c.SetCookie("Role", adminRole, 7200, "", "", false, false)
 	c.SetCookie("Branch_id", adminBranch, 7200, "", "", false, false)
 
-	admin.LastLogin = time.Now()
-	config.DB.Save(&admin)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "Admin Login Successfully",
@@ -3371,7 +3369,7 @@ func DeleteCarousel(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "unsuccessfully Deleted Testimonial",
+			"error":  "unsuccessfull t0 Delete Carousel",
 			"data":   nil,
 		})
 		return
@@ -3501,7 +3499,7 @@ func GETCarouselActiveImages(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch carousels",
+			"error":  "failed to fetch active image for carousels",
 			"data":   nil,
 		})
 		return
@@ -4455,6 +4453,7 @@ func Total_Monthly_revenue(c *gin.Context) {
 	var monthlyRevenue []models.Confirm_Booking_Table
 	result := config.DB.Raw(sqlQuery).Scan(&monthlyRevenue)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to execute query",
@@ -4489,6 +4488,7 @@ func AddIcon(c *gin.Context) {
 		Status string
 	}
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -4499,6 +4499,7 @@ func AddIcon(c *gin.Context) {
 	icon := models.Icon{Name: body.Name, Link: body.Link, Status: "2"}
 	result := config.DB.Create(&icon)
 	if result.Error != nil {
+		logrus.Infof("Failed to add data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Add Icon",
@@ -4525,6 +4526,7 @@ func GetAllIcon(c *gin.Context) {
 	var icons []models.Icon
 	result := config.DB.Find(&icons)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Icon Details",
@@ -4550,6 +4552,7 @@ func GetActiveIcon(c *gin.Context) {
 	var icons []models.Icon
 	result := config.DB.Find(&icons, "status=1")
 	if result.Error != nil {
+		logrus.Infof("Failed to get  data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Active Icon Details",
@@ -4580,6 +4583,7 @@ func UpadateIcon(c *gin.Context) {
 		Status string
 	}
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -4590,6 +4594,7 @@ func UpadateIcon(c *gin.Context) {
 	icon := models.Icon{Name: body.Name, Link: body.Link, Status: body.Status}
 	result := config.DB.Model(&icon).Where("id=?", id).Updates(&icon)
 	if result.Error != nil {
+		logrus.Infof("Failed to update data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Update Icon",
@@ -4617,6 +4622,7 @@ func GetIconById(c *gin.Context) {
 	var icons models.Icon
 	result := config.DB.Find(&icons, "id=?", id)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Icon Details",
@@ -4643,6 +4649,7 @@ func DeleteIcon(c *gin.Context) {
 	var icons models.Icon
 	result := config.DB.Model(&icons).Where("id=?", id).Delete(&icons)
 	if result.Error != nil {
+		logrus.Infof("Failed to delete data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Delete Icon Details",
@@ -4676,7 +4683,9 @@ func Multiple_slot_booking(c *gin.Context) {
 		Branch_id  int
 	}
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
+
 			"status": 400,
 			"error":  "failed to read body",
 			"data":   nil,
@@ -4688,19 +4697,21 @@ func Multiple_slot_booking(c *gin.Context) {
 	// Parse start and end dates as time objects
 	startDate, err := time.Parse("02-01-2006", body.Start_date)
 	if err != nil {
+		logrus.Infof("Failed to get start date format %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid start date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
 	endDate, err := time.Parse("02-01-2006", body.End_date)
 	if err != nil {
+		logrus.Infof("Failed to get end date format", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid end date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4727,10 +4738,11 @@ func Multiple_slot_booking(c *gin.Context) {
 			}
 			result := config.DB.Create(&booking)
 			if result.Error != nil {
+				logrus.Infof("Failed to get data from DB %v\n", result.Error)
 				c.JSON(http.StatusOK, gin.H{
 					"status": 400,
 					"error":  "Slot Already Exist",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -4756,10 +4768,11 @@ func Multiple_slot_booking(c *gin.Context) {
 	}
 	result := config.DB.Create(&confirm_booking)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Slot Already Exist",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4784,10 +4797,11 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 	}
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4806,7 +4820,7 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid start date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4815,7 +4829,7 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid end date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4891,10 +4905,11 @@ func GetLoggedAdmin(c *gin.Context) {
 
 	result := config.DB.Find(&admin, "id=?", cookie)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "nt f0und",
-			"data":   "null",
+			"error":  "not f0und",
+			"data":   nil,
 		})
 	}
 
@@ -4923,9 +4938,10 @@ func MultipleImages(c *gin.Context) {
 	result := config.DB.Find(&ss, "booking_order_id=?", id)
 
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch testimonial",
+			"error":  "failed to fetch screenshot image",
 			"data":   nil,
 		})
 		return
@@ -4940,7 +4956,7 @@ func MultipleImages(c *gin.Context) {
 			// Set the content type for PNG images
 			c.Header("Content-Type", "image/png")
 		} else {
-			// Handle unsupported image formats
+
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "unsupported image format",
