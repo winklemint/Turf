@@ -2108,6 +2108,62 @@ func CountUser(c *gin.Context) {
 		"data":    count,
 	})
 }
+
+func GetMonthlyUsers(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var users []models.User
+
+	// Get the current year
+	currentYear := time.Now().Year()
+
+	// Retrieve users for all months in the current year
+	result := config.DB.
+		Where("YEAR(created_at) = ?", currentYear).
+		Find(&users)
+
+	// Handle the error
+	if result.Error != nil {
+		logrus.Infof("Failed to retrieve monthly users: %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to retrieve monthly users",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Organize users by month
+	organizedUsers := make(map[string][]map[string]interface{})
+
+	for _, user := range users {
+		createdAtMonth := user.CreatedAt.Month().String()
+		userInfo := map[string]interface{}{
+			"ID":             user.ID,
+			"Full_Name":      user.Full_Name,
+			"Email":          user.Email,
+			"Contact":        user.Contact,
+			"Account_Status": user.Account_Status,
+			// Add more fields as needed
+		}
+
+		// Append the user to the corresponding month
+		organizedUsers[createdAtMonth] = append(organizedUsers[createdAtMonth], userInfo)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"success": "Monthly Users Successfully Retrieved",
+		"data":    organizedUsers,
+	})
+}
+
 func Today_Total_Booking(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
