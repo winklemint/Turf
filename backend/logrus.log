@@ -1433,3 +1433,8 @@ time="2023-11-10T17:08:46+05:30" level=info msg="Failed t0 read image open uploa
 time="2023-11-10T17:08:46+05:30" level=info msg="Failed t0 read image open uploads\\branch\\black_widow_in_avengers_movie-1920x1080.jpg: The system cannot find the file specified.\n"
 time="2023-11-10T17:08:46+05:30" level=info msg="Failed t0 read image open uploads\\branch\\spectacular_horizon-2880x1800.jpg: The system cannot find the file specified.\n"
 time="2023-11-10T17:08:46+05:30" level=info msg="Failed t0 read image open uploads\\branch\\2011_kung_fu_panda-1920x1200.jpg: The system cannot find the file specified.\n"
+time="2023-11-10T18:31:25+05:30" level=info msg="Failed To Load Today Total Booking <nil>\n"
+time="2023-11-10T18:32:02+05:30" level=info msg="Failed to get data from DB <nil>\n"
+time="2023-11-10T18:32:36+05:30" level=info msg="Failed to get data from DB <nil>\n"
+time="2023-11-10T18:33:16+05:30" level=info msg="Failed to get data from DB <nil>\n"
+time="2023-11-10T18:36:19+05:30" level=info msg="Failed to get data from DB record not found\n"
