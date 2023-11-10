@@ -2118,49 +2118,43 @@ func GetMonthlyUsers(c *gin.Context) {
 		return
 	}
 
-	var users []models.User
-
 	// Get the current year
 	currentYear := time.Now().Year()
 
-	// Retrieve users for all months in the current year
+	// Aggregate user counts by month directly in the database
+	var userCounts []struct {
+		Month string `json:"month"`
+		Count int    `json:"count"`
+	}
+
 	result := config.DB.
+		Table("users").
+		Select("MONTH(created_at) as month, COUNT(*) as count").
 		Where("YEAR(created_at) = ?", currentYear).
-		Find(&users)
+		Group("month").
+		Scan(&userCounts)
 
 	// Handle the error
 	if result.Error != nil {
-		logrus.Infof("Failed to retrieve monthly users: %v\n", result.Error)
+		logrus.WithError(result.Error).Error("Failed to retrieve monthly user counts")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to retrieve monthly users",
+			"error":  "Failed to retrieve monthly user counts",
 			"data":   nil,
 		})
 		return
 	}
 
-	// Organize users by month
-	organizedUsers := make(map[string][]map[string]interface{})
-
-	for _, user := range users {
-		createdAtMonth := user.CreatedAt.Month().String()
-		userInfo := map[string]interface{}{
-			"ID":             user.ID,
-			"Full_Name":      user.Full_Name,
-			"Email":          user.Email,
-			"Contact":        user.Contact,
-			"Account_Status": user.Account_Status,
-			// Add more fields as needed
-		}
-
-		// Append the user to the corresponding month
-		organizedUsers[createdAtMonth] = append(organizedUsers[createdAtMonth], userInfo)
+	// Create a map for easy access in the response
+	userCountsMap := make(map[string]int)
+	for _, entry := range userCounts {
+		userCountsMap[entry.Month] = entry.Count
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"success": "Monthly Users Successfully Retrieved",
-		"data":    organizedUsers,
+		"status":      200,
+		"success":     "Monthly Users Successfully Retrieved",
+		"user_counts": userCountsMap,
 	})
 }
 
