@@ -1107,13 +1107,26 @@ func AddPackage(c *gin.Context) {
 		return
 	}
 
+	var packages models.Package
+
+	result := config.DB.Find(&packages, "name=? AND branch_id=?", body.Name, body.Branch_id)
+	if packages.ID != 0 {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "PAckage already exist",
+			"data":   nil,
+		})
+		return
+	}
+
 	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status, Branch_id: body.Branch_id}
-	result := config.DB.Create(&packageModel)
+	result = config.DB.Create(&packageModel)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Package Allready Exist",
+			"error":  "Failed t0 create package",
 			"data":   nil,
 		})
 		return
