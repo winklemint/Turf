@@ -1,460 +1,583 @@
-
 {{template "header.html"}}
 
 
-	<div class="xs-pd-20-10 pd-ltr-20">
-		<div class="title pb-20">
-			<h2 class="h3 mb-0">Turf Overview</h2>
-		</div>
+<div class="xs-pd-20-10 pd-ltr-20">
+	<div class="title pb-20">
+		<h2 class="h3 mb-0">Turf Overview</h2>
+	</div>
 
-		<div class="row pb-10">	 	
-			<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
-				<div class="card-box height-100-p widget-style3">
-					<div class="d-flex flex-wrap">
-						<div class="widget-data">
-							<div id="total-booking-count" class="weight-700 font-24 text-dark">Loading...</div>
-							<div class="font-14 text-secondary weight-500">
-								Today Bookings
-							</div>
-						</div>
-						<div class="widget-icon">
-							<div class="icon" data-color="#00eccf">
-								<i class="icon-copy dw dw-calendar1"></i>
-							</div>
+	<div class="row pb-10">
+		<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+			<div class="card-box height-100-p widget-style3">
+				<div class="d-flex flex-wrap">
+					<div class="widget-data">
+						<div id="total-booking-count" class="weight-700 font-24 text-dark">Loading...</div>
+						<div class="font-14 text-secondary weight-500">
+							Today Bookings
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
-				<div class="card-box height-100-p widget-style3">
-					<div class="d-flex flex-wrap">
-						<div class="widget-data">
-							<div id="total-user-count" class="weight-700 font-24 text-dark">Loading...</div>
-							<div class="font-14 text-secondary weight-500">
-								Total Users
-							</div>
-						</div>
-						
-						<div class="widget-icon">
-							<div class="icon" data-color="#ff5b5b">
-								<i class="icon-copy bi bi-people"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
-				<div class="card-box height-100-p widget-style3">
-					<div class="d-flex flex-wrap">
-						<div class="widget-data">
-							<div id="total-remaining" class="weight-700 font-24 text-dark">Loading...</div>
-							<div class="font-14 text-secondary weight-500">
-								Total Remaining Amount
-							</div>
-						</div>
-						<div class="widget-icon">
-							<div class="icon">
-								<i class="icon-copy bi bi-hypnotize"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
-				<div class="card-box height-100-p widget-style3">
-					<div class="d-flex flex-wrap">
-						<div class="widget-data">
-							<div id="total-sales" class="weight-700 font-24 text-dark">Loading...</div>
-							<div class="font-14 text-secondary weight-500">
-								Sales
-							</div>
-						</div>
-						<div class="widget-icon">
-							<div class="icon" data-color="#09cc06">
-								<i class="icon-copy fa fa-money" aria-hidden="true"></i>
-							</div>
+					<div class="widget-icon">
+						<div class="icon" data-color="#00eccf">
+							<i class="icon-copy dw dw-calendar1"></i>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+			<div class="card-box height-100-p widget-style3">
+				<div class="d-flex flex-wrap">
+					<div class="widget-data">
+						<div id="total-user-count" class="weight-700 font-24 text-dark">Loading...</div>
+						<div class="font-14 text-secondary weight-500">
+							Total Users
+						</div>
+					</div>
 
-		<div class="row pb-10">
-			<div class="col-md-8 mb-20">
-				<div class="card-box height-100-p pd-20">
-					<div
-						class="d-flex flex-wrap justify-content-between align-items-center pb-0 pb-md-3"
-					>
-						<div class="h5 mb-md-0">Hospital Activities</div>
-						<div class="form-group mb-md-0">
-							<select class="form-control form-control-sm selectpicker">
-								<option value="">Last Week</option>
-								<option value="">Last Month</option>
-								<option value="">Last 6 Month</option>
-								<option value="">Last 1 year</option>
-							</select>
-						</div>
-					</div>
-					<div id="activities-chart"></div>
-				</div>
-			</div>
-			<div class="col-md-4 mb-20">
-				<div class="card-box min-height-200px pd-20 mb-20" data-bgcolor="#455a64">
-					<div class="d-flex justify-content-between pb-20 text-white">
-						<div class="icon h1 text-white">
-							<div class="font-10">Live</div>
-							
-						</div>
-					</div>
-					<div class="d-flex justify-content-between align-items-end">
-						
-						<div class="max-width-150">
-							<div id="appointment-chart">
-								<div>
-									<i class="icon-copy bi bi-person-fill"></i> <span id="user-name"></span>
-								</div>
-								<div>
-									<i class="icon-copy bi bi-telephone-fill"></i> <span id="contact-number"></span>
-								</div>
-								<div>
-									<i class="icon-copy bi bi-clock"></i> <span id="start-time"></span> - <span id="end-time"></span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="card-box min-height-200px pd-20" data-bgcolor="#265ed7">
-					<div class="d-flex justify-content-between pb-20 text-white">
-						<div class="icon h1 text-white">
-							<i class="fa fa-stethoscope" aria-hidden="true"></i>
-						</div>
-						<div class="font-14 text-right">
-							<div><i class="icon-copy ion-arrow-down-c"></i> 3.69%</div>
-							<div class="font-12">Since last month</div>
-						</div>
-					</div>
-					<div class="d-flex justify-content-between align-items-end">
-						<div class="text-white">
-							<div class="font-14">Surgery</div>
-							<div class="font-24 weight-500">250</div>
-						</div>
-						<div class="max-width-150">
-							<div id="surgery-chart"></div>
+					<div class="widget-icon">
+						<div class="icon" data-color="#ff5b5b">
+							<i class="icon-copy bi bi-people"></i>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<div class="row">
-			<div   class="col-lg-4 col-md-6 mb-20">
-				<div class="card-box height-100-p pd-20 min-height-200px">
-					<div class="d-flex justify-content-between pb-10">
-					     <div class="h5 mb-0"> Our Branches</div>
-					</div>
-					<div class="user-list">
-						<ul id="doctorulList">
-					    </ul>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-4 col-md-6 mb-20">
-				<div class="card-box height-100-p pd-20 min-height-200px">
-					<div class="d-flex justify-content-between">
-						<div class="h5 mb-0">Diseases Report</div>
-						<div class="dropdown">
-							<a
-								class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
-								data-color="#1b3133"
-								href="#"
-								role="button"
-								data-toggle="dropdown"
-							>
-								<i class="dw dw-more"></i>
-							</a>
-							<div
-								class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
-							>
-								<a class="dropdown-item" href="#"
-									><i class="dw dw-eye"></i> View</a
-								>
-								<a class="dropdown-item" href="#"
-									><i class="dw dw-edit2"></i> Edit</a
-								>
-								<a class="dropdown-item" href="#"
-									><i class="dw dw-delete-3"></i> Delete</a
-								>
-							</div>
+		<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+			<div class="card-box height-100-p widget-style3">
+				<div class="d-flex flex-wrap">
+					<div class="widget-data">
+						<div id="total-remaining" class="weight-700 font-24 text-dark">Loading...</div>
+						<div class="font-14 text-secondary weight-500">
+							Total Remaining Amount
 						</div>
 					</div>
-
-					<div id="diseases-chart"></div>
-				</div>
-			</div>
-			<div class="col-lg-4 col-md-12 mb-20">
-				<div class="card-box height-100-p pd-20 min-height-200px">
-					<div class="max-width-300 mx-auto">
-						<img src="https://dropways.github.io/deskapp/vendors/images/upgrade.svg" alt="" />
-					</div>
-					<div class="text-center">
-						<div class="h5 mb-1">Upgrade to Pro</div>
-						<div
-							class="font-14 weight-500 max-width-200 mx-auto pb-20"
-							data-color="#a6a6a7"
-						>
-							You can enjoy all our features by upgrading to pro.
+					<div class="widget-icon">
+						<div class="icon">
+							<i class="icon-copy bi bi-hypnotize"></i>
 						</div>
-						<a href="#" class="btn btn-primary btn-lg">Upgrade</a>
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+			<div class="card-box height-100-p widget-style3">
+				<div class="d-flex flex-wrap">
+					<div class="widget-data">
+						<div id="total-sales" class="weight-700 font-24 text-dark">Loading...</div>
+						<div class="font-14 text-secondary weight-500">
+							Sales
+						</div>
+					</div>
+					<div class="widget-icon">
+						<div class="icon" data-color="#09cc06">
+							<i class="icon-copy fa fa-money" aria-hidden="true"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-		
-		<div class="card-box pb-10">
-			<div class="h5 pd-20 mb-0" >Confirm Bookings</div>
-			<table   id="confirm-booking-table" class="data-table table nowrap">
-				<thead>
-					<tr>
-						<th>SN</th>
-						<th>Name</th>
-						<th>Date</th>
-						<th>Total Price</th>
-						<th>Total Min Amount To Pay</th>
-						<th>Paid Amount</th>
-						<th>Remaining Amount To Pay</th>
-						<th>Booking Status</th>
-						<th>Branch Id</th>
-						
-					</tr>
-				</thead>
-				<tbody ></tbody>
+	<div class="row pb-10">
+		<div class="col-md-8 mb-20">
+			<div class="card-box height-100-p pd-20">
+				<div class="d-flex flex-wrap justify-content-between align-items-center pb-0 pb-md-3">
+					<div class="h5 mb-md-0">Hospital Activities</div>
+					<div class="form-group mb-md-0">
+						<select class="form-control form-control-sm selectpicker">
+							<option value="">Last Week</option>
+							<option value="">Last Month</option>
+							<option value="">Last 6 Month</option>
+							<option value="">Last 1 year</option>
+						</select>
+					</div>
+
+				</div>
+
+				<div id="activities-chart"></div>
+
+				<div class="row clearfix progress-box">
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-30">
+						<div class="card-box pd-30 height-100-p">
+							<div class="progress-box text-center">
+								<input type="text" class="knob dial1" value="30" data-width="120" data-height="120"
+									data-linecap="round" data-thickness="0.12" data-bgColor="#fff"
+									data-fgColor="#1b00ff" data-angleOffset="180" readonly />
+								<h5 class="text-blue padding-top-10 h5">Average Sales per User</h5>
+								<p class="smaller-header">This KPI indicates the average sales generated per user or
+									customer</p>
+								<span class="d-block">80% Average <i class="fa fa-line-chart text-blue"></i></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-30">
+						<div class="card-box pd-30 height-100-p">
+							<div class="progress-box text-center">
+								<input type="text" class="knob dial2" value="65" data-width="120" data-height="120"
+									data-linecap="round" data-thickness="0.12" data-bgColor="#fff"
+									data-fgColor="#a683eb" data-angleOffset="180" readonly />
+								<h5 class="text-light-purple padding-top-10 h5">Average Revenue per User</h5>
+								<p class="smaller-header">This KPI shows the average revenue generated per user or
+									customer</p>
+								<span class="d-block">65% Average
+									<i class="fa text-light-purple fa-line-chart"></i></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-lg-4 col-md-6 col-sm-12 mb-30">
+						<div class="card-box pd-30 height-100-p">
+							<div class="progress-box text-center">
+								<input type="text" class="knob dial3" value="70" data-width="120" data-height="120"
+									data-linecap="round" data-thickness="0.12" data-bgColor="#fff"
+									data-fgColor="#00e091" data-angleOffset="180" readonly />
+								<h5 class="text-light-green padding-top-10 h5">
+									Business Captured
+								</h5>
+								<span class="d-block">75% Average
+									<i class="fa text-light-green fa-line-chart"></i></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div class="col-md-4 mb-20">
+			<div class="card-box min-height-200px pd-20 mb-20" data-bgcolor="#455a64">
+				<div class="d-flex justify-content-between pb-20 text-white">
+					<div class="icon h1 text-white">
+						<div class="font-10">Live</div>
+
+					</div>
+				</div>
+				<div class="d-flex justify-content-between align-items-end">
+
+					<div class="max-width-150">
+						<div id="appointment-chart">
+							<div>
+								<i class="icon-copy bi bi-person-fill"></i> <span id="user-name"></span>
+							</div>
+							<div>
+								<i class="icon-copy bi bi-telephone-fill"></i> <span id="contact-number"></span>
+							</div>
+							<div>
+								<i class="icon-copy bi bi-clock"></i> <span id="start-time"></span> - <span
+									id="end-time"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="card-box min-height-200px pd-20" data-bgcolor="#265ed7">
+				<div class="d-flex justify-content-between pb-20 text-white">
+					<div class="icon h1 text-white">
+						<div class="font-10">Revenue</div>
+					</div>
 					
-			</table>
-		</div>
-
-		<div class="title pb-20 pt-20">
-			<h2 class="h3 mb-0">Quick Start</h2>
-		</div>
-
-		<div class="row">
-			<div class="col-md-4 mb-20">
-				<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
-					<div class="img pb-30">
-						<img src="https://dropways.github.io/deskapp/vendors/images/medicine-bro.svg" alt="" />
+				</div>
+				<div class="d-flex justify-content-between align-items-end">
+					<div class="text-white">
+						<div class="font-14">Total Revenue</div>
+						<div class="font-24 weight-500" id="total-revenue">Loading...</div>
 					</div>
-					<div class="content">
-						<h3 class="h4">Services</h3>
-						<p class="max-width-200">
-							We provide superior health care in a compassionate maner
-						</p>
+					<div class="text-white">
+						<div class="font-14">Monthly Revenue</div>
+						<div class="font-24 weight-500" id="monthly-revenue">Loading...</div>
 					</div>
-				</a>
-			</div>
-			<div class="col-md-4 mb-20">
-				<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
-					<div class="img pb-30">
-						<img src="https://dropways.github.io/deskapp/vendors/images/remedy-amico.svg" alt="" />
+					<div class="max-width-150">
+						<div id="surgery-chart"></div>
 					</div>
-					<div class="content">
-						<h3 class="h4">Medications</h3>
-						<p class="max-width-200">
-							Look for prescription and over-the-counter drug information.
-						</p>
-					</div>
-				</a>
-			</div>
-			<div class="col-md-4 mb-20">
-				<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
-					<div class="img pb-30">
-						<img src="https://dropways.github.io/deskapp/vendors/images/paper-map-cuate.svg" alt="" />
-					</div>
-					<div class="content">
-						<h3 class="h4">Locations</h3>
-						<p class="max-width-200">
-							Convenient locations when and where you need them.
-						</p>
-					</div>
-				</a>
+				</div>
 			</div>
 		</div>
+	</div>
 
-		{{template "footer.html"}}
-	
-	
-	
+	<div class="row">
+		<div class="col-lg-4 col-md-6 mb-20">
+			<div class="card-box height-100-p pd-20 min-height-200px">
+				<div class="d-flex justify-content-between pb-10">
+					<div class="h5 mb-0"> Our Branches</div>
+				</div>
+				<div class="user-list">
+					<ul id="doctorulList">
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-6 mb-20">
+			<div class="card-box height-100-p pd-20 min-height-200px">
+				<div class="d-flex justify-content-between">
+					<div class="h5 mb-0">Diseases Report</div>
+					<div class="dropdown">
+						<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" data-color="#1b3133"
+							href="#" role="button" data-toggle="dropdown">
+							<i class="dw dw-more"></i>
+						</a>
+						<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+							<a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
+							<a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
+							<a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
+						</div>
+					</div>
+				</div>
+
+				<div id="diseases-chart"></div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-12 mb-20">
+			<div class="card-box height-100-p pd-20 min-height-200px">
+				<div class="max-width-300 mx-auto">
+					<img src="https://dropways.github.io/deskapp/vendors/images/upgrade.svg" alt="" />
+				</div>
+				<div class="text-center">
+					<div class="h5 mb-1">Upgrade to Pro</div>
+					<div class="font-14 weight-500 max-width-200 mx-auto pb-20" data-color="#a6a6a7">
+						You can enjoy all our features by upgrading to pro.
+					</div>
+					<a href="#" class="btn btn-primary btn-lg">Upgrade</a>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-<script>
-    $(document).ready(function () {
-        // Initialize DataTable
-        var table = $('#confirm-booking-table').DataTable();
-        // Make an AJAX request to fetch data from the URL
-        $.ajax({
-            url: '/admin/get/confirm/booking/top5', // Adjust the URL to match your API endpoint
-            method: 'GET',
-            dataType: 'json',
-            success: function (response) {
-                console.log(response);
-                // Iterate through the data and append it to the table
-                $.each(response.data, function (index, branchs) {
-                    // Determine the button content based on the "Status"
-                    var button;
-                    if (branchs.Booking_status === 1) {
-                        button = "<button type='button' class='btn btn-outline-success'>Free</button>";
-                    } else if(branchs.Booking_status === 3){
-						button = "<button type='button' class='btn btn-outline-success'>Confirmed</button>";
-					}else {
-                        button = "<button type='button' class='btn btn-outline-danger'>reserve</button>";
-                    }
-                    var action = '<div class="dropdown">' +
-                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + branchs.ID + '" role="button" data-toggle="dropdown">' +
-                        '<i class="dw dw-more"></i>' +
-                        '</a>' +
-                        '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-                        '<a class="dropdown-item" href="update/branch?id=' + branchs.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/branchs" onclick="deleteCarousel(' + branchs.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
-                        '</div>' +
-                        '</div>';
+	<div class="card-box pb-10">
+		<div class="h5 pd-20 mb-0">Confirm Bookings</div>
+		<table id="confirm-booking-table" class="data-table table nowrap">
+			<thead>
+				<tr>
+					<th>SN</th>
+					<th>Name</th>
+					<th>Date</th>
+					<th>Total Price</th>
 
-                    // Create a new row and append it to the table
-                    table.row.add([
-                        index + 1, // Sn.
-                        branchs.User_name, 
-                        branchs.Date,
-                        branchs.Total_price,
-                        branchs.Total_min_amount_to_pay,
-                        branchs.Paid_amount, 
-                        branchs.Remaining_amount_to_pay, 
-                        button, 
-                        
-                    ]);
-                });
+					<th>Paid Amount</th>
 
-                // Refresh the table to apply the changes
-                table.draw();
-            },
-            error: function (error) {
-                console.error('Error fetching data: ' + error);
-            }
-        });
-    });
-    function deleteCarousel(Id) {
-        var row_id = Id;
-        
-        
-        $.ajax({
-            url: "/admin/delete/branch/" + Id,
-            method: "DELETE",
-            success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("branch with ID: " + Id + " deleted successfully");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting branch with ID: " + Id);
-            }
-        });
-    }
-    
-</script>
+					<th>Booking Status</th>
 
-<script>
-    $(document).ready(function () {
-        // Make an AJAX request to fetch the total user count
-        $.ajax({
-            url: "/admin/user/count", // Replace with the actual API endpoint
-            method: "GET",
-            dataType: 'json',
-            success: function (data) {
-                // Update the HTML with the fetched count
-                $('#total-user-count').text(data.data);
-            },
-            error: function (error) {
+
+				</tr>
+			</thead>
+			<tbody></tbody>
+
+		</table>
+	</div>
+
+	<div class="title pb-20 pt-20">
+		<h2 class="h3 mb-0">Quick Start</h2>
+	</div>
+
+	<div class="row">
+		<div class="col-md-4 mb-20">
+			<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
+				<div class="img pb-30">
+					<img src="https://plus.unsplash.com/premium_photo-1678677940496-e59d14825181?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nzd8fGFzdHJvJTIwdHVyZnxlbnwwfHwwfHx8MA%3D%3D"
+						alt="" />
+				</div>
+				<div class="content">
+					<h3 class="h4">Services</h3>
+					<p class="max-width-200">
+						We provide superior health care in a compassionate maner
+					</p>
+				</div>
+			</a>
+		</div>
+		<div class="col-md-4 mb-20">
+			<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
+				<div class="img pb-30">
+					<img src="https://images.unsplash.com/photo-1570498839593-e565b39455fc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dHVyZnxlbnwwfHwwfHx8MA%3D%3D"
+						alt="" />
+				</div>
+				<div class="content">
+					<h3 class="h4">Medications</h3>
+					<p class="max-width-200">
+						Look for prescription and over-the-counter drug information.
+					</p>
+				</div>
+			</a>
+		</div>
+		<div class="col-md-4 mb-20">
+			<a href="#" class="card-box d-block mx-auto pd-20 text-secondary">
+				<div class="img pb-30">
+					<img src="https://plus.unsplash.com/premium_photo-1678677943695-d121953beafa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTd8fGFzdHJvJTIwdHVyZnxlbnwwfHwwfHx8MA%3D%3D"
+						alt="" />
+				</div>
+				<div class="content">
+					<h3 class="h4">Locations</h3>
+					<p class="max-width-200">
+						Convenient locations when and where you need them.
+					</p>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	{{template "footer.html"}}
+
+
+	<script>
+		// Initial options for the chart
+		var options = {
+			series: [],
+			chart: {
+				height: 300,
+				type: 'line',
+				// other chart options...
+			},
+			xaxis: {
+				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+				labels: {
+					style: {
+						colors: '#8c9094'
+					}
+				}
+			},
+			// other options...
+		};
+
+		// Create the chart
+		var chart = new ApexCharts(document.querySelector("#activities-chart"), options);
+		chart.render();
+
+		// Function to update the chart with new data
+		function updateChart(newData) {
+			// Update the series data with new values
+			chart.updateSeries(newData.series);
+
+			// You can also update other options if needed
+			chart.updateOptions({
+				// new options...
+			});
+		}
+
+		// Fetch data using AJAX
+		fetch('http://localhost:8080/admin/count/user/monthly')
+			.then(response => response.json())
+			.then(data => {
+				// Extract the relevant data from the API response
+				const monthlyData = data.data;
+
+				console.log("mdhjdjkd",monthlyData);
+
+				// Create an array to store the length of data for each month
+				const userCountData = [];
+
+				// Loop through each month in the API response
+				options.xaxis.categories.forEach(month => {
+					// Get the length of data for the current month
+					const userCount = monthlyData[month] ? monthlyData[month].length : 0;
+
+					// Push the user count to the array
+					userCountData.push(userCount);
+				});
+
+				// Update the series with the new user count data
+				const newData = {
+					series: [{
+						data: userCountData,
+					}],
+				};
+
+				// Call the updateChart function to update the chart with new data
+				updateChart(newData);
+			})
+			.catch(error => console.error('Error fetching data:', error));
+	</script>
+
+
+	<script>
+
+		$(document).ready(function () {
+			// Initialize DataTable
+			var table = $('#confirm-booking-table').DataTable();
+			// Make an AJAX request to fetch data from the URL
+			$.ajax({
+				url: '/admin/get/confirm/booking/top5', // Adjust the URL to match your API endpoint
+				method: 'GET',
+				dataType: 'json',
+				success: function (response) {
+					console.log(response);
+					// Iterate through the data and append it to the table
+					$.each(response.data, function (index, branchs) {
+						// Determine the button content based on the "Status"
+						var button;
+						if (branchs.Booking_status === 1) {
+							button = "<button type='button' class='btn btn-outline-success'>Free</button>";
+						} else if (branchs.Booking_status === 3) {
+							button = "<button type='button' class='btn btn-outline-success'>Confirmed</button>";
+						} else {
+							button = "<button type='button' class='btn btn-outline-danger'>reserve</button>";
+						}
+						var action = '<div class="dropdown">' +
+							'<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + branchs.ID + '" role="button" data-toggle="dropdown">' +
+							'<i class="dw dw-more"></i>' +
+							'</a>' +
+							'<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+							'<a class="dropdown-item" href="update/branch?id=' + branchs.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+							'<a class="dropdown-item" href="/branchs" onclick="deleteCarousel(' + branchs.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+							'</div>' +
+							'</div>';
+
+						// Create a new row and append it to the table
+						table.row.add([
+							index + 1, // Sn.
+							branchs.User_name,
+							branchs.Date,
+							branchs.Total_price,
+							branchs.Paid_amount,
+							button,
+
+						]);
+					});
+
+					// Refresh the table to apply the changes
+					table.draw();
+				},
+				error: function (error) {
+					console.error('Error fetching data: ' + error);
+				}
+			});
+		});
+		function deleteCarousel(Id) {
+			var row_id = Id;
+
+
+			$.ajax({
+				url: "/admin/delete/branch/" + Id,
+				method: "DELETE",
+				success: function (response) {
+					var rowid = 'rowN' + row_id;
+					alert(rowid);
+					var rowElement = document.getElementById(rowid);
+					if (rowElement) {
+						rowElement.style.display = 'none';
+						alert("branch with ID: " + Id + " deleted successfully");
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error(error);
+					alert("Error deleting branch with ID: " + Id);
+				}
+			});
+		}
+
+
+
+		// Make an AJAX request to fetch the total user count
+		$.ajax({
+			url: "/admin/user/count", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+				$('#total-user-count').text(data.data);
+
+			},
+			error: function (error) {
 				$('#total-user-count').text("0");
-            }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        // Make an AJAX request to fetch the total user count
-        $.ajax({
-            url: "/admin/total/remaining/amount", // Replace with the actual API endpoint
-            method: "GET",
-            dataType: 'json',
-            success: function (data) {
-                // Update the HTML with the fetched count
-                $('#total-remaining').text(data.data);
-            },
-            error: function (error) {
+			}
+		});
+
+		$.ajax({
+			url: "/admin/total/revenue", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+				$('#total-revenue').text(data.data);
+
+			},
+			error: function (error) {
+				$('#total-revenue').text("0");
+			}
+		});
+		$.ajax({
+			url: "/admin/total/monthly/revenue", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+				$('#monthly-revenue').text(data.data);
+
+			},
+			error: function (error) {
+				$('#monthly-revenue').text("0");
+			}
+		});
+		// Make an AJAX request to fetch the total user count
+		$.ajax({
+			url: "/admin/total/remaining/amount", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+
+				$('#total-remaining').text(data.data);
+
+			},
+			error: function (error) {
 				$('#total-remaining').text("0");
-            }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        // Make an AJAX request to fetch the total user count
-        $.ajax({
-            url: "/admin/total/sales", // Replace with the actual API endpoint
-            method: "GET",
-            dataType: 'json',
-            success: function (data) {
-                // Update the HTML with the fetched count
-                $('#total-sales').text(data.data);
-            },
-            error: function (error) {
+			}
+		});
+
+
+		// Make an AJAX request to fetch the total user count
+		$.ajax({
+			url: "/admin/total/sales", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+				$('#total-sales').text(data.data);
+
+			},
+			error: function (error) {
 				$('#total-sales').text("0");
-            }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        // Make an AJAX request to fetch the total user count
-        $.ajax({
-            url: "/admin/total/today/booking", // Replace with the actual API endpoint
-            method: "GET",
-            dataType: 'json',
-            success: function (data) {
-                // Update the HTML with the fetched count
-                $('#total-booking-count').text(data.data);
-            },
-            error: function (error) {
-                $('#total-booking-count').text("0");
-            }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        // Make an AJAX request to fetch doctor data
-        $.get("/admin/active/branch", function (data) {
-            if (data.status === 200) {
-                // Populate the doctor list
-                renderDoctors(data.data);
-            } else {
-                console.log("Error fetching doctor data");
-            }
-        });
-    });
+			}
+		});
 
-    function renderDoctors(doctors) {
-        var doctorList = $("#doctorulList");
 
-        doctors.forEach(function (doctor) {
-			var branchID = doctor.ID;
+		// Make an AJAX request to fetch the total user count
+		$.ajax({
+			url: "/admin/total/today/booking", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+				$('#total-booking-count').text(data.data);
+			},
+			error: function (error) {
+				$('#total-booking-count').text("0");
+			}
+		});
 
-			// Generate the image URL dynamically with the branch ID
-			var imageUrl = `/admin/branch/image/active/${branchID}`;
-            var doctorCard = `
+
+		// Make an AJAX request to fetch doctor data
+		$.get("/admin/active/branch", function (data) {
+			if (data.status === 200) {
+				// Populate the doctor list
+				renderDoctors(data.data);
+			} else {
+				console.log("Error fetching doctor data");
+			}
+		});
+
+
+		function renderDoctors(doctors) {
+			var doctorList = $("#doctorulList");
+
+			doctors.forEach(function (doctor) {
+				var branchID = doctor.ID;
+
+				// Generate the image URL dynamically with the branch ID
+				var imageUrl = `/admin/branch/image/active/${branchID}`;
+				var doctorCard = `
             <li class="d-flex align-items-center justify-content-between">
                 <div class="name-avatar d-flex align-items-center pr-2">
                     <div class="avatar mr-2 flex-shrink-0">
@@ -471,13 +594,47 @@
                 </div>
             </li>`;
 
-            doctorList.append(doctorCard);
-        });
-    }
-</script>
-
-  
+				doctorList.append(doctorCard);
+			});
+		}
 
 
-</body>
-</html>
+
+		// Make an AJAX request to fetch the values
+		$.ajax({
+			url: "/admin/sales/rati0",
+			method: "GET",
+			dataType: "json",
+			success: function (data) {
+				// Animate and set values for each knob based on the data received
+
+				animateKnob(".dial1", data.data);
+				animateKnob(".dial2", data.Average_Revenue_per_User);
+
+
+			},
+			error: function (xhr, status, error) {
+				console.log(error);
+			}
+		});
+
+		// // Function to animate a knob
+		function animateKnob(selector, targetValue) {
+			$(selector).knob();
+			$({ animatedVal: 0 }).animate({ animatedVal: targetValue }, {
+				duration: 3000,
+				easing: "swing",
+				step: function () {
+					$(selector).val(Math.ceil(this.animatedVal)).trigger("change");
+				}
+			});
+		}
+
+	</script>
+
+
+
+
+	</body>
+
+	</html>
