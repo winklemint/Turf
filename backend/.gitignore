@@ -23,5 +23,7 @@ go.work
 # Envvironment files
 .env
 
-# sync DB file
 connectToDB.go
+
+#
+.log

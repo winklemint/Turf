@@ -29,12 +29,11 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name     string
-		Contact  string
-		Password string
-		Email    string
-		Role     int
-
+		Name          string
+		Contact       string
+		Password      string
+		Email         string
+		Role          int
 		Branch_name   int
 		Authorization string
 	}
@@ -59,18 +58,7 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 
-	// var branch models.Branch_info_management
-	// result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
-	// if result.Error != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"status": 400,
-	// 		"error":  "Error finding branch id",
-	// 		"data":   "null",
-	// 	})
-	// 	return
-	// }
-
-	BranchID := uint(body.Branch_name)
+	BranchID := int(body.Branch_name)
 
 	fmt.Println(BranchID)
 
@@ -81,8 +69,7 @@ func AdminSignup(c *gin.Context) {
 		Email:          body.Email,
 		Role:           body.Role,
 		Turf_branch_id: BranchID,
-
-		Authorization: body.Authorization,
+		Authorization:  body.Authorization,
 	}
 
 	result := config.DB.Create(&bodys)
@@ -152,7 +139,7 @@ func AdminUpdateById(c *gin.Context) {
 	adminToUpdate.Contact = body.Contact
 	adminToUpdate.Email = body.Email
 	adminToUpdate.Role = body.Role
-	adminToUpdate.Turf_branch_id = uint(body.Branch_name)
+	adminToUpdate.Turf_branch_id = body.Branch_name
 	adminToUpdate.Authorization = body.Authorization
 	// Update the admin using the provided 'id'
 	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
@@ -165,14 +152,14 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-	BranchID := uint(body.Branch_name)
-	fmt.Println(BranchID)
+	// BranchID := int(body.Branch_name)
+	// fmt.Println(BranchID)
 	bodys := models.Admin{
 		Name:           body.Name,
 		Contact:        body.Contact,
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: BranchID,
+		Turf_branch_id: body.Branch_name,
 		Authorization:  body.Authorization,
 	}
 	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
@@ -191,6 +178,7 @@ func AdminUpdateById(c *gin.Context) {
 		"data":    bodys,
 	})
 }
+
 func AdminGetById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -340,36 +328,36 @@ func GetConfirmBookingTop5(c *gin.Context) {
 	}
 
 	var data []models.Confirm_Booking_Table
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Where("branch_id=?", branchid).Find(&data)
+	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Where("branch_id=?", branchid).Find(&data)
 
-		if result.Error != nil {
-			logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all branch details ",
-			})
-			return
+	if result.Error != nil {
+		logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all branch details ",
+		})
+		return
 
-		}
-	} else {
-
-		result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
-		if result.Error != nil {
-			logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get confirmed booking details",
-			})
-			return
-		}
 	}
+	// } else {
+
+	// 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
+	// 	if result.Error != nil {
+	// 		logrus.Infoln("GetC0nfirmB00kingT0p5 - ", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get confirmed booking details",
+	// 		})
+	// 		return
+	// 	}
+	// }
 	var responseData []interface{}
 	for _, booking := range data {
 		var user models.User
@@ -550,12 +538,10 @@ func AdminLogin(c *gin.Context) {
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 7200, "", "", true, true)
-	c.SetCookie("AID", adminIDString, 7200, "", "", true, true)
-	c.SetCookie("Role", adminRole, 7200, "", "", true, true)
-	c.SetCookie("branch_id", adminBranch, 7200, "", "", true, true)
+	c.SetCookie("AID", adminIDString, 7200, "", "", false, false)
+	c.SetCookie("Role", adminRole, 7200, "", "", false, false)
+	c.SetCookie("Branch_id", adminBranch, 7200, "", "", false, false)
 
-	admin.LastLogin = time.Now()
-	config.DB.Save(&admin)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "Admin Login Successfully",
@@ -572,7 +558,7 @@ func AdminLogin(c *gin.Context) {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"status": 400,
 // 			"error":  "failed to hash password",
-// 			"data":   "null",
+// 			"data":   nil,
 // 		})
 // 		return
 
@@ -582,7 +568,7 @@ func AdminLogin(c *gin.Context) {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"status": 400,
 // 			"error":  "failed to hash password",
-// 			"data":   "null",
+// 			"data":   nil,
 // 		})
 // 		return
 // 	}
@@ -596,7 +582,7 @@ func AdminLogin(c *gin.Context) {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"status": 400,
 // 			"error":  "Admin Allready Exist",
-// 			"data":   "null",
+// 			"data":   nil,
 // 		})
 // 		return
 // 	}
@@ -616,7 +602,7 @@ func AdminLogin(c *gin.Context) {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"status": 400,
 // 			"error":  "Failed to get branch",
-// 			"data":   "null",
+// 			"data":   nil,
 // 		})
 // 		return
 // 	}
@@ -881,7 +867,7 @@ func Get_IdBy_Branch_NAme(c *gin.Context) {
 	}
 
 	Id := strconv.FormatUint(uint64(branches.ID), 10)
-	c.SetCookie("Branch_Id", Id, 3600*4, "/", "", false, true)
+	c.SetCookie("Branch_id", Id, 7200, "", "", false, false)
 
 }
 func GET_All_Branch_Id(c *gin.Context) {
@@ -906,7 +892,7 @@ func GET_All_Branch_Id(c *gin.Context) {
 	}
 
 	//Response
-	c.JSON(http.StatusCreated, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "Get Branch Details Successfully",
 		"data":    branch,
@@ -1039,7 +1025,7 @@ func AddSlot(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Slot Already Exists",
+			"error":  "Slot already exists",
 			"data":   nil,
 		})
 		return
@@ -1068,7 +1054,7 @@ func AddSlot(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "Slot Allready Exist",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -1248,7 +1234,7 @@ func UpdateAdmin(c *gin.Context) {
 		// 			c.JSON(http.StatusBadRequest, gin.H{
 		// 				"status": 400,
 		// 				"error":  "failed to fetch brach detail",
-		// 				"data":   "null",
+		// 				"data":   nil,
 		// 			})
 		// 			return
 		// 		}
@@ -1256,7 +1242,7 @@ func UpdateAdmin(c *gin.Context) {
 		// 		c.JSON(http.StatusBadRequest, gin.H{
 		// 			"status": 400,
 		// 			"error":  "You are not authorised for update branch",
-		// 			"data":   "null",/Update/staff
+		// 			"data":   nil,
 		// 		})
 		// 		return
 
@@ -1336,36 +1322,36 @@ func GetAllSlot(c *gin.Context) {
 	}
 	var slot []models.Time_Slot
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&slot, "branch_id=?", branchid)
+	result := config.DB.Find(&slot, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all slot",
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all slot",
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&slot)
-
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get all slot",
-			})
-			return
-
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&slot)
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get all slot",
+	// 		})
+	// 		return
+
+	// 	}
+	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -1638,41 +1624,41 @@ func GetAllPackage(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
-	branchID, _ := c.Request.Cookie("branch_id")
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 	var Pkg []models.Package
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&Pkg, "branch_id=?", branchid)
+	result := config.DB.Find(&Pkg, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to Get All Branch Details %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Failed To Get All Branch Details ",
-				"data":   nil,
-			})
-			return
-
-		}
-
-	} else {
-
-		result := config.DB.Find(&Pkg)
-
-		if result.Error != nil {
-			logrus.Infof("Failed to GET Package Details %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Failed To Get Package Details",
-			})
-			return
-
-		}
+	if result.Error != nil {
+		logrus.Infof("Failed to Get All Branch Details %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed To Get All Branch Details ",
+			"data":   nil,
+		})
+		return
 
 	}
+
+	// } else {
+
+	// 	result := config.DB.Find(&Pkg)
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to GET Package Details %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "Failed To Get Package Details",
+	// 		})
+	// 		return
+
+	// 	}
+
+	// }
 	var response []map[string]interface{}
 	for _, p := range Pkg {
 		var branch models.Branch_info_management
@@ -2110,6 +2096,56 @@ func CountUser(c *gin.Context) {
 		"data":    count,
 	})
 }
+
+func GetMonthlyUsers(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	// Get the current year
+	currentYear := time.Now().Year()
+
+	// Aggregate user counts by month directly in the database
+	var userCounts []struct {
+		Month string `json:"month"`
+		Count int    `json:"count"`
+	}
+
+	result := config.DB.
+		Table("users").
+		Select("MONTH(created_at) as month, COUNT(*) as count").
+		Where("YEAR(created_at) = ?", currentYear).
+		Group("month").
+		Scan(&userCounts)
+
+	// Handle the error
+	if result.Error != nil {
+		logrus.WithError(result.Error).Error("Failed to retrieve monthly user counts")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to retrieve monthly user counts",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Create a map for easy access in the response
+	userCountsMap := make(map[string]int)
+	for _, entry := range userCounts {
+		userCountsMap[entry.Month] = entry.Count
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":      200,
+		"success":     "Monthly Users Successfully Retrieved",
+		"user_counts": userCountsMap,
+	})
+}
+
 func Today_Total_Booking(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -2123,34 +2159,34 @@ func Today_Total_Booking(c *gin.Context) {
 	var booking models.Confirm_Booking_Table
 	var count int64
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
-		result := config.DB.Model(&booking).Where("date=? AND booking_status = 4 AND branch_id=?", date, branchid).Count(&count)
-		if result.Error != nil || count == 0 {
-			logrus.Infof("Failed To Load Today Total Booking %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Today Total  Booking Unsuccessfully",
-				"data":   0,
-			})
-			return
-		}
-	} else {
-		result := config.DB.Model(&booking).Where("date=? AND booking_status=4", date).Count(&count)
-		if result.Error != nil || count == 0 {
-			logrus.Infof("Failed To Load Total Booking %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "Today Total  Booking Unsuccessfully",
-				"data":   0,
-			})
-			return
-		}
+	// if Role != 1 {
+	result := config.DB.Model(&booking).Where("date=? AND booking_status = 4 AND branch_id=?", date, branchid).Count(&count)
+	if result.Error != nil || count == 0 {
+		logrus.Infof("Failed To Load Today Total Booking %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Today Total  Booking Unsuccessfully",
+			"data":   0,
+		})
+		return
 	}
+	// } else {
+	// 	result := config.DB.Model(&booking).Where("date=? AND booking_status=4", date).Count(&count)
+	// 	if result.Error != nil || count == 0 {
+	// 		logrus.Infof("Failed To Load Total Booking %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "Today Total  Booking Unsuccessfully",
+	// 			"data":   0,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -2622,7 +2658,7 @@ func Testimonials(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "faild to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 
@@ -2656,7 +2692,7 @@ func Testimonials(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to create testimonials",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -2688,7 +2724,7 @@ func Upadte_Testimonials(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "faild to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 
@@ -3019,6 +3055,9 @@ func AdminLogout(c *gin.Context) {
 	// Clear the "Authorization" cookie to log out
 	c.SetCookie("Authorization", "", -1, "", "", false, true)
 	c.SetCookie("AID", "", -1, "", "", false, true)
+	c.SetCookie("Role", "", -1, "", "", false, true)
+	c.SetCookie("Branch_id", "", -1, "", "", false, true)
+	c.SetCookie("logged_in", "", -1, "", "", false, true)
 
 	// You can also clear any other session-related data if needed
 	c.Set("UserID", "")
@@ -3212,7 +3251,7 @@ func DeleteContent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "unsuccessfully Deleted content",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -3457,8 +3496,8 @@ func DeleteCarousel(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "unsuccessfully Deleted Carousel",
-			"data":   "null",
+			"error":  "unsuccessfull t0 Delete Carousel",
+			"data":   nil,
 		})
 		return
 	}
@@ -3588,7 +3627,7 @@ func GETCarouselActiveImages(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to fetch active image for carousels",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -3613,7 +3652,7 @@ func GETCarouselActiveImages(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": 400,
 					"error":  "unsupported image format",
-					"data":   "null",
+					"data":   nil,
 				})
 				continue
 			}
@@ -3625,7 +3664,7 @@ func GETCarouselActiveImages(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{
 					"status": 500,
 					"error":  "internal server error",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -3657,7 +3696,7 @@ func RemainingPaymentForUser(c *gin.Context) {
 	var booking []models.Confirm_Booking_Table
 
 	// Use the WHERE clause in the Find method to filter results
-	result := config.DB.Find(&booking, "date <= ? AND remaining_amount_to_pay > 0", date)
+	result := config.DB.Find(&booking, "date >= ? AND remaining_amount_to_pay > 0", date)
 
 	// Check if any matching records were found
 	if result.RowsAffected == 0 {
@@ -3794,41 +3833,41 @@ func Cnfrm_slots(c *gin.Context) {
 	}
 
 	var bookings []models.Confirm_Booking_Table
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
-		result := config.DB.Debug().Raw(` SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4 AND cb.branch_id=?`, branchid).Scan(&bookings)
+	// if Role != 1 {
+	result := config.DB.Debug().Raw(` SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4 AND cb.branch_id=?`, branchid).Scan(&bookings)
 
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch Confirm slots",
-			})
-			return
-		}
-	} else {
-
-		// var slots []models.Time_Slot
-
-		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4`).Scan(&bookings)
-
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
-
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch confirm slots",
-			})
-			return
-		}
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch Confirm slots",
+		})
+		return
 	}
+	// } else {
+
+	// 	// var slots []models.Time_Slot
+
+	// 	result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, cb.branch_id FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id WHERE cb.booking_status = 4`).Scan(&bookings)
+
+	// 	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusInternalServerError, gin.H{
+	// 			"error":   result.Error.Error(),
+	// 			"message": "Failed to fetch confirm slots",
+	// 		})
+	// 		return
+	// 	}
+	// }
 	// Combine the "Package" and "Slot" data into a single array
 	for _, cbData := range bookings {
 		response.Data = append(response.Data, cbData)
@@ -3854,41 +3893,41 @@ func Pending_bookings(c *gin.Context) {
 
 	var bookings []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		// var slots []models.Time_Slot
+	// var slots []models.Time_Slot
 
-		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.branch_id =?`, branchid).Scan(&bookings)
+	result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3 AND cb.branch_id =?`, branchid).Scan(&bookings)
 
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch pending booking",
-			})
-			return
-		}
-	} else {
-		result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3`).Scan(&bookings)
-
-		//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
-
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   result.Error.Error(),
-				"message": "Failed to fetch pending booking",
-			})
-
-		}
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   result.Error.Error(),
+			"message": "Failed to fetch pending booking",
+		})
+		return
 	}
+	// } else {
+	// 	result := config.DB.Debug().Raw(`SELECT  u.full_name as Name, u.contact as Contact, cb.ID, cb.date , cb.total_price , cb.total_min_amount_to_pay, cb.paid_amount, cb.remaining_amount_to_pay , cb.booking_status, bim.branch_name FROM users u INNER JOIN confirm_booking_tables cb ON u.id = cb.user_id INNER JOIN branch_info_managements bim ON cb.branch_id = bim.id WHERE cb.booking_status = 3`).Scan(&bookings)
+
+	// 	//INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
+
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusInternalServerError, gin.H{
+	// 			"error":   result.Error.Error(),
+	// 			"message": "Failed to fetch pending booking",
+	// 		})
+
+	// 	}
+	// }
 	// Combine the "Package" and "Slot" data into a single array
 	for _, cbData := range bookings {
 		response.Data = append(response.Data, cbData)
@@ -4035,7 +4074,7 @@ func GetAllNavbar(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Navbar Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4065,15 +4104,7 @@ func GetActiveNavbar(c *gin.Context) {
 		})
 		return
 	}
-	// if navbars.ID == 0 {
-	//  logrus.Infof("N0 active navbar")
-	//  c.JSON(http.StatusBadRequest, gin.H{
-	//      "status": 400,
-	//      "error":  "No Active Navbar",
-	//      "data":   nil,
-	//  })
-	//  return
-	// }
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": " Get active Navabar Details successfully",
@@ -4166,7 +4197,7 @@ func DeleteNavbar(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Delete Navbar Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4234,7 +4265,7 @@ func GetAllHeading(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Headings Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4389,39 +4420,39 @@ func Total_Revenue(c *gin.Context) {
 
 	var revenue []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	fmt.Println(Role)
+	// fmt.Println(Role)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+	result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get total revenue ",
-				"data":   nil,
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get total revenue ",
+			"data":   nil,
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&revenue)
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get total revenue ",
-				"data":   nil,
-			})
-			return
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get total revenue ",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	// Calculate the total Paid_amount
 	totalPaidAmount := 0.0
@@ -4447,39 +4478,39 @@ func Total_Remaining_amount(c *gin.Context) {
 
 	var revenue []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	fmt.Println(Role)
+	// fmt.Println(Role)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+	result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get Total_Remaining_amount ",
-				"data":   nil,
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get Total_Remaining_amount ",
+			"data":   nil,
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&revenue)
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get Total_Remaining_amount ",
-				"data":   nil,
-			})
-			return
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 404,
+	// 			"error":  "failed to get Total_Remaining_amount ",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	// Calculate the total Paid_amount
 	totalRemainingAmount := 0.0
@@ -4505,37 +4536,37 @@ func Total_Sales(c *gin.Context) {
 
 	var revenue []models.Confirm_Booking_Table
 
-	role, _ := c.Request.Cookie("Role")
-	Role, _ := strconv.Atoi(role.Value)
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
 	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 
-	if Role != 1 {
+	// if Role != 1 {
 
-		result := config.DB.Find(&revenue, "branch_id=?", branchid)
+	result := config.DB.Find(&revenue, "branch_id=?", branchid)
 
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
-				"error":  "failed to get total sales ",
-				"data":   nil,
-			})
-			return
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get total sales ",
+			"data":   nil,
+		})
+		return
 
-		}
-	} else {
-		result := config.DB.Find(&revenue)
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"error":  "failed to get total sales",
-				"data":   nil,
-			})
-			return
-		}
 	}
+	// } else {
+	// 	result := config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "failed to get total sales",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
 
 	// Calculate the total Paid_amount
 	totalSales := 0.0
@@ -4559,14 +4590,18 @@ func Total_Monthly_revenue(c *gin.Context) {
 		return
 	}
 
-	sqlQuery := "SELECT * FROM `confirm_booking_tables` WHERE Year(created_at) = Year(CURRENT_DATE) AND MONTH(CURRENT_DATE) = MONTH(CURRENT_DATE);"
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	sqlQuery := "SELECT * FROM `confirm_booking_tables` WHERE Year(created_at) = Year(CURRENT_DATE) AND MONTH(created_at) = MONTH(CURRENT_DATE) AND branch_id = ?"
 	var monthlyRevenue []models.Confirm_Booking_Table
-	result := config.DB.Raw(sqlQuery).Scan(&monthlyRevenue)
+	result := config.DB.Raw(sqlQuery, branchid).Scan(&monthlyRevenue)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to execute query",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4597,6 +4632,7 @@ func AddIcon(c *gin.Context) {
 		Status string
 	}
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -4607,6 +4643,7 @@ func AddIcon(c *gin.Context) {
 	icon := models.Icon{Name: body.Name, Link: body.Link, Status: "2"}
 	result := config.DB.Create(&icon)
 	if result.Error != nil {
+		logrus.Infof("Failed to add data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Add Icon",
@@ -4633,10 +4670,11 @@ func GetAllIcon(c *gin.Context) {
 	var icons []models.Icon
 	result := config.DB.Find(&icons)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Icon Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4658,6 +4696,7 @@ func GetActiveIcon(c *gin.Context) {
 	var icons []models.Icon
 	result := config.DB.Find(&icons, "status=1")
 	if result.Error != nil {
+		logrus.Infof("Failed to get  data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Active Icon Details",
@@ -4688,6 +4727,7 @@ func UpadateIcon(c *gin.Context) {
 		Status string
 	}
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
@@ -4698,6 +4738,7 @@ func UpadateIcon(c *gin.Context) {
 	icon := models.Icon{Name: body.Name, Link: body.Link, Status: body.Status}
 	result := config.DB.Model(&icon).Where("id=?", id).Updates(&icon)
 	if result.Error != nil {
+		logrus.Infof("Failed to update data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Update Icon",
@@ -4725,10 +4766,11 @@ func GetIconById(c *gin.Context) {
 	var icons models.Icon
 	result := config.DB.Find(&icons, "id=?", id)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get Icon Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4751,10 +4793,11 @@ func DeleteIcon(c *gin.Context) {
 	var icons models.Icon
 	result := config.DB.Model(&icons).Where("id=?", id).Delete(&icons)
 	if result.Error != nil {
+		logrus.Infof("Failed to delete data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Delete Icon Details",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -4765,7 +4808,6 @@ func DeleteIcon(c *gin.Context) {
 	})
 }
 func Multiple_slot_booking(c *gin.Context) {
-
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
@@ -4773,17 +4815,11 @@ func Multiple_slot_booking(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-
 	id := c.Param("id")
-
 	ID, _ := strconv.Atoi(id)
-
 	fmt.Println(ID)
-
 	Id := uint(ID)
-
 	fmt.Println(Id)
-
 	var body struct {
 		Start_date string
 		End_date   string
@@ -4791,51 +4827,47 @@ func Multiple_slot_booking(c *gin.Context) {
 		Branch_id  int
 	}
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
+
 			"status": 400,
 			"error":  "failed to read body",
 			"data":   nil,
 		})
 		return
 	}
-
 	Booking_id, _ := uuid.NewRandom()
-
 	B_id := Booking_id.String()
-
 	// Parse start and end dates as time objects
 	startDate, err := time.Parse("02-01-2006", body.Start_date)
 	if err != nil {
+		logrus.Infof("Failed to get start date format %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid start date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
-
 	endDate, err := time.Parse("02-01-2006", body.End_date)
 	if err != nil {
+		logrus.Infof("Failed to get end date format", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid end date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
-
 	// Loop through dates and create bookings
 	for currentDate := startDate; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
 		for i := 0; i < len(body.Slots); i++ {
 			var psr models.Package_slot_relationship
-
 			config.DB.First(&psr, "slot_id=?", int(body.Slots[i]))
-
 			// Fetch the price based on package id retrieved
 			var price models.Package
 			config.DB.Find(&price, "id=?", psr.Package_id)
 			price25 := percent.PercentFloat(25.0, price.Price)
-
 			booking := models.Turf_Bookings{
 				User_id:                  Id,
 				Date:                     currentDate.Format("02-01-2006"),
@@ -4848,31 +4880,27 @@ func Multiple_slot_booking(c *gin.Context) {
 				Is_booked:                4,
 				Branch_id:                body.Branch_id,
 			}
-
 			result := config.DB.Create(&booking)
 			if result.Error != nil {
+				logrus.Infof("Failed to get data from DB %v\n", result.Error)
 				c.JSON(http.StatusOK, gin.H{
 					"status": 400,
 					"error":  "Slot Already Exist",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
 		}
 	}
-
 	var booking models.Turf_Bookings
-
 	// Confirm booking table
 	config.DB.Find(&booking, "order_id = ?", B_id)
-
 	var totalPrice float64
 	var total_min_amount float64
 	for p := 0; p < len(body.Slots); p++ {
 		totalPrice += booking.Price
 		total_min_amount += booking.Minimum_amount_to_pay
 	}
-
 	confirm_booking := models.Confirm_Booking_Table{
 		User_id:                 Id,
 		Date:                    body.Start_date,
@@ -4882,24 +4910,22 @@ func Multiple_slot_booking(c *gin.Context) {
 		Booking_status:          4,
 		Branch_id:               body.Branch_id,
 	}
-
 	result := config.DB.Create(&confirm_booking)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Slot Already Exist",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"success": "Slots reserved successfully",
 		"data":    booking,
 	})
 }
-
 func Get_Available_slots_Multi_Dates(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -4908,7 +4934,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-
 	var body struct {
 		Start_date string
 		End_date   string
@@ -4916,14 +4941,14 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 	}
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
-
 	// Fetch all time slots
 	var slots []models.Time_Slot
 	result := config.DB.Find(&slots)
@@ -4931,50 +4956,43 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		fmt.Println(result.Error)
 		return
 	}
-
 	// Create a slice to store the final response for all dates
 	var response []gin.H
-
 	// Parse start and end dates as time objects
 	startDate, err := time.Parse("02-01-2006", body.Start_date)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid start date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
-
 	endDate, err := time.Parse("02-01-2006", body.End_date)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "Invalid end date format",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
-
 	// Loop through dates within the range
 	for currentDate := startDate; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
 		// Fetch booked slots for the current date
 		var bookedSlots []models.Turf_Bookings
 		result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", currentDate.Format("02-01-2006"), body.Branch_id).Find(&bookedSlots)
-
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Failed to find booked slots for date",
 			})
 			return
 		}
-
 		// Create a map to store booked slots with their is_booked status
 		bookedSlotMap := make(map[int]int)
 		for _, bookedSlot := range bookedSlots {
 			bookedSlotMap[bookedSlot.Slot_id] = bookedSlot.Is_booked
 		}
-
 		// Create a slice to store available slots for the current date
 		var availableSlots []gin.H
 		for _, slot := range slots {
@@ -4982,7 +5000,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 			if !exists {
 				isBooked = 1
 			}
-
 			var psr models.Package_slot_relationship
 			result = config.DB.Where("slot_id = ?", slot.ID).Find(&psr)
 			if result.Error != nil {
@@ -4991,7 +5008,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 				})
 				return
 			}
-
 			var price models.Package
 			result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
 			if result.Error != nil {
@@ -5000,7 +5016,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 				})
 				return
 			}
-
 			availableSlots = append(availableSlots, gin.H{
 				"Slot":      slot,
 				"Is_booked": isBooked,
@@ -5008,13 +5023,11 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 				"Price":     price.Price,
 			})
 		}
-
 		response = append(response, gin.H{
 			"Date":            currentDate.Format("02-01-2006"),
 			"Available_slots": availableSlots,
 		})
 	}
-
 	// Return the available slots for each date within the range
 	c.JSON(http.StatusOK, gin.H{
 		"available_slots": response,
@@ -5036,10 +5049,11 @@ func GetLoggedAdmin(c *gin.Context) {
 
 	result := config.DB.Find(&admin, "id=?", cookie)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "nt f0und",
-			"data":   "null",
+			"error":  "not f0und",
+			"data":   nil,
 		})
 	}
 
@@ -5068,9 +5082,10 @@ func MultipleImages(c *gin.Context) {
 	result := config.DB.Find(&ss, "booking_order_id=?", id)
 
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "failed to fetch testimonial",
+			"error":  "failed to fetch screenshot image",
 			"data":   nil,
 		})
 		return
@@ -5085,7 +5100,7 @@ func MultipleImages(c *gin.Context) {
 			// Set the content type for PNG images
 			c.Header("Content-Type", "image/png")
 		} else {
-			// Handle unsupported image formats
+
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "unsupported image format",
@@ -5111,4 +5126,100 @@ func MultipleImages(c *gin.Context) {
 
 		c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
 	}
+}
+
+func Graph_API(c *gin.Context) {
+
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var revenue []models.Confirm_Booking_Table
+	var count int64
+
+	// role, _ := c.Request.Cookie("Role")
+	// Role, _ := strconv.Atoi(role.Value)
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
+	// fmt.Println(Role)
+
+	// if Role != 1 {
+
+	var user models.User
+
+	result := config.DB.Model(&user).Count(&count)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Total User Count Unsuccessfully",
+			"data":   nil,
+		})
+		return
+	}
+
+	result = config.DB.Find(&revenue, "branch_id=?", branchid)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 404,
+			"error":  "failed to get all branch details ",
+		})
+		return
+
+	}
+	// } else {
+
+	// 	var user models.User
+
+	// 	result := config.DB.Model(&user).Count(&count)
+
+	// 	if result.Error != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "Total User Count Unsuccessfully",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+
+	// 	result = config.DB.Find(&revenue)
+	// 	if result.Error != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"status": 400,
+	// 			"error":  "failed to Delete Heading Details",
+	// 			"data":   nil,
+	// 		})
+	// 		return
+	// 	}
+	// }
+
+	//Calculate the total Paid_amount
+	totalPaidAmount := 0.0
+	for _, booking := range revenue {
+		totalPaidAmount += booking.Paid_amount
+	}
+
+	totalSales := 0.0
+	for _, booking := range revenue {
+		totalSales += booking.Total_price
+	}
+
+	totalUser := float64(count)
+
+	rati0 := (totalSales / totalUser)
+
+	Average_Revenue_per_User := (totalPaidAmount / totalUser)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":           200,
+		"msg":              "revenue",
+		"data":             rati0,
+		"Revenue_per_User": Average_Revenue_per_User,
+	})
 }

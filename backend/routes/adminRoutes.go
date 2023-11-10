@@ -60,6 +60,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/user/:id", controllers.GetAllUsersById)
 		adminRoutes.DELETE("/delete/user/:id", controllers.DeleteUser)
 		adminRoutes.GET("user/count", controllers.CountUser)
+		adminRoutes.GET("/count/user/monthly", controllers.GetMonthlyUsers)
 		// adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 		//adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
@@ -130,6 +131,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/total/remaining/amount", controllers.Total_Remaining_amount)
 		adminRoutes.GET("/total/sales", controllers.Total_Sales)
 		adminRoutes.GET("/total/monthly/revenue", controllers.Total_Monthly_revenue)
+		adminRoutes.GET("/sales/rati0", controllers.Graph_API)
 		//Social Icon
 		adminRoutes.POST("/icon/add", controllers.AddIcon)
 		adminRoutes.GET("/icon/get", controllers.GetAllIcon)

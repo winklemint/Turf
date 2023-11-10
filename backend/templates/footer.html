@@ -20,6 +20,10 @@
 <script src="https://dropways.github.io/deskapp/src/plugins/datatables/js/pdfmake.min.js"></script>
 <script src="https://dropways.github.io/deskapp/src/plugins/datatables/js/vfs_fonts.js"></script>
 <script src="https://dropways.github.io/deskapp/vendors/scripts/datatable-setting.js"></script>
+<script src="https://dropways.github.io/deskapp/src/plugins/jQuery-Knob-master/jquery.knob.min.js"></script>
+<script src="https://dropways.github.io/deskapp/vendors/scripts/knob-chart-setting.js"></script>
+
+
 
 <script>
 
@@ -53,6 +57,25 @@
     $(document).ready(function () {
 
         var super_role;
+
+        function setCookie(name, value) {
+            document.cookie = name + "=" + value + "; path=/";
+        }
+
+        // Function to get the value of a cookie by name
+        function getCookie(name) {
+            var cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+            return cookieValue ? cookieValue.pop() : '';
+        }
+
+        // Function to set the selected branch based on the cookie
+        function setSelectedBranchFromCookie() {
+            var selectedBranchCookie = getCookie("selectedBranch");
+            if (selectedBranchCookie) {
+                $("#status").val(selectedBranchCookie);
+            }
+        }
+
 
         $.ajax({
             url: "/admin/data/login", // Replace with your actual API endpoint
@@ -92,6 +115,46 @@
             }
         });
 
+        // if (super_role == 1) {
+        //             document.getElementById('dashboardLink').style.display = 'block';
+        //             document.getElementById('adminDashboardLink').style.display = 'none';
+        //         } else if (super_role == 2) {
+        //             document.getElementById('dashboardLink').style.display = 'none';
+        //             document.getElementById('adminDashboardLink').style.display = 'block';
+        //         }
+        function setNewBranch() {
+            var selectElement = document.getElementById("status");
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var selectedBranch = selectedOption.value;
+
+            console.log(selectedBranch);
+
+
+            $.ajax({
+                url: "/admin/set/id/branch",
+                method: "POST",
+                data: { Branch_Name: selectedBranch },
+
+                success: function (data) {
+                    
+                    setCookie("selectedBranch", selectedBranch);
+                    // location.href = location.href;
+                    location.reload();
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        // Dynamically set the onchange attribute
+        $("#status").on("change", function () {
+            setNewBranch();
+            //location.reload(); // Call the setNewBranch function on change
+
+            // You can add additional logic here if needed
+        });
 
 
         $.ajax({
@@ -112,13 +175,17 @@
                     var select = $('#status'); // Assuming 'status' is the ID of your dropdown
 
                     branches.forEach(function (branch) {
+
+
                         var option = $('<option>', {
                             value: branch.Branch_name,
                             text: branch.Branch_name
-                        });
 
+                        });
                         select.append(option);
+
                     });
+                    setSelectedBranchFromCookie();
                 } else {
                     console.error("Failed to retrieve data.");
                 }
@@ -128,51 +195,53 @@
             }
         });
 
-        function setNewBranch() {
-            function getCookie(name) {
-                const cookieString = document.cookie;
-                const cookies = cookieString.split(';');
+        //     function setNewBranch() {
+        //         function getCookie(name) {
+        //             const cookieString = document.cookie;
+        //             const cookies = cookieString.split(';');
+        //             console.log("test")
 
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.startsWith(name + '=')) {
-                        // Extract and return the value of the cookie
-                        return cookie.substring(name.length + 1);
-                    }
-                }
+        //             for (let i = 0; i < cookies.length; i++) {
+        //                 const cookie = cookies[i].trim();
+        //                 if (cookie.startsWith(name + '=')) {
+        //                     // Extract and return the value of the cookie
+        //                     return cookie.substring(name.length + 1);
+        //                 }
+        //             }
 
-                // If the cookie is not found, return null or an appropriate default value
-                return null;
-            }
+        //             // If the cookie is not found, return null or an appropriate default value
+        //             return null;
+        //         }
 
-            // Usage to get the "Role" cookie value
-            const roleCookieValue = getCookie('Role');
+        //         // Usage to get the "Role" cookie value
+        //         const roleCookieValue = getCookie('Role');
+        //         console.log("tyryfg", roleCookieValue)
 
-            if (roleCookieValue !== 1) {
-                // The "Role" cookie exists, and you can use its value
-                return false;
-            } 
+        //         if (roleCookieValue !== 1) {
+        //             // The "Role" cookie exists, and you can use its value
+        //             return false;
+        //         }
 
 
 
-            var selectElement = document.getElementById("status");
-            var selectedOption = selectElement.options[selectElement.selectedIndex];
-            var selectedBranch = selectedOption.value;
+        //         var selectElement = document.getElementById("status");
+        //         var selectedOption = selectElement.options[selectElement.selectedIndex];
+        //         var selectedBranch = selectedOption.value;
 
-            $.ajax({
-                url: "/admin/set/id/branch",
-                method: "POST",
-                data: { Branch_Name: selectedBranch }, // Include the selected branch data
-                dataType: "json",
-                success: function (data) {
-                    // Handle the response from the second API request
-                    console.log(data);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        }
+        //         $.ajax({
+        //             url: "/admin/set/id/branch",
+        //             method: "POST",
+        //             data: { Branch_Name: selectedBranch }, // Include the selected branch data
+        //             dataType: "json",
+        //             success: function (data) {
+        //                 // Handle the response from the second API request
+        //                 console.log(data);
+        //             },
+        //             error: function (xhr, status, error) {
+        //                 console.error(error);
+        //             }
+        //         });
+        //     }
 
     });
 </script>
@@ -193,7 +262,7 @@
             }
         });
     });
-    
+
 </script>
 <script>
     function convertTo24HourFormat(time12h) {
