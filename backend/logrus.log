@@ -1438,3 +1438,6 @@ time="2023-11-10T18:32:02+05:30" level=info msg="Failed to get data from DB <nil
 time="2023-11-10T18:32:36+05:30" level=info msg="Failed to get data from DB <nil>\n"
 time="2023-11-10T18:33:16+05:30" level=info msg="Failed to get data from DB <nil>\n"
 time="2023-11-10T18:36:19+05:30" level=info msg="Failed to get data from DB record not found\n"
+time="2023-11-10T18:43:44+05:30" level=info msg="Failed to get data from DB <nil>\n"
+time="2023-11-10T18:44:57+05:30" level=info msg="Failed to get data from DB <nil>\n"
+time="2023-11-10T18:45:25+05:30" level=info msg="Failed to get data from DB <nil>\n"

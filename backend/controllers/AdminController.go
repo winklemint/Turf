@@ -1012,6 +1012,14 @@ func AddSlot(c *gin.Context) {
 
 	if existingSlot.ID == 0 {
 
+	} else {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Slot Already Exists",
+			"data":   nil,
+		})
+		return
 	}
 	// if result.Error == nil {
 
