@@ -1264,7 +1264,7 @@ func Get_Available_slots(c *gin.Context) {
 	if body.Date == "" || body.Branch_id == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed to find booked slots",
+			"error":  "Please select date and branch",
 			"data":   nil,
 		})
 		return
