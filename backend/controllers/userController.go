@@ -1261,17 +1261,31 @@ func Get_Available_slots(c *gin.Context) {
 		return
 	}
 
+	if body.Date == "" || body.Branch_id == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to find booked slots",
+			"data":   nil,
+		})
+		return
+	}
+
 	// Fetch all time slots
 	var slots []models.Time_Slot
-	result := config.DB.Find(&slots)
+	result := config.DB.Find(&slots, "branch_id=?", body.Branch_id)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return
 	}
 
+	fmt.Print(body.Date)
+	fmt.Println(body.Branch_id)
+
 	// Fetch booked slots for the specified date
 	var bookedSlots []models.Turf_Bookings
 	result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", body.Date, body.Branch_id).Find(&bookedSlots)
+
+	fmt.Println(bookedSlots)
 	if result.Error != nil {
 		logrus.Infof("Failed to find data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
