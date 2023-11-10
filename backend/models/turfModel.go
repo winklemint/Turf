@@ -37,7 +37,7 @@ type Package_slot_relationship struct {
 
 type Package struct {
 	gorm.Model
-	Name        string ` grom:"unique"`
+	Name        string `grom:"unique"`
 	Price       float64
 	Status      int
 	Branch_id   int
