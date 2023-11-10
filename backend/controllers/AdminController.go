@@ -4099,23 +4099,13 @@ func GetActiveNavbar(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-	var navbars models.Navbar
+	var navbars []models.Navbar
 	result := config.DB.Find(&navbars, "status=1")
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to Get active Navbar Details",
-			"data":   nil,
-		})
-		return
-	}
-	if navbars.ID == 0 {
-		logrus.Infof("N0 active navbar")
-
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "No Active Navbar",
 			"data":   nil,
 		})
 		return
