@@ -1,41 +1,43 @@
+
 // import React, { useState, useEffect } from "react";
 // import { Link } from "react-router-dom";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
 // import "./BookNow.css";
-// import availableSlot from "./Booking/AvailableSlot"
+// import SlotBooking from "./Booking/SlotBooking";
 
 // function BookingForm() {
 //   const [selectedDate, setSelectedDate] = useState(null);
 //   const [dropdownOptions, setDropdownOptions] = useState([]);
 //   const [selectedOption, setSelectedOption] = useState("");
 //   const [availableSlots, setAvailableSlots] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [showSlotBooking, setShowSlotBooking] = useState(false); // Add state to control visibility
 
 //   const Postdata = () => {
 //     fetch("http://127.0.0.1:8080/user/get/avl/slots", {
 //       method: "POST",
-      
 //       body: JSON.stringify({
 //         "branch_id": parseInt(selectedOption),
 //         "date": formatDate(selectedDate)
-        
 //       }),
 //     })
 //       .then((res) => {
-//         console.log(res);
 //         if (!res.ok) {
 //           throw new Error("Network response was not ok");
 //         }
 //         return res.json();
 //       })
 //       .then((data) => {
-//         console.log(data.is_booked);
 //         setAvailableSlots(data);
+//         setLoading(false);
+//         setShowSlotBooking(true); // Show SlotBooking after data is fetched
 //       })
 //       .catch((error) => {
 //         console.error("Error while fetching data:", error);
 //       });
 //   };
+//   console.log(availableSlots);
 
 //   useEffect(() => {
 //     fetch("http://localhost:8080/admin/active/branch")
@@ -51,7 +53,8 @@
 //     console.log("Booking Date (dd/mm/yyyy):", formatDate(selectedDate));
 //     console.log("Selected Option:", selectedOption);
 
-//     // Reset text fields and close the form
+//     // Call the Postdata function to fetch data and update availableSlots
+//     Postdata();
 //     setSelectedDate(null);
 //     setSelectedOption("");
 //   };
@@ -61,9 +64,7 @@
 //       const day = date.getDate();
 //       const month = date.getMonth() + 1;
 //       const year = date.getFullYear();
-//       return `${day.toString().padStart(2, "0")}-${month
-//         .toString()
-//         .padStart(2, "0")}-${year}`;
+//       return `${day.toString().padStart(2, "0")}-${month.toString().padStart(2, "0")}-${year}`;
 //     }
 //     return "";
 //   };
@@ -90,24 +91,21 @@
 //         <label>
 //           Booking Date:
 //           <DatePicker
-//             placeholderText="Select-Date"
+//             placeholderText="Select Date"
 //             selected={selectedDate}
 //             onChange={(date) => setSelectedDate(date)}
 //             dateFormat="dd-MM-yyyy"
 //           />
 //         </label>
 //         <br />
-//         <button type="submit" onClick={Postdata}>
-//           Submit
-//         </button>
+//         <button type="submit">Submit</button>
 //         <Link to={"/"}>
 //           <button type="button">Close</button>
 //         </Link>
 //       </form>
-//       <div>
-//         <availableSlot/>
-          
-//       </div>
+//       {showSlotBooking && (
+//         <SlotBooking availableSlots={availableSlots} loading={loading} />
+//       )}
 //     </div>
 //   );
 // }
@@ -127,7 +125,8 @@ function BookingForm() {
   const [selectedOption, setSelectedOption] = useState("");
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showSlotBooking, setShowSlotBooking] = useState(false); // Add state to control visibility
+  const [showSlotBooking, setShowSlotBooking] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const Postdata = () => {
     fetch("http://127.0.0.1:8080/user/get/avl/slots", {
@@ -146,13 +145,12 @@ function BookingForm() {
       .then((data) => {
         setAvailableSlots(data);
         setLoading(false);
-        setShowSlotBooking(true); // Show SlotBooking after data is fetched
+        setShowSlotBooking(true);
       })
       .catch((error) => {
         console.error("Error while fetching data:", error);
       });
   };
-  console.log(availableSlots);
 
   useEffect(() => {
     fetch("http://localhost:8080/admin/active/branch")
@@ -162,11 +160,29 @@ function BookingForm() {
       });
   }, []);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedOption(value);
+
+    // Validate selected option
+    if (!value) {
+      setErrors({ ...errors, selectedOption: "Please select a branch" });
+    } else {
+      setErrors({ ...errors, selectedOption: "" });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("Booking Date (dd/mm/yyyy):", formatDate(selectedDate));
-    console.log("Selected Option:", selectedOption);
+    // Validate form before submitting
+    if (!selectedOption || !selectedDate) {
+      setErrors({
+        selectedOption: !selectedOption ? "Please select a branch" : "",
+        selectedDate: !selectedDate ? "Please select a date" : "",
+      });
+      return;
+    }
 
     // Call the Postdata function to fetch data and update availableSlots
     Postdata();
@@ -191,8 +207,9 @@ function BookingForm() {
         <label>
           Select Option:
           <select
+            name="selectedOption"
             value={selectedOption}
-            onChange={(e) => setSelectedOption(e.target.value)}
+            onChange={handleChange}
           >
             <option value="">Select Branch</option>
             {dropdownOptions.map((option) => (
@@ -202,6 +219,9 @@ function BookingForm() {
             ))}
           </select>
         </label>
+        {errors.selectedOption && (
+          <div className="error-message">{errors.selectedOption}</div>
+        )}
         <br />
         <label>
           Booking Date:
@@ -212,6 +232,9 @@ function BookingForm() {
             dateFormat="dd-MM-yyyy"
           />
         </label>
+        {errors.selectedDate && (
+          <div className="error-message">{errors.selectedDate}</div>
+        )}
         <br />
         <button type="submit">Submit</button>
         <Link to={"/"}>
@@ -226,5 +249,4 @@ function BookingForm() {
 }
 
 export default BookingForm;
-
 
