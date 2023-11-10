@@ -5186,6 +5186,7 @@ func Graph_API(c *gin.Context) {
 		return
 
 	}
+
 	// } else {
 
 	// 	var user models.User
@@ -5234,5 +5235,23 @@ func Graph_API(c *gin.Context) {
 		"msg":              "revenue",
 		"data":             rati0,
 		"Revenue_per_User": Average_Revenue_per_User,
+	})
+}
+func PackageNameList(c *gin.Context) {
+	var packages []models.Package
+	result := config.DB.Select("DISTINCT name").Find(&packages)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Get Package Name List Unsuccessfully",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "Get Package Name List",
+		"data":   packages,
 	})
 }

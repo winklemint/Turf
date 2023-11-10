@@ -132,6 +132,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/total/sales", controllers.Total_Sales)
 		adminRoutes.GET("/total/monthly/revenue", controllers.Total_Monthly_revenue)
 		adminRoutes.GET("/sales/rati0", controllers.Graph_API)
+		adminRoutes.GET("/package/list", controllers.PackageNameList)
 		//Social Icon
 		adminRoutes.POST("/icon/add", controllers.AddIcon)
 		adminRoutes.GET("/icon/get", controllers.GetAllIcon)
