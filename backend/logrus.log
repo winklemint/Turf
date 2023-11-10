@@ -1405,3 +1405,5 @@ time="2023-11-09T19:08:21+05:30" level=info msg="Failed t0 read image open uploa
 time="2023-11-09T19:08:21+05:30" level=info msg="Failed t0 read image open uploads\\branch\\2011_kung_fu_panda-1920x1200.jpg: The system cannot find the file specified.\n"
 time="2023-11-09T19:08:21+05:30" level=info msg="Failed t0 read image open uploads\\branch\\Wallpaper.jpg: The system cannot find the file specified.\n"
 time="2023-11-09T19:08:21+05:30" level=info msg="Failed t0 read image open uploads\\branch\\spectacular_horizon-2880x1800.jpg: The system cannot find the file specified.\n"
+time="2023-11-10T11:18:01+05:30" level=info msg="Admin l0gin -  <nil>"
+time="2023-11-10T14:13:58+05:30" level=info msg="strconv.ParseInt: parsing \"NaN\": invalid syntax"

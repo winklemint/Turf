@@ -177,17 +177,18 @@
 			<div class="card-box min-height-200px pd-20" data-bgcolor="#265ed7">
 				<div class="d-flex justify-content-between pb-20 text-white">
 					<div class="icon h1 text-white">
-						<i class="fa fa-stethoscope" aria-hidden="true"></i>
+						<div class="font-10">Revenue</div>
 					</div>
-					<div class="font-14 text-right">
-						<div><i class="icon-copy ion-arrow-down-c"></i> 3.69%</div>
-						<div class="font-12">Since last month</div>
-					</div>
+					
 				</div>
 				<div class="d-flex justify-content-between align-items-end">
 					<div class="text-white">
-						<div class="font-14">Surgery</div>
-						<div class="font-24 weight-500">250</div>
+						<div class="font-14">Total Revenue</div>
+						<div class="font-24 weight-500" id="total-revenue">Loading...</div>
+					</div>
+					<div class="text-white">
+						<div class="font-14">Monthly Revenue</div>
+						<div class="font-24 weight-500" id="monthly-revenue">Loading...</div>
 					</div>
 					<div class="max-width-150">
 						<div id="surgery-chart"></div>
@@ -483,7 +484,32 @@
 			}
 		});
 
+		$.ajax({
+			url: "/admin/total/revenue", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+				$('#total-revenue').text(data.data);
 
+			},
+			error: function (error) {
+				$('#total-revenue').text("0");
+			}
+		});
+		$.ajax({
+			url: "/admin/total/monthly/revenue", // Replace with the actual API endpoint
+			method: "GET",
+			dataType: 'json',
+			success: function (data) {
+				// Update the HTML with the fetched count
+				$('#monthly-revenue').text(data.data);
+
+			},
+			error: function (error) {
+				$('#monthly-revenue').text("0");
+			}
+		});
 		// Make an AJAX request to fetch the total user count
 		$.ajax({
 			url: "/admin/total/remaining/amount", // Replace with the actual API endpoint
