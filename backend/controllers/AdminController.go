@@ -1009,7 +1009,10 @@ func AddSlot(c *gin.Context) {
 	// Check if a slot with the same attributes already exists
 	var existingSlot models.Time_Slot
 	result := config.DB.Where("start_time = ? AND end_time = ? AND day = ? AND branch_id = ?", body.StartSlot, body.EndSlot, body.Day, body.Branch_id).First(&existingSlot)
-	if result.Error == nil {
+
+	if existingSlot.ID == 0 {
+
+	} else {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -1018,10 +1021,20 @@ func AddSlot(c *gin.Context) {
 		})
 		return
 	}
+	// if result.Error == nil {
+
+	// 	logrus.Infof("Failed to get data from DB %v\n", result.Error)
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"status": 400,
+	// 		"error":  "Slot Already Exists",
+	// 		"data":   nil,
+	// 	})
+
+	// }
 
 	var slots models.Time_Slot
 	result = config.DB.Find(&slots)
-	if result.Error == nil {
+	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -1033,7 +1046,7 @@ func AddSlot(c *gin.Context) {
 
 	var branch models.Branch_info_management
 	result = config.DB.Find(&branch, "id = ?", body.Branch_id)
-	if result.Error == nil {
+	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
