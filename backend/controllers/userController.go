@@ -1252,7 +1252,7 @@ func Get_Available_slots(c *gin.Context) {
 		Branch_id int    `json:"branch_id"`
 	}
 
-	err := c.Bind(&body)
+	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1335,6 +1335,8 @@ func Get_Available_slots(c *gin.Context) {
 
 	// Return the available slots along with their is_booked status and associated Package information
 	c.JSON(http.StatusOK, gin.H{
-		"available_slots": response,
+		"status":  200,
+		"message": "success",
+		"data":    response,
 	})
 }

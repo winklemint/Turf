@@ -131,26 +131,33 @@ function BookingForm() {
   
 
   const Postdata = () => {
+    var payload = JSON.stringify({
+      "branch_id": parseInt(selectedOption),
+      "date": formatDate(selectedDate)
+    });
+
     fetch("http://127.0.0.1:8080/user/get/avl/slots", {
       method: "POST",
-      body: JSON.stringify({
-        "branch_id": parseInt(selectedOption),
-        "date": formatDate(selectedDate)
-        
-      }),
+      body: payload,
     })
     
       .then((res) => {
-        console.log(res)
+        console.log(res);
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
         return res.json();
       })
-      .then((data) => {
-        setAvailableSlots(data);
-        setLoading(false);
-        setShowSlotBooking(true);
+      .then((responseJson) => {
+        // Check if the response has a "data" property
+        if (responseJson && responseJson.data) {
+          console.log("success");
+          setAvailableSlots(responseJson.data);
+          setLoading(false);
+          setShowSlotBooking(true);
+        } else {
+          console.error("Response is missing the expected 'data' property:", responseJson);
+        }
       })
       .catch((error) => {
         console.error("Error while fetching data:", error);
