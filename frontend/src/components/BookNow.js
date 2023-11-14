@@ -128,6 +128,8 @@ function BookingForm() {
   const [showSlotBooking, setShowSlotBooking] = useState(false);
   const [errors, setErrors] = useState({});
 
+  
+
   const Postdata = () => {
     fetch("http://127.0.0.1:8080/user/get/avl/slots", {
       method: "POST",
@@ -177,6 +179,9 @@ function BookingForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(JSON.stringify({
+      "branch_id": parseInt(selectedOption),
+      "date": formatDate(selectedDate)}));
 
     // Validate form before submitting
     if (!selectedOption || !selectedDate) {
@@ -202,6 +207,7 @@ function BookingForm() {
     }
     return "";
   };
+  
 
   return (
     <div className="booking-form-container">
