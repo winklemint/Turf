@@ -5,7 +5,7 @@
             <h4 class="text-blue h4">Remaining Payment Booking</h4>
         </div>
         <div class="pb-20">
-            <table class="table hover multiple-select-row data-table-export nowrap" id="remainingtable">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="tableremaining">
                 <thead>
                     <tr>
                         <th>Sn.</th>
@@ -26,16 +26,6 @@
 {{template "footer.html"}}
 <script>
     $(document).ready(function () {
-        // Initialize DataTable
-        var table = $('#remainingtable').DataTable({
-            "paging": true,  // Enable pagination
-            "lengthChange": true,  // Show entries per page dropdown
-            "searching": true,  // Enable search functionality
-            "info": true,  // Show table information
-            "autoWidth": false,  // Disable auto width calculation
-        });
-        table.Destroy();
-
         // Make an AJAX request to fetch data from the URL
         $.ajax({
             url: '/admin/remaining/payement/booking', // Adjust the URL to match your API endpoint
@@ -43,18 +33,24 @@
             dataType: 'json',
             success: function (response) {
                 console.log(response);
+
+                // Initialize DataTable
+                var table = $('#tableremaining').DataTable({
+                    // Your DataTable options here
+                });
+
                 // Iterate through the data and append it to the table
                 $.each(response.data, function (index, branch) {
                     // Append the data as a new row to the DataTable
                     table.row.add([
                         index + 1,  // Sn.
-                        branch.UserName, 
+                        branch.UserName,
                         branch.Contact,
                         branch.Date,
-                        branch.TotalPrice, 
-                        branch.PaidAmount, 
-                        branch.RemainingAmountToPay, 
-                        branch.BranchName, 
+                        branch.TotalPrice,
+                        branch.PaidAmount,
+                        branch.RemainingAmountToPay,
+                        branch.BranchName,
                     ]).draw(false);  // Draw without adding to the page
                 });
             },
@@ -64,5 +60,6 @@
         });
     });
 </script>
+
 </body>
 </html>
