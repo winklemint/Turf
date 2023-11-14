@@ -1108,13 +1108,26 @@ func AddPackage(c *gin.Context) {
 		return
 	}
 
+	var packages models.Package
+
+	result := config.DB.Find(&packages, "name=? AND branch_id=?", body.Name, body.Branch_id)
+	if packages.ID != 0 {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "PAckage already exist",
+			"data":   nil,
+		})
+		return
+	}
+
 	packageModel := &models.Package{Name: body.Name, Price: body.Price, Status: body.Status, Branch_id: body.Branch_id}
-	result := config.DB.Create(&packageModel)
+	result = config.DB.Create(&packageModel)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Package Allready Exist",
+			"error":  "Failed t0 create package",
 			"data":   nil,
 		})
 		return
@@ -1383,7 +1396,8 @@ func Get_Slot_by_day(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Day []string
+		Day       []string
+		Branch_id int
 	}
 
 	err := c.Bind(&body)
@@ -1410,7 +1424,7 @@ func Get_Slot_by_day(c *gin.Context) {
 		result := config.DB.Debug().Model(&models.Time_Slot{}).
 			Select("time_slots.id, time_slots.start_time, time_slots.end_time, time_slots.day, time_slots.unique_slot_id, time_slots.branch_id, package_slot_relationships.id as psr_id").
 			Joins("LEFT JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
-			Where("time_slots.day = ?", body.Day[i]).
+			Where("time_slots.day = ? AND time_slots.branch_id=?", body.Day[i], body.Branch_id).
 			Scan(&slot)
 
 		if result.Error != nil {
@@ -5186,6 +5200,7 @@ func Graph_API(c *gin.Context) {
 		return
 
 	}
+
 	// } else {
 
 	// 	var user models.User
@@ -5234,5 +5249,23 @@ func Graph_API(c *gin.Context) {
 		"msg":              "revenue",
 		"data":             rati0,
 		"Revenue_per_User": Average_Revenue_per_User,
+	})
+}
+func PackageNameList(c *gin.Context) {
+	var packages []models.Package
+	result := config.DB.Select("DISTINCT name").Find(&packages)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Get Package Name List Unsuccessfully",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "Get Package Name List",
+		"data":   packages,
 	})
 }

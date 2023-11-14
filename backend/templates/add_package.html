@@ -79,10 +79,10 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                     <div class="col-sm-12 col-md-10">
-                        <select class="custom-select col-12" id="status" required>
+                        <select class="custom-select col-12" id="status_branch" required>
                             <option selected="" selected disabled>Choose...</option>
-                            <option value=1>Active</option>
-                            <option value=2>Disabled</option>
+                            <option value="1">Active</option>
+                            <option value="2">Disabled</option>
                         </select>
                     </div>
                 </div>
@@ -413,10 +413,11 @@
             var formData = {
                 name: $("#name").val(),
                 price: parseFloat($("#price").val()),
-                branch_id: parseInt($("#branch_id").val()),
-                status: parseInt($("#branch_status").val()),
+                branch_id: parseInt($("#branchSelect").val()),
+                status: parseInt($("#status_branch").val()),
                 slot_id: selectedDataValues // Include the selected slot data, including ID
             };
+           
 
             // Now you have access to the selected slot IDs and their data
             console.log('Selected Slots:', formData);

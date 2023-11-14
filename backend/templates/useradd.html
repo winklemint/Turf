@@ -143,6 +143,8 @@
     {{template "footer.html"}}
 <script>
     $(document).ready(function() {
+        $('#sa-success').trigger('click');
+        return false;
       $("#update_form").submit(function(event) { 
             event.preventDefault();
             var formData = {
@@ -161,7 +163,8 @@
                 dataType: "json",
               //   encode: true,
               }).done(function(data) {
-                window.location.href = "/user";
+                $('#sa-success').trigger('click');
+               // window.location.href = "/user";
               });
           });
         });
