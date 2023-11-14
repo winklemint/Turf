@@ -129,12 +129,15 @@ function BookingForm() {
   const [errors, setErrors] = useState({});
 
   const Postdata = () => {
+    var payl0ad = JSON.stringify({
+      "branch_id": parseInt(selectedOption),
+      "date": formatDate(selectedDate)
+    })
+    console.log(payl0ad);
+    
     fetch("http://127.0.0.1:8080/user/get/avl/slots", {
       method: "POST",
-      body: JSON.stringify({
-        "branch_id": parseInt(selectedOption),
-        "date": formatDate(selectedDate)
-      }),
+      body: payl0ad
     })
       .then((res) => {
         if (!res.ok) {
@@ -143,6 +146,7 @@ function BookingForm() {
         return res.json();
       })
       .then((data) => {
+        console.log("success")
         setAvailableSlots(data);
         setLoading(false);
         setShowSlotBooking(true);

@@ -1248,9 +1248,10 @@ func Get_Available_slots(c *gin.Context) {
 	}
 
 	var body struct {
-		Date      string
-		Branch_id int
+		Date      string `json:"date"`
+		Branch_id int    `json:"branch_id"`
 	}
+
 	err := c.Bind(&body)
 	if err != nil {
 		logrus.Infof("Failed to read body %v\n", err)
@@ -1261,15 +1262,8 @@ func Get_Available_slots(c *gin.Context) {
 		})
 		return
 	}
-
-	if body.Date == "" || body.Branch_id == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "Please select date and branch",
-			"data":   nil,
-		})
-		return
-	}
+	fmt.Println("bjhg", body.Date)
+	fmt.Println("id", body.Branch_id)
 
 	// Fetch all time slots
 	var slots []models.Time_Slot
@@ -1279,14 +1273,10 @@ func Get_Available_slots(c *gin.Context) {
 		return
 	}
 
-	fmt.Print(body.Date)
-	fmt.Println(body.Branch_id)
-
 	// Fetch booked slots for the specified date
 	var bookedSlots []models.Turf_Bookings
 	result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", body.Date, body.Branch_id).Find(&bookedSlots)
 
-	fmt.Println(bookedSlots)
 	if result.Error != nil {
 		logrus.Infof("Failed to find data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
