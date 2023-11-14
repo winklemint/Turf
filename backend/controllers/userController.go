@@ -582,7 +582,7 @@ func Booking(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Slot is allready booked",
+				"error":  "Slot is already booked",
 				"data":   nil,
 			})
 		}
@@ -713,7 +713,7 @@ func Screenshot(c *gin.Context) {
 		Amount float64
 	}
 
-	err = c.Bind(&body)
+	err = c.ShouldBindJSON(&body)
 	if err != nil {
 		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1250,7 +1250,7 @@ func Get_Available_slots(c *gin.Context) {
 		Date      string
 		Branch_id int
 	}
-	err := c.Bind(&body)
+	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
