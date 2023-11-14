@@ -256,15 +256,38 @@
                 data: JSON.stringify(payload),
                 contentType: 'application/json',
                 success: function (response) {
-                    // Handle the success response as needed
-                    alert("Form submitted successfully");
-                },
-                error: function (error) {
-                    // Handle the error response as needed
-                    alert("Form submission failed");
-                }
-            });
+                // Handle the success response as needed
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Form submitted successfully!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Check if the user clicked "OK"
+                    if (result.isConfirmed) {
+                        // Redirect the user to "/user"
+                        window.location.href = "/staff";
+                    } else if (result.isDismissed) {
+                        // Handle the case when the user clicks "Cancel"
+                        window.location.href = "/staff";
+                    }
+                });
+            },
+            error: function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            }
         });
+    });
 
         function updateAllAuthorizationCheckboxState() {
             if ($('.auth:checked').length === $('.auth').length) {

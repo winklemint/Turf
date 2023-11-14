@@ -719,7 +719,7 @@ func Update_Branch(c *gin.Context) {
 		logrus.Infoln("failed t0 read b0dy Update_Branch")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Failed To Read Body",
+			"message":  "Failed To Read Body",
 			"data":   nil,
 		})
 		return
@@ -732,7 +732,7 @@ func Update_Branch(c *gin.Context) {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Branch Updated Unsuccessfully",
+			"message":  "Something went wrong",
 			"data":   nil,
 		})
 		return
@@ -758,7 +758,7 @@ func Update_Branch(c *gin.Context) {
 			logrus.Infoln("Upload the right file format (jpg or png) Update branch func")
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Upload The Right File Format (jpg or png)",
+				"message":  "Upload The Right File Format (jpg or png)",
 				"data":   nil,
 			})
 			return
@@ -772,7 +772,7 @@ func Update_Branch(c *gin.Context) {
 			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "Branch Update Unsuccessfully",
+				"message":  "Something went wrong",
 				"data":   nil,
 			})
 			return
@@ -2038,7 +2038,7 @@ func AddUser(c *gin.Context) {
 		logrus.Infof("Failed To Created User %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
-			"message": "user Unsuccessfully created",
+			"message": "User Already exist",
 			"data":    nil,
 		})
 
@@ -2046,7 +2046,7 @@ func AddUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  201,
-		"message": "user successfully created",
+		"message": "User Successfully Created",
 		"data":    user,
 	})
 
