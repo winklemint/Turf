@@ -429,9 +429,36 @@
                 contentType: "application/json", // Set the content type to JSON
                 dataType: "json",
             }).done(function (data) {
-
-                console.log(data);
+                
+                Swal.fire({
+                        title: 'Good job!',
+                        text: 'Form submitted successfully!',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        // Check if the user clicked "OK"
+                        if (result.isConfirmed) {
+                            // Redirect the user to "/user"
+                            window.location.href = "/packages";
+                        } else if (result.isDismissed) {
+                            // Handle the case when the user clicks "Cancel"
+                            window.location.href = "/packages";
+                        }
+                    });
+                }).fail(function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
+                });
             });
         });
-    });
+    
 </script>
