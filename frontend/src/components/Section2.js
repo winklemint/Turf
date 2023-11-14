@@ -1,88 +1,154 @@
-
-import React from "react";
+import React, { useEffect, useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.css';
 import 'swiper/css';
+import 'swiper/css/pagination';
+import './section2.css';
+
+// import './styles.css';
+
+// import required modules
+import { Pagination } from 'swiper/modules';
 
 function Section2() {
-    return (
-        <section className="section3">
-            <div className="container heading">
-                <p className="client"><span style={{ color: "#ef1b40", fontWeight: "600" }}>Clients</span> memo</p>
-                <p>testimonials</p>
-                <p className="border-line"></p>
-            </div>
+  const [testimonials, setTestimonials] = useState([]);
 
-            <div className="container container-swiper swiper">
-                <div className="swiper-wrapper">
-                    <Swiper
-                        spaceBetween={50}
-                        onSlideChange={() => console.log('slide change')}
-                        onSwiper={(swiper) => console.log(swiper)}
-                        breakpoints={{
-                            768: {
-                                slidesPerView: 3, // Number of slides on screens wider than 768px
-                            },
-                            576: {
-                                slidesPerView: 1, // Number of slides on screens wider than 576px
-                            },
-                            0: {
-                                slidesPerView:.5, // Number of slides on screens at or smaller than 576px
-                            },
-                        }}
-                    >
-                        <SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box1">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box2">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-						<SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box3">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box4">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="swiper-slide">
-                                <div className="slide-box5">
-                                    <h1>Built with Bootstrap</h1>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                                    <p className="namp">Rocky Hych</p>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                        {/* Add more slides as needed */}
-                    </Swiper>
-                </div>
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/admin/get/testimonials'
+        );
+        const data = await response.json();
+
+        if (data.status === 200) {
+          setTestimonials(data.data);
+        } else {
+          console.error('Error fetching testimonials:', data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      }
+    };
+
+    fetchTestimonials();
+
+    // Initialize the Swiper after data is fetched
+    //   const mySwiper = new Swiper('.mySwiper', {
+    //     slidesPerView: 'auto',
+    //     spaceBetween: 10,
+    //     freeMode: true,
+    //     navigation: {
+    //       nextEl: '.swiper-button-next',
+    //       prevEl: '.swiper-button-prev',
+    //     },
+    //     preventInteractionOnTransition: true,
+    //     allowTouchMove: false,
+    //     breakpoints: {
+    //       767: {
+    //         slidesPerView: 3,
+    //         spaceBetween: 10,
+    //       },
+    //       576: {
+    //         slidesPerView: 1,
+    //         spaceBetween: 10,
+    //       },
+    //       // Add more breakpoints if needed
+    //     },
+    //   });
+
+    //   const handleNextClick = () => {
+    //     mySwiper.slideNext();
+    //   };
+
+    //   // Event handler for the Previous button
+    //   const handlePrevClick = () => {
+    //     mySwiper.slidePrev();
+    //   };
+
+    //   // Event listener for the Next and Previous buttons
+    //   document
+    //     .getElementById('swiper-button-next')
+    //     .addEventListener('click', handleNextClick);
+
+    //   document
+    //     .getElementById('swiper-button-prev')
+    //     .addEventListener('click', handlePrevClick);
+  }, []); // Add an empty dependency array to ensure this effect runs only once
+
+  return (
+    <>
+      <section className="bg-light py-5 py-xl-8 container">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
+              <h1 className="text-dark text-uppercase">
+                Customers <b className="text-secondary">Testimonial</b>
+              </h1>
+              <hr className="w-100 mx-auto mb-5 mb-xl-9 border-dark-subtle" />
             </div>
-        </section>
-    )
+          </div>
+        </div>
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={30}
+          pagination={{
+            // clickable: true,
+            dynamicBullets: true,
+          }}
+          breakpoints={{
+            576: {
+              slidesPerView: 1,
+              spaceBetween: 10,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            992: {
+              slidesPerView: 3,
+              spaceBetween: 30,
+            },
+          }}
+          modules={[Pagination]}
+        >
+          <div className="container d-flex justify-content-center swiper-container swipeTestimonial">
+            {testimonials.map((data) => (
+              <SwiperSlide
+                className="card border-0 border-bottom border-primary shadow-sm mb-3 me-4"
+                key={data.ID}
+              >
+                <div className="card-body">
+                  <figure>
+                    <img
+                      className="img-fluid rounded rounded-circle mb-4 border border-5 w-25"
+                      loading="lazy"
+                      src={`http://localhost:8080/admin/get/testimonial/image/${data.ID}`}
+                      alt=""
+                    />
+                    <div
+                      className="bsb-ratings text-warning mb-3"
+                      data-bsb-star="5"
+                      data-bsb-star-off="0"
+                    ></div>
+                    <blockquote className="bsb-blockquote-icon mb-4">
+                      {data.Review}
+                    </blockquote>
+                    <h4 className="mb-2">{data.Name}</h4>
+                    <h5 className="fs-6 text-secondary mb-0">
+                      {data.Designation}
+                    </h5>
+                  </figure>
+                </div>
+              </SwiperSlide>
+            ))}
+            <div className="swiper-button-prev" id="swiper-button-prev"></div>
+            <div className="swiper-button-next" id="swiper-button-next"></div>
+          </div>{' '}
+        </Swiper>
+      </section>
+    </>
+  );
 }
 
 export default Section2;
-
-

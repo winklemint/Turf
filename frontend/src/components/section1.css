@@ -1,7 +1,245 @@
+/* .myswiper {
+  width: 96%;
+  height: 453px !important;
+  margin: 20px auto;
+} */
+/* .swiper-slide img {
+  width: 351px;
+  height: 230px;
+  top: -5px;
+  border-radius: 18px;
+} */
+
+/* .swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+} */
+/* .swiper-slide img {
+  width: 230px;
+  height: auto;
+  margin-top: 12px;
+  border-radius: 4px;
+} */
+
 .carousel-control-prev-icon {
-    display: none;
-    width: 0rem;
-    height: 0rem;
+  display: none;
+  width: 0rem;
+  height: 0rem;
 }
 
-        
+/* .slider-sec2-heading {
+  margin-left: 50px;
+} */
+
+.mySwiper {
+  display: flex;
+}
+
+/* .swiper-container {
+  overflow: hidden;
+} */
+
+.mySwiper .swiper-slide {
+  min-height: 600px;
+  display: flex;
+}
+
+/* .mySwiper .swiper-slide.swiper-slide-active .content-med {
+  margin-top: -53px;
+  box-shadow: 0px 4px 15px 0 rgb(73 72 72 / 26%);
+  transform: translate(0, -5px);
+} */
+
+.mySwiper.swiper-initialized.swiper-horizontal.swiper-free-mode.swiper-backface-hidden {
+  padding: 0 25px;
+}
+
+/* .ex-p {
+  color: #636875;
+  font-size: 25px;
+} */
+/* .content-med {
+  border: 4px solid #f4eded;
+  width: 94%;
+  border-radius: 10px;
+  margin: 0 12px;
+  height: 427px;
+  position: relative;
+  transition: 0.3s;
+} */
+.content-med:hover {
+  box-shadow: 0px 4px 15px 0 rgb(73 72 72 / 26%);
+  transform: translate(0, -10px);
+}
+/* .cites-box {
+  margin: 22px 0px;
+} */
+
+/* .cite-box-parag {
+  margin-top: 20px;
+  word-spacing: 4.5px;
+} */
+
+/* .cite {
+  margin-bottom: -10px;
+  font-size: 21px;
+} */
+/* .cite1 {
+  font-size: 21px;
+  text-decoration: none;
+  color: #0f41e5;
+} */
+.cite1:hover {
+  background-color: #15b60c;
+  font-weight: bold;
+}
+.cite1 {
+  background-color: #1bc712;
+}
+/* .cite1 {
+  text-decoration: none;
+  color: #fff;
+  border-radius: 7px;
+  border: none;
+  background-color: #1bc712;
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+} */
+
+@media (min-width: 200px) and (max-width: 400px) {
+  .slider-sec2-heading {
+    margin-left: 0px;
+  }
+  /* .mySwiper .swiper-slide.swiper-slide-active .content-med {
+    margin-top: -133px;
+    box-shadow: 0px 4px 15px 0 rgb(73 72 72 / 26%);
+  } */
+  /* .swiper-slide img {
+    width: 230px;
+    height: auto;
+    margin-top: 12px;
+    border-radius: 4px;
+  } */
+  /* .swiper-slide img {
+    width: 230px;
+    height: auto;
+    margin-top: 12px;
+    border-radius: 4px;
+  } */
+  .content-med {
+    /* border: 4px solid #f4eded;
+    width: 87%;
+    border-radius: 10px;
+    margin: 0 12px; */
+    height: auto;
+  }
+  /* .cite1 {
+    text-decoration: none;
+    color: #fff;
+    border-radius: 53px;
+    border: none;
+    background-color: #1451db;
+    font-size: 16px;
+    padding: 4px 17px;
+  } */
+}
+
+@media (min-width: 400px) and (max-width: 767px) {
+  /* .slider-sec2-heading {
+    margin-left: 10px;
+  } */
+  /* .ex-p {
+    color: #636875;
+    font-size: 13px;
+  } */
+
+  /* .start-p {
+    font-size: 26px;
+    margin-top: -35px;
+  } */
+  /* .works-p {
+    font-size: 29px;
+    margin-top: -25px;
+  } */
+
+  /* .start-p {
+    font-size: 26px;
+    margin-top: -26px;
+  } */
+  /* .content-med {
+    border: 4px solid #f4eded;
+    width: 84%;
+    border-radius: 10px;
+    margin: 1px 34px;
+  } */
+  /* .cite1 {
+    text-decoration: none;
+    color: #fff;
+    border-radius: 53px;
+    border: none;
+    background-color: #1451db;
+    font-size: 16px;
+    padding: 7px 10px;
+    margin-top: 12px;
+  } */
+}
+
+.slider-sec2 {
+  position: relative;
+  z-index: 1;
+  top: -120px;
+  background-color: white;
+  padding: 30px 32px;
+}
+
+@media screen and (min-width: 767px) and (max-width: 991px) {
+  /* .ex-p {
+    color: #636875;
+    font-size: 13px;
+  } */
+  /* .start-p {
+    font-size: 26px;
+    margin-top: -35px;
+  } */
+  /* .works-p {
+    font-size: 29px;
+    margin-top: -25px;
+  } */
+
+  /* .start-p {
+    font-size: 26px;
+    margin-top: -26px;
+  } */
+  /* .content-med {
+    border: 4px solid #f4eded;
+    width: 89%;
+    border-radius: 10px;
+    margin: 0;
+
+    background-color: #ececec;
+  } */
+}
+
+@media screen and (min-width: 992px) and (max-width: 1400px) {
+  /* Your styles for images in .swiper-slide within this screen width range */
+
+  /* .swiper-slide img {
+    width: 292px;
+    height: 185px;
+  } */
+  /* .content-med {
+    border: 4px solid #f4eded;
+    width: 113%;
+    border-radius: 10px;
+    margin: 0 27px;
+  } */
+}

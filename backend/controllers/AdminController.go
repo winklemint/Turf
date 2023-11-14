@@ -2440,7 +2440,7 @@ func AddContent(c *gin.Context) {
 		})
 		return
 	}
-	content := &models.Content{Heading: body.SubHeading, SubHeading: body.SubHeading, Button: body.Button}
+	content := &models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button}
 	result := config.DB.Create(&content)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
