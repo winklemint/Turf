@@ -134,9 +134,12 @@ function BookingForm() {
       body: JSON.stringify({
         "branch_id": parseInt(selectedOption),
         "date": formatDate(selectedDate)
+        
       }),
     })
+    
       .then((res) => {
+        console.log(res)
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
