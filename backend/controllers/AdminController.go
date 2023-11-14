@@ -1396,7 +1396,8 @@ func Get_Slot_by_day(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Day []string
+		Day       []string
+		Branch_id int
 	}
 
 	err := c.Bind(&body)
@@ -1423,7 +1424,7 @@ func Get_Slot_by_day(c *gin.Context) {
 		result := config.DB.Debug().Model(&models.Time_Slot{}).
 			Select("time_slots.id, time_slots.start_time, time_slots.end_time, time_slots.day, time_slots.unique_slot_id, time_slots.branch_id, package_slot_relationships.id as psr_id").
 			Joins("LEFT JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
-			Where("time_slots.day = ?", body.Day[i]).
+			Where("time_slots.day = ? AND time_slots.branch_id=?", body.Day[i], body.Branch_id).
 			Scan(&slot)
 
 		if result.Error != nil {

@@ -373,7 +373,7 @@ func RegisterAdminPanelAllUser(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*.html")
 
 	// Define a route to serve the "dashboard.html" template
-	router.GET("/usersss", func(c *gin.Context) {
+	router.GET("/user", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "user.html", gin.H{
 			// You can pass data to the template if needed
 			//"data": "helloworld.html",

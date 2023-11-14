@@ -82,7 +82,7 @@
 		<div class="col-md-8 mb-20">
 			<div class="card-box height-100-p pd-20">
 				<div class="d-flex flex-wrap justify-content-between align-items-center pb-0 pb-md-3">
-					<div class="h5 mb-md-0">Hospital Activities</div>
+					<div class="h5 mb-md-0">New Users Month Wise</div>
 					<div class="form-group mb-md-0">
 						<select class="form-control form-control-sm selectpicker">
 							<option value="">Last Week</option>
@@ -388,6 +388,7 @@
 			chart_config();
 			// Initialize DataTable
 			var table = $('#confirm-booking-table').DataTable();
+			table.destroy();
 			// Make an AJAX request to fetch data from the URL
 			$.ajax({
 				url: '/admin/get/confirm/booking/top5', // Adjust the URL to match your API endpoint
