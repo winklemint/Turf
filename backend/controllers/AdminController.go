@@ -5300,13 +5300,34 @@ func Graph_API(c *gin.Context) {
 		"Revenue_per_User": Average_Revenue_per_User,
 	})
 }
+
 func PackageNameList(c *gin.Context) {
+	branchID, err := c.Request.Cookie("Branch_id")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to retrieve Branch ID from cookie",
+			"data":   nil,
+		})
+		return
+	}
+
+	branchIDInt, err := strconv.Atoi(branchID.Value)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Invalid Branch ID in cookie",
+			"data":   nil,
+		})
+		return
+	}
+
 	var packages []models.Package
-	result := config.DB.Select("DISTINCT name").Find(&packages)
+	result := config.DB.Select("DISTINCT name").Find(&packages, "branch_id=?", branchIDInt)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
-			"error":  "Get Package Name List Unsuccessfully",
+			"error":  "Failed to get Package Name List",
 			"data":   nil,
 		})
 		return
@@ -5314,7 +5335,50 @@ func PackageNameList(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": 200,
-		"msg":    "Get Package Name List",
+		"msg":    "Successfully retrieved Package Name List",
 		"data":   packages,
+	})
+}
+func TotalSlot(c *gin.Context) {
+	currentTime := time.Now()
+
+	dayOfWeek := currentTime.Weekday()
+
+	dayString := dayOfWeek.String()
+	fmt.Println("Current Day:", dayString)
+	branchID, err := c.Request.Cookie("Branch_id")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to retrieve Branch ID from cookie",
+			"data":   nil,
+		})
+		return
+	}
+
+	branchIDInt, err := strconv.Atoi(branchID.Value)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Invalid Branch ID in cookie",
+			"data":   nil,
+		})
+		return
+	}
+	var slot models.Time_Slot
+	var count int64
+	result := config.DB.Model(&slot).Count(&count).Where("day=? AND branch_id=?", dayString, branchIDInt)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to count slot",
+			"data":   nil,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"msg":    "Successfully count slot ",
+		"data":   count,
 	})
 }
