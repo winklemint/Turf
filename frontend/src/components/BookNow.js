@@ -138,6 +138,7 @@ function BookingForm() {
       method: "POST",
       body: payload,
     })
+    
       .then((res) => {
         console.log(res);
         if (!res.ok) {
