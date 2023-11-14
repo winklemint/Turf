@@ -5316,9 +5316,10 @@ func TotalSlot(c *gin.Context) {
 		})
 		return
 	}
+
 	var slot models.Time_Slot
 	var count int64
-	result := config.DB.Model(&slot).Count(&count).Where("day=? AND branch_id=?", dayString, branchIDInt)
+	result := config.DB.Model(&slot).Where("day = ? AND branch_id = ?", dayString, branchIDInt).Count(&count)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -5327,9 +5328,10 @@ func TotalSlot(c *gin.Context) {
 		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": 200,
-		"msg":    "Successfully count slot ",
+		"msg":    "Successfully count slot",
 		"data":   count,
 	})
 }
