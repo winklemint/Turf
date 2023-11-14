@@ -37,7 +37,7 @@
             <div class="clearfix">
                 <div class="pull-left">
                     <h4 class="text-blue h4">Package</h4>
-                   
+
                 </div>
                 <!-- <div class="pull-right">
                             <a
@@ -71,7 +71,7 @@
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
                     <div class="col-sm-12 col-md-10">
                         <select class="custom-select col-12" id="branchSelect" required>
-                           
+
                         </select>
                     </div>
                 </div>
@@ -263,7 +263,7 @@
             success: function (res) {
                 // The "data" variable contains the data received from the server
                 // You can now append the data to the <select> element
-                    
+
                 $("#branchSelect").html('');
                 appendDataToSelect(res.data);
             },
@@ -273,13 +273,11 @@
         });
 
 
-        function appendDataToSelect(data) 
-        {
+        function appendDataToSelect(data) {
             const element = "<option value=''>Select Branch</option>";
             $("#branchSelect").append(element);
-            for (let index = 0; index < data.length; index++) 
-            {
-                var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+            for (let index = 0; index < data.length; index++) {
+                var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
                 $("#branchSelect").append(element_other);
                 console.log(element_other);
             }
@@ -417,7 +415,7 @@
                 status: parseInt($("#status_branch").val()),
                 slot_id: selectedDataValues // Include the selected slot data, including ID
             };
-           
+
 
             // Now you have access to the selected slot IDs and their data
             console.log('Selected Slots:', formData);
@@ -429,8 +427,9 @@
                 contentType: "application/json", // Set the content type to JSON
                 dataType: "json",
             }).done(function (data) {
+                window.location.href = "/packages";
 
-                console.log(data);
+
             });
         });
     });

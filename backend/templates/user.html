@@ -116,12 +116,12 @@
                 var rowElement = document.getElementById(rowid);
                 if (rowElement) {
                     rowElement.style.display = 'none';
-                    alert("Testimonial with ID: " + Id + " deleted successfully");
+                    alert("User with ID: " + Id + " deleted successfully");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("Error deleting testimonial with ID: " + Id);
+                alert("Error deleting user with ID: " + Id);
             }
         });
     }
