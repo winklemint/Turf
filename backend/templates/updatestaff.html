@@ -275,13 +275,64 @@
             });
         });
 
-        function appendDataToSelect(data) {
-            const element = "<option value=''>Select Branch</option>";
-            $("#branchSelect").append(element);
-            for (let index = 0; index < data.length; index++) {
-                var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
-                $("#branchSelect").append(element_other);
-            }
+        // Convert the selected permissions to a JSON string
+        var authorizationString = "{" + selectedPerm.join(",") + "}";
+
+        var formData = {
+            name: $("#name").val(),
+            email: $("#email").val(),
+            contact: $("#contact").val(),
+            password: $("#password").val(),
+            role: parseInt($('#role').val()),
+            branch_name: parseInt($("#branchSelect").val()),
+            authorization: authorizationString,
+        };
+
+        formData = JSON.stringify(formData);
+
+        console.log(formData);
+
+        $.ajax({
+            url: "/admin/staff/update/" + Id, // Update the URL as needed
+            method: "PATCH", // Use PATCH method for updating
+            data: formData,
+            contentType: 'application/json',
+            success: function (response) {
+                Swal.fire({
+                        title: 'Updated!',
+                        text: 'Staff Updated successfully.',
+                        icon: "success",
+                        timer: 3000
+                    }).then(
+                        function () {
+                            window.location.href = "/staff";
+                        },
+                        // handling the promise rejection
+                        function (dismiss) {
+                            if (dismiss === 'timer') {
+                                console.log('I was closed by the timer');
+                            }
+                        }
+                    );
+                },
+                error: function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
+                }
+        });
+    });
+
+    function updateAllAuthorizationCheckboxState() {
+        if ($('.auth:checked').length === $('.auth').length) {
+            $('#customCheck1').prop('checked', true);
+        } else {
+            $('#customCheck1').prop('checked', false);
         }
 
         // When the "All" checkbox is clicked

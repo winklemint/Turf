@@ -38,7 +38,7 @@ func Signup(c *gin.Context) {
 		Contact   string
 		Is_active int
 	}
-	err := c.Bind(&body)
+	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -221,7 +221,7 @@ func VerifyOTPhandler(c *gin.Context) {
 		Is_active string
 	}
 
-	if c.Bind(&body) != nil {
+	if c.ShouldBindJSON(&body) != nil {
 		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "failed to read body",
@@ -278,7 +278,7 @@ func Login(c *gin.Context) {
 		Password string
 	}
 
-	if c.Bind(&body) != nil {
+	if c.ShouldBindJSON(&body) != nil {
 		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
@@ -363,7 +363,7 @@ func Booking(c *gin.Context) {
 		Branch_id int
 	}
 
-	err := c.Bind(&body)
+	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		logrus.Infof("Failed to raed body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1081,7 +1081,7 @@ func UpdateUser(c *gin.Context) {
 		Password    string
 		Contact     string
 	}
-	err := c.Bind(&body)
+	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
