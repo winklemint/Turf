@@ -266,12 +266,32 @@
                 contentType: 'application/json', // Set the content type to JSON
 
                 success: function (response) {
-                    alert("Booking Details updated successfully!");
-                    // Redirect or perform other actions upon success
+                    Swal.fire({
+                        title: 'Updated!',
+                        text: 'Booking details Updated successfully.',
+                        icon: "success",
+                        timer: 5000
+                    }).then(
+                        function () {
+                            window.location.href = "/all/bookings";
+                        },
+                        // handling the promise rejection
+                        function (dismiss) {
+                            if (dismiss === 'timer') {
+                                console.log('I was closed by the timer');
+                            }
+                        }
+                    );
                 },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                    // Handle the error, e.g., display an error message
+                error: function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
                 }
             });
         });

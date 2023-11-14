@@ -191,11 +191,32 @@
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: function(response) {
-                    // alert("Branch Details updated successfully!");
-                    // window.location.href = "/packages";
+                    Swal.fire({
+                        title: 'Updated!',
+                        text: 'Package Updated successfully.',
+                        icon: "success",
+                        timer: 3000
+                    }).then(
+                        function () {
+                            window.location.href = "/all/branch";
+                        },
+                        // handling the promise rejection
+                        function (dismiss) {
+                            if (dismiss === 'timer') {
+                                console.log('I was closed by the timer');
+                            }
+                        }
+                    );
                 },
-                error: function(xhr, status, error) {
-                    console.error(error);
+                error: function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
                 }
             });
         });
