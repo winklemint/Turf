@@ -1,29 +1,23 @@
 {{template "header.html"}}
 <div class="card-box pb-10">
-    <!-- Export Datatable start -->
     <div class="card-box mb-30">
         <div class="pd-20">
-            <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-12 col-md-2 col-form-label">Date</label>
-            <div class="col-sm-12 col-md-10">
-                <input class="form-control date-picker" placeholder="Select Date" type="text">
-            </div>
+            <h4 class="text-blue h4">Remaining Payment Booking</h4>
         </div>
         <div class="pb-20">
-            <table class="table hover multiple-select-row data-table-export nowrap" id="allbranchtable">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="tableremaining">
                 <thead>
                     <tr>
                         <th>Sn.</th>
-                        <th>User Name</th>
-                        <th>Designation</th>
-                        <th>Review</th>
-                        <th>Image</th>
-                        <th >Actions</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Date</th>
+                        <th>Total Price</th>
+                        <th>Paid Amount</th>
+                        <th>Remaining Amount To Pay</th>
+                        <th>Branch Name</th>
                     </tr>
                 </thead>
-               
             </table>
         </div>
     </div>
@@ -32,78 +26,39 @@
 {{template "footer.html"}}
 <script>
     $(document).ready(function () {
-        // Initialize DataTable
-        var table = $('#allbranchtable').DataTable();
         // Make an AJAX request to fetch data from the URL
         $.ajax({
-            url: 'http://localhost:8080/admin/get/testimonials',
-            method: 'GET',
+            url: '/admin/remaining/payement/booking', // Adjust the URL to match your API endpoint
+            method: 'POST',
             dataType: 'json',
             success: function (response) {
-                // Iterate through the data and append it to the table
-                $.each(response.data, function (index, testimonials) {
-                    // Determine the button content based on the "Status"
-                    
-                    var action = '<div class="dropdown">' +
-                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + testimonials.ID + '" role="button" data-toggle="dropdown">' +
-                        '<i class="dw dw-more"></i>' +
-                        '</a>' +
-                        '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-                        '<a class="dropdown-item" href="/data/testimonials?id=' + testimonials.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/testimonials" onclick="deleteTestimonial(' +  testimonials.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
-                        '</div>' +
-                        '</div>'
+                console.log(response);
 
-                       
-                    // Create a new row and append it to the table
-                    table.row.add([
-                        index + 1, // Sn.
-                        testimonials.Name, // P
-                        testimonials.Designation, // Charges
-                        testimonials.Review, // Branch ID
-                        testimonials.Image,
-                      
-                        action, // Status
-
-                    ]);
+                // Initialize DataTable
+                var table = $('#tableremaining').DataTable({
+                    // Your DataTable options here
                 });
 
-                // Refresh the table to apply the changes
-                table.draw();
+                // Iterate through the data and append it to the table
+                $.each(response.data, function (index, branch) {
+                    // Append the data as a new row to the DataTable
+                    table.row.add([
+                        index + 1,  // Sn.
+                        branch.UserName,
+                        branch.Contact,
+                        branch.Date,
+                        branch.TotalPrice,
+                        branch.PaidAmount,
+                        branch.RemainingAmountToPay,
+                        branch.BranchName,
+                    ]).draw(false);  // Draw without adding to the page
+                });
             },
             error: function (error) {
                 console.error('Error fetching data: ' + error);
             }
         });
     });
-    
-   
-    function deleteTestimonial(Id) {
-        var row_id = Id;
-        
-        
-        $.ajax({
-            url: "/admin/delete/testimonial/" + Id,
-            method: "DELETE",
-            success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("Testimonial with ID: " + Id + " deleted successfully");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting testimonial with ID: " + Id);
-            }
-        });
-    }
-    
-  
-   
-    
 </script>
 
 </body>

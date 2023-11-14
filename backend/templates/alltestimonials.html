@@ -37,28 +37,26 @@
                 // Iterate through the data and append it to the table
                 $.each(response.data, function (index, testimonials) {
                     // Determine the button content based on the "Status"
-                    
+
                     var action = '<div class="dropdown">' +
                         '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + testimonials.ID + '" role="button" data-toggle="dropdown">' +
                         '<i class="dw dw-more"></i>' +
                         '</a>' +
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
                         '<a class="dropdown-item" href="/data/testimonials?id=' + testimonials.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/testimonials" onclick="deleteTestimonial(' +  testimonials.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '<a class="dropdown-item" href="/testimonials" onclick="deleteTestimonial(' + testimonials.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
                         '</div>' +
                         '</div>'
 
-                       
                     // Create a new row and append it to the table
                     table.row.add([
                         index + 1, // Sn.
-                        testimonials.Name, // P
-                        testimonials.Designation, // Charges
-                        testimonials.Review, // Branch ID
-                        testimonials.Image,
-                      
-                        action, // Status
+                        testimonials.Name, // Name
+                        testimonials.Designation, // Designation
+                        testimonials.Review, // Review
+                        '<td data-testimonial-id="' + testimonials.ID + '"><a href="javascript:void(0);" class="testimonial-image" data-testimonial-id="' + testimonials.ID + '">View Image</a></td>',
 
+                        action, // Actions
                     ]);
                 });
 
@@ -69,13 +67,20 @@
                 console.error('Error fetching data: ' + error);
             }
         });
+
+        // Click event handler for testimonial images
+        $('body').on('click', '.testimonial-image', function() {
+            var $aElement = $(this);
+            var testimonialId = $aElement.data('testimonial-id');
+            console.log('Testimonial ID:', testimonialId);
+            var imageUrl = 'http://localhost:8080/admin/get/testimonial/image/' + testimonialId;
+            window.open(imageUrl, '_blank');
+        });
     });
-    
-   
+
     function deleteTestimonial(Id) {
         var row_id = Id;
-        
-        
+
         $.ajax({
             url: "/admin/delete/testimonial/" + Id,
             method: "DELETE",
@@ -94,11 +99,8 @@
             }
         });
     }
-    
-  
-   
-    
 </script>
+
 
 </body>
 </html>

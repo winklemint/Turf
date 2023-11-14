@@ -10,7 +10,7 @@
                             <nav aria-label="breadcrumb" role="navigation">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item">
-                                        <a href="/login">Home</a>
+                                        <a href="/dashboard">Home</a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">
                                         Form Basic
@@ -192,7 +192,9 @@
     
             carousel.forEach(function (carousels) {
                 var row = $('<tr></tr>');
-                row.append('<td>' + carousels.Image + '</td>');
+                var viewImageCell = $('<td></td>');
+                viewImageCell.append('<a href="javascript:void(0);" class="testimonial-image" data-testimonial-id="' + carousels.ID + '">View Image</a>');
+                row.append(viewImageCell);
                 var Status = '';
                 if (carousels.Status === "1") {
                     Status = 'Enable';
@@ -206,7 +208,16 @@
                 
                 tableBody.append(row);
             });
-        }
+            $('body').on('click', '.testimonial-image', function() {
+                var $aElement = $(this);
+                var carouselId = $aElement.data('testimonial-id');
+                console.log('Testimonial ID:', carouselId);
+                var imageUrl = 'http://localhost:8080/admin/get/image/active/' + carouselId;
+                window.open(imageUrl, '_blank');
+            });
+        };
+        
+
         function deleteCarousel(Id) {
             var row_id = Id;
             

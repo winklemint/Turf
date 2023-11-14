@@ -10,7 +10,7 @@
                             <nav aria-label="breadcrumb" role="navigation">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item">
-                                        <a href="/login">Home</a>
+                                        <a href="/dashboard">Home</a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">
                                         Form Basic
@@ -143,6 +143,8 @@
     {{template "footer.html"}}
 <script>
     $(document).ready(function() {
+        $('#sa-success').trigger('click');
+        return false;
       $("#update_form").submit(function(event) { 
             event.preventDefault();
             var formData = {
@@ -161,7 +163,8 @@
                 dataType: "json",
               //   encode: true,
               }).done(function(data) {
-                window.location.href = "/user";
+                $('#sa-success').trigger('click');
+               // window.location.href = "/user";
               });
           });
         });

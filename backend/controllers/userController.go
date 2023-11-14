@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/gomail.v2"
 )
@@ -37,10 +38,13 @@ func Signup(c *gin.Context) {
 		Contact   string
 		Is_active int
 	}
-
-	if c.Bind(&body) != nil {
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to read body",
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
 		})
 		return
 	}
@@ -48,8 +52,11 @@ func Signup(c *gin.Context) {
 	//Hashing password
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
+		logrus.Infof("Failed to hash password %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to hash password",
+			"status": 400,
+			"error":  "failed to hash password",
+			"data":   nil,
 		})
 		return
 	}
@@ -59,8 +66,11 @@ func Signup(c *gin.Context) {
 
 	result := config.DB.Create(&user)
 	if result.Error != nil {
+		logrus.Infof("Failed to create data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to create user",
+			"status": 400,
+			"error":  "failed to create user",
+			"data":   nil,
 		})
 
 		return
@@ -68,8 +78,11 @@ func Signup(c *gin.Context) {
 		var user models.User
 		config.DB.First(&user, "email = ?", body.Email)
 		if user.ID == 0 {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid Email or Password",
+				"status": 400,
+				"error":  "Invalid Email or Password",
+				"data":   nil,
 			})
 			return
 		}
@@ -91,7 +104,9 @@ func Signup(c *gin.Context) {
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "failed to send the email",
+				"status": 400,
+				"error":  "failed to send the email",
+				"data":   nil,
 			})
 
 		}
@@ -207,6 +222,7 @@ func VerifyOTPhandler(c *gin.Context) {
 	}
 
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "failed to read body",
 		})
@@ -218,10 +234,11 @@ func VerifyOTPhandler(c *gin.Context) {
 	//var user models.User
 
 	if !ok {
+		logrus.Infof("Failed to otp verification")
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"status": 401,
 			"error":  "OTP verification unsuccessful",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -233,7 +250,7 @@ func VerifyOTPhandler(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  200,
 			"success": "OTP verfication successful",
-			"data":    "null",
+			"data":    nil,
 		})
 
 	} else {
@@ -262,8 +279,11 @@ func Login(c *gin.Context) {
 	}
 
 	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to read body",
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
 		})
 		return
 	}
@@ -273,6 +293,7 @@ func Login(c *gin.Context) {
 	config.DB.First(&user, "email = ? AND account_status = 1", body.Email)
 
 	if user.ID == 0 {
+
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid Email or Password ",
 		})
@@ -288,8 +309,11 @@ func Login(c *gin.Context) {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
 
 	if err != nil {
+		logrus.Infof("Failed to get email or passowrd %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Email or Password",
+			"status": 400,
+			"error":  "Invalid Email or Password",
+			"data":   nil,
 		})
 		return
 	}
@@ -304,8 +328,11 @@ func Login(c *gin.Context) {
 	// Sign and get the complete encoded token as a string using the secret
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
+		logrus.Infof("Failed to create token %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to create token",
+			"status": 400,
+			"error":  "Failed to create token",
+			"data":   nil,
 		})
 		return
 	}
@@ -338,10 +365,11 @@ func Booking(c *gin.Context) {
 
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed to raed body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -388,10 +416,11 @@ func Booking(c *gin.Context) {
 		rows := config.DB.Model(&models.Turf_Bookings{}).Where("date = ?", body.Date).Pluck("slot_id", &Slots)
 
 		if rows.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", rows.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"error":  "failed to read body",
-				"data":   "null",
+				"error":  "failed to get slot in booking table",
+				"data":   nil,
 			})
 			return
 		}
@@ -441,10 +470,11 @@ func Booking(c *gin.Context) {
 				booking := models.Turf_Bookings{Date: body.Date, Slot_id: body.Slot[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id, Is_booked: 2, Branch_id: body.Branch_id}
 				result := config.DB.Create(&booking)
 				if result.Error != nil {
+					logrus.Infof("Failed to get data from DB %v\n", result.Error)
 					c.JSON(http.StatusOK, gin.H{
 						"status": 400,
 						"error":  "Slot Already Exist",
-						"data":   "null",
+						"data":   nil,
 					})
 					return
 				}
@@ -468,10 +498,11 @@ func Booking(c *gin.Context) {
 
 			result := config.DB.Create(&confirm_booking)
 			if result.Error != nil {
+				logrus.Infof("Failed to get data from DB %v\n", result.Error)
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
 					"error":  "Slot Allready Exist",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -505,10 +536,11 @@ func Booking(c *gin.Context) {
 				booking := models.Turf_Bookings{Date: body.Date, Slot_id: uniqueslots[i], User_id: user.ID, Package_slot_relation_id: int(psr.ID), Package_id: psr.Package_id, Price: price.Price, Minimum_amount_to_pay: price25, Order_id: B_id, Is_booked: 2, Branch_id: body.Branch_id}
 				result := config.DB.Create(&booking)
 				if result.Error != nil {
+					logrus.Infof("Failed to get data from DB %v\n", result.Error)
 					c.JSON(http.StatusOK, gin.H{
 						"status": 400,
 						"error":  "Slot Allready Exist",
-						"data":   "null",
+						"data":   nil,
 					})
 					return
 				}
@@ -532,10 +564,11 @@ func Booking(c *gin.Context) {
 
 			result := config.DB.Create(&confirm_booking)
 			if result.Error != nil {
+				logrus.Infof("Failed to get data from DB %v\n", result.Error)
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
 					"error":  "Slot Allready Exist",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -550,7 +583,7 @@ func Booking(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
 				"error":  "Slot is allready booked",
-				"data":   "null",
+				"data":   nil,
 			})
 		}
 	}
@@ -570,7 +603,7 @@ func Booking(c *gin.Context) {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"status": 400,
 // 			"error":  "failed to read body",
-// 			"data":   "null",
+// 			"data":   nil,
 // 		})
 // 		return
 // 	}
@@ -611,7 +644,7 @@ func Booking(c *gin.Context) {
 // 			c.JSON(http.StatusBadRequest, gin.H{
 // 				"status": 400,
 // 				"error":  "failed to read body",
-// 				"data":   "null",
+// 				"data":   nil,
 // 			})
 // 			return
 // 		}
@@ -680,12 +713,13 @@ func Screenshot(c *gin.Context) {
 		Amount float64
 	}
 
-	c.Bind(&body)
+	err = c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -728,7 +762,7 @@ func Screenshot(c *gin.Context) {
 			return
 		}
 		// Define the path where the file will be saved
-		filePath := filepath.Join("./uploads", file.Filename)
+		filePath := filepath.Join("./uploads/user_payment", file.Filename)
 		// Save the file to the defined path
 		if err := c.SaveUploadedFile(file, filePath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
@@ -742,10 +776,11 @@ func Screenshot(c *gin.Context) {
 		payment := models.Screenshot{Payment_screenshot: filePath, Booking_order_id: booking.Booking_order_id}
 		result := config.DB.Create(&payment)
 		if result.Error != nil {
+			logrus.Infof("Failed to insert screenshot %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": "400",
 				"error":  "failed to insert",
-				"data":   "null",
+				"data":   nil,
 			})
 			return
 		} else {
@@ -754,10 +789,11 @@ func Screenshot(c *gin.Context) {
 			}
 			status := config.DB.Model(&booking).Where("booking_order_id = ?", booking.Booking_order_id).Updates(changed_status)
 			if status.Error != nil {
+				logrus.Infof("Failed to insert screenshot %v\n", result.Error)
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
 					"error":  "failed to insert",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -768,10 +804,11 @@ func Screenshot(c *gin.Context) {
 			}
 			result = config.DB.Model(&turf_book).Where("order_id = ?", booking.Booking_order_id).Updates(is_booked)
 			if result.Error != nil {
+				logrus.Infof("Failed to create data from DB %v\n", result.Error)
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
 					"error":  "failed to insert",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -787,92 +824,119 @@ func Screenshot(c *gin.Context) {
 	}
 }
 
-func AvailableSlot(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
-	if c.Request.Method == "OPTIONS" {
-		c.JSON(http.StatusOK, gin.H{})
-		return
-	}
-	// slot go routine running
-	go Slot_go_rountine()
+// func AvailableSlot(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+// 	if c.Request.Method == "OPTIONS" {
+// 		c.JSON(http.StatusOK, gin.H{})
+// 		return
+// 	}
+// 	// slot go routine running
+// 	//go Slot_go_rountine()w3s
 
-	var body struct {
-		Date time.Time
-	}
-	err := c.Bind(&body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"error":  "failed to read body",
-			"data":   "null",
-		})
-		return
-	}
-	var slots []models.Turf_Bookings
-	var bookSlots, AllSlot []int
-	var slot []models.Time_Slot
-	result := config.DB.Find(&slot)
-	if result.Error != nil {
-		fmt.Println(result.Error)
-		return
-	}
-	currentTime := time.Now()
-	date := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), 0, currentTime.Location())
+// 	var body struct {
+// 		Date string
+// 	}
+// 	err := c.Bind(&body)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status": 400,
+// 			"error":  "failed to read body",
+// 			"data":   nil,
+// 		})
+// 		return
+// 	}
+// 	var slots []models.Turf_Bookings
+// 	var bookSlots, AllSlot []int
+// 	var slot []models.Time_Slot
+// 	result := config.DB.Find(&slot)
+// 	if result.Error != nil {
+// 		fmt.Println(result.Error)
+// 		return
+// 	}
+// 	// currentTime := time.Now()
+// 	// date := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second(), 0, currentTime.Location())
 
-	fmt.Println(date)
+// 	// fmt.Println(date)
 
-	result = config.DB.Where("date = ? AND is_booked = ?", date, 1).Find(&slots)
-	if result.Error != nil {
-		fmt.Println(result.Error)
-		return
-	}
+// 	result = config.DB.Where("date = ? AND is_booked = 1", body.Date).Find(&slots)
+// 	if result.Error != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "Failed to find slot by start_slot",
+// 		})
+// 		return
 
-	for _, s := range slots {
-		bookSlots = append(bookSlots, s.Slot_id)
-	}
+// 	}
 
-	for _, s := range slot {
-		AllSlot = append(AllSlot, int(s.ID))
-	}
+// 	for _, s := range slots {
+// 		bookSlots = append(bookSlots, s.Slot_id)
+// 	}
 
-	availableSlots := []int{}
-	for _, s := range AllSlot {
-		if !contains(bookSlots, s) {
-			availableSlots = append(availableSlots, s)
-		}
-	}
-	var availableSlots1 []map[string]interface{}
-	// fmt.Println(availableSlots)
-	Data := make(map[string]interface{})
-	for _, s := range availableSlots {
-		var slt models.Time_Slot
-		result := config.DB.Where("id = ? ", s).Find(&slt)
+// 	for _, s := range slot {
+// 		AllSlot = append(AllSlot, int(s.ID))
+// 	}
 
-		if result.Error != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Failed to find slot by start_slot",
-			})
-			return
+// 	availableSlots := []int{}
+// 	for _, s := range AllSlot {
+// 		if !contains(bookSlots, s) {
+// 			availableSlots = append(availableSlots, s)
+// 		}
+// 	}
+// 	var availableSlots1 []map[string]interface{}
+// 	// fmt.Println(availableSlots)
+// 	Data := make(map[string]interface{})
+// 	for _, s := range availableSlots {
+// 		var slt models.Time_Slot
+// 		result := config.DB.Where("id = ? ", s).Find(&slt)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"error": "Failed to find slot by start_slot",
+// 			})
+// 			return
 
-		}
+// 		}
 
-		Data = map[string]interface{}{
-			"id":        slt.ID,
-			"starttime": slt.Start_time,
-			"endtime":   slt.End_time,
-		}
-		availableSlots1 = append(availableSlots1, Data)
+// 		//fmt.Println(s)
 
-	}
+// 		var psr models.Package_slot_relationship
+// 		result = config.DB.Where("slot_id = ?", s).Find(&psr)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"error": "Failed to find slot by start_slot",
+// 			})
+// 			return
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"success": "Get Available Slot Successfully ",
-		"data":    availableSlots1,
-	})
-}
+// 		}
+
+// 		var price models.Package
+
+// 		result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"error": "Failed to find slot by start_slot",
+// 			})
+// 			return
+
+// 		}
+
+// 		Data = map[string]interface{}{
+// 			"id":        slt.ID,
+// 			"starttime": slt.Start_time,
+// 			"endtime":   slt.End_time,
+// 			"price":     price.Price,
+// 			"package":   price.Name,
+// 		}
+// 		availableSlots1 = append(availableSlots1, Data)
+
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  200,
+// 		"success": "Get Available Slot Successfully ",
+// 		"data":    availableSlots1,
+// 	})
+// }
 
 func contains(slice []int, item int) bool {
 
@@ -925,9 +989,11 @@ func GetAllDetail(c *gin.Context) {
 		result := config.DB.Find(&user, claims["sub"])
 
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
+				"status": 400,
 				"error":  "failed to fatch user detail",
+				"data":   nil,
 			})
 			return
 
@@ -982,9 +1048,11 @@ func GetBookingDetail(c *gin.Context) {
 		result := config.DB.Find(&booking).Where("slot_id", claims["sub"])
 
 		if result.Error != nil {
+			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 404,
+				"status": 400,
 				"error":  "failed to fatch booking detail",
+				"data":   nil,
 			})
 			return
 
@@ -1015,10 +1083,11 @@ func UpdateUser(c *gin.Context) {
 	}
 	err := c.Bind(&body)
 	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,
 			"error":  "failed to read body",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -1062,10 +1131,11 @@ func UpdateUser(c *gin.Context) {
 
 		result := config.DB.Find(&user).Where("id = ?", claims["sub"])
 		if result.Error != nil {
+			logrus.Infof("Failed to update data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": "400",
 				"error":  "User Update UnSuccessfully",
-				"data":   "null",
+				"data":   nil,
 			})
 			return
 		}
@@ -1073,14 +1143,18 @@ func UpdateUser(c *gin.Context) {
 			err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.OldPassword))
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": "Invalid Email or Password",
+					"status": 400,
+					"error":  "Invalid Email or Password",
+					"data":   nil,
 				})
 				return
 			}
 			Hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": "failed to hash password",
+					"status": 400,
+					"error":  "failed to hash password",
+					"data":   nil,
 				})
 				return
 			}
@@ -1088,10 +1162,11 @@ func UpdateUser(c *gin.Context) {
 			users := models.User{Full_Name: body.Full_Name, Email: body.Email, Contact: body.Contact, Password: string(Hash)}
 			result = config.DB.Model(&user).Where("id = ?", claims["sub"]).Updates(users)
 			if result.Error != nil {
+				logrus.Infof("Failed to update data from DB %v\n", result.Error)
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
 					"error":  "User Update UnSuccessfully",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -1105,10 +1180,11 @@ func UpdateUser(c *gin.Context) {
 			users := models.User{Full_Name: body.Full_Name, Contact: body.Contact}
 			result = config.DB.Model(&user).Where("id = ?", claims["sub"]).Updates(users)
 			if result.Error != nil {
+				logrus.Infof("Failed to update data from DB %v\n", result.Error)
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "400",
 					"error":  "User Update UnSuccessfully",
-					"data":   "null",
+					"data":   nil,
 				})
 				return
 			}
@@ -1146,10 +1222,11 @@ func GetAllDetailbydate(c *gin.Context) {
 	var booking []models.Turf_Bookings
 	result := config.DB.Find(&booking).Where("date >= ? AND date <=?", startdate, enddate)
 	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "400",
 			"error":  "fetch booking detail UnSuccessfully",
-			"data":   "null",
+			"data":   nil,
 		})
 		return
 	}
@@ -1157,5 +1234,116 @@ func GetAllDetailbydate(c *gin.Context) {
 		"status":  200,
 		"success": "fetch booking detail Successfully",
 		"data":    booking,
+	})
+}
+
+func Get_Available_slots(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var body struct {
+		Date      string
+		Branch_id int
+	}
+	err := c.Bind(&body)
+	if err != nil {
+		logrus.Infof("Failed to read body %v\n", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "failed to read body",
+			"data":   nil,
+		})
+		return
+	}
+
+	if body.Date == "" || body.Branch_id == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Please select date and branch",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Fetch all time slots
+	var slots []models.Time_Slot
+	result := config.DB.Find(&slots, "branch_id=?", body.Branch_id)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return
+	}
+
+	fmt.Print(body.Date)
+	fmt.Println(body.Branch_id)
+
+	// Fetch booked slots for the specified date
+	var bookedSlots []models.Turf_Bookings
+	result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", body.Date, body.Branch_id).Find(&bookedSlots)
+
+	fmt.Println(bookedSlots)
+	if result.Error != nil {
+		logrus.Infof("Failed to find data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to find booked slots",
+			"data":   nil,
+		})
+		return
+	}
+
+	// Create a map to store booked slots with their is_booked status
+	bookedSlotMap := make(map[int]int)
+	for _, bookedSlot := range bookedSlots {
+		bookedSlotMap[bookedSlot.Slot_id] = bookedSlot.Is_booked
+	}
+
+	// Create a slice to store the final response
+	var response []gin.H
+	for _, slot := range slots {
+		isBooked, exists := bookedSlotMap[int(slot.ID)]
+		if !exists {
+			isBooked = 1
+		}
+
+		var psr models.Package_slot_relationship
+		result = config.DB.Where("slot_id = ?", slot.ID).Find(&psr)
+		if result.Error != nil {
+			logrus.Infof("Failed to find data from DB %v\n", result.Error)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Failed to find Package_slot_relationship for slot",
+				"data":   nil,
+			})
+			return
+		}
+
+		var price models.Package
+		result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
+		if result.Error != nil {
+			logrus.Infof("Failed to find data from DB %v\n", result.Error)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"error":  "Failed to find Package for slot",
+				"data":   nil,
+			})
+			return
+		}
+
+		response = append(response, gin.H{
+			"Slot":      slot,
+			"Is_booked": isBooked,
+			"Package":   price.Name,
+			"Price":     price.Price,
+		})
+	}
+
+	// Return the available slots along with their is_booked status and associated Package information
+	c.JSON(http.StatusOK, gin.H{
+		"available_slots": response,
 	})
 }

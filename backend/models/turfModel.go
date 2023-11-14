@@ -37,7 +37,7 @@ type Package_slot_relationship struct {
 
 type Package struct {
 	gorm.Model
-	Name        string ` grom:"unique"`
+	Name        string `grom:"unique"`
 	Price       float64
 	Status      int
 	Branch_id   int
@@ -59,6 +59,7 @@ type Confirm_Booking_Table struct {
 	Branch_id               int
 	Name                    string
 	Contact                 string
+	Branch_Name             string
 }
 
 type Screenshot struct {

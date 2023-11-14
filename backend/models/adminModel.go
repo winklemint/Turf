@@ -9,12 +9,14 @@ import (
 type Admin struct {
 	gorm.Model
 	Name           string
-	Contact        string ` grom:"unique"`
+	Contact        string
 	Email          string `gorm:"unique"`
 	Password       string
 	Role           int
 	LastLogin      time.Time
 	Turf_branch_id uint
+	Authorization  string
+	Branch_name    string
 }
 type Content struct {
 	gorm.Model
@@ -26,5 +28,24 @@ type Content struct {
 type Carousel struct {
 	gorm.Model
 	Image  string
+	Status string
+}
+type Navbar struct {
+	gorm.Model
+	Name   string
+	Link   string
+	Status string
+}
+type Heading struct {
+	gorm.Model
+	Slider       string
+	Testimonials string
+	Footer       string
+	Status       string
+}
+type Icon struct {
+	gorm.Model
+	Name   string
+	Link   string
 	Status string
 }

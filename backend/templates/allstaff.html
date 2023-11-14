@@ -6,16 +6,17 @@
             <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
         </div>
         <div class="pb-20">
-            <table class="table hover multiple-select-row data-table-export nowrap" id="allusertable">
+            <table class="table hover multiple-select-row data-table-export nowrap" id="allstafftable">
                 <thead>
                     <tr>
                         <th>Sn.</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Contact</th>
-                        <th>Status</th>
+                        <th>Role</th>
+                        <th>Brnach Name</th>
                         <th >Actions</th>
-                        <th>Multi-Slot-Booking</th>
+                    
                     </tr>
                 </thead>
                
@@ -28,10 +29,10 @@
 <script>
     $(document).ready(function () {
         // Initialize DataTable
-        var table = $('#allusertable').DataTable();
+        var table = $('#allstafftable').DataTable();
         // Make an AJAX request to fetch data from the URL
         $.ajax({
-            url: '/admin/get/all/user',
+            url: '/admin/staff/get',
             method: 'GET',
             dataType: 'json',
             success: function (response) {
@@ -39,20 +40,18 @@
                 $.each(response.data, function (index, users) {
                     // Determine the button content based on the "Status"
                     var button;
-                    console.log(users.Account_Status)
-                    if (users.Account_Status === 1) {
-                        button = "<button type='button' class='btn btn-outline-success'>Active</button>";
-                    } else if (users.Account_Status === 2){
-                        button = "<button type='button' class='btn btn-outline-danger'>Hold</button>";
+       
+                    if (users.Role === 2) {
+                        button = "<button type='button' class='btn btn-outline-success'>Admin</button>";
                     }else{
-                        button = "<button type='button' class='btn btn-outline-dark'>Block</button>";
+                        button = "<button type='button' class='btn btn-outline-dark'>Staff</button>";
                     }
                     var action = '<div class="dropdown">' +
                         '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + users.ID + '" role="button" data-toggle="dropdown">' +
                         '<i class="dw dw-more"></i>' +
                         '</a>' +
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
-                        '<a class="dropdown-item" href="/data/user?id=' + users.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/update/staff?id=' + users.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
                         '<a class="dropdown-item" href="/user" onclick="deleteUser(' +  users.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
                         '</div>' +
                         '</div>'
@@ -61,12 +60,13 @@
                     // Create a new row and append it to the table
                     table.row.add([
                         index + 1, // Sn.
-                        users.Full_Name, // P
+                        users.Name, // P
                         users.Email, // Charges
                         users.Contact, // Branch ID
                         button,
+                        users.Branch_name,
                         action,
-                        multi, // Status
+                      
 
                     ]);
                 });
@@ -86,7 +86,7 @@
         
         
         $.ajax({
-            url: "/admin/delete/user/" + Id,
+            url: "/admin/staff/delete/" + Id,
             method: "DELETE",
             success: function (response) {
                 var rowid = 'rowN' + row_id;
@@ -116,12 +116,12 @@
                 var rowElement = document.getElementById(rowid);
                 if (rowElement) {
                     rowElement.style.display = 'none';
-                    alert("User with ID: " + Id + " deleted successfully");
+                    alert("Staff with ID: " + Id + " deleted successfully");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("Error deleting user with ID: " + Id);
+                alert("Error deleting Staff with ID: " + Id);
             }
         });
     }

@@ -1,50 +1,45 @@
 {{template "header.html"}}
-        <div class="pd-ltr-20 xs-pd-20-10">
-            <div class="min-height-200px">
-                <div class="page-header">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="title">
-                                <h4>Form</h4>
-                            </div>
-                            <nav aria-label="breadcrumb" role="navigation">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="index.html">Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        Form Basic
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                        <div class="col-md-6 col-sm-12 text-right">
-                            <div class="dropdown">
-                                <a
-                                    class="btn btn-secondary dropdown-toggle"
-                                    href="#"
-                                    role="button"
-                                    data-toggle="dropdown"
-                                >
-                                    January 2018
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">Export List</a>
-                                    <a class="dropdown-item" href="#">Policies</a>
-                                    <a class="dropdown-item" href="#">View Assets</a>
-                                </div>
-                            </div>
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/dashboard">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            January 2018
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Export List</a>
+                            <a class="dropdown-item" href="#">Policies</a>
+                            <a class="dropdown-item" href="#">View Assets</a>
                         </div>
                     </div>
                 </div>
-                <!-- Default Basic Forms Start -->
-                <div class="pd-20 card-box mb-30">
-                    <div class="clearfix">
-                        <div class="pull-left">
-                            <h4 class="text-blue h4">Create Branch</h4>
-                            <!-- <p class="mb-30">All bootstrap element classies</p> -->
-                        </div>
-                        <!-- <div class="pull-right">
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+        <div class="pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">Create Branch</h4>
+                    <!-- <p class="mb-30">All bootstrap element classies</p> -->
+                </div>
+                <!-- <div class="pull-right">
                             <a
                                 href="#basic-form1"
                                 class="btn btn-primary btn-sm scroll-click"
@@ -54,201 +49,215 @@
                                 ><i class="fa fa-code"></i> Source Code</a
                             >
                         </div> -->
-                    </div>
-                    <form  id = "branch_form">
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Turf Name</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="name"
-                                    class="form-control"
-                                    type="text"
-                                    placeholder="Turf Name Here"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id = "branch_name"
-                                    class="form-control"
-                                    placeholder="Branch Name Here"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Email</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="email"
-                                    class="form-control"
-                                    placeholder="bootstrap@example.com"
-                                    type="email"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Address</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="address"
-                                    class="form-control"
-                                    placeholder="Type your address here"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label"
-                                >Branch Contact Number</label
-                            >
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="contact"
-                                    class="form-control"
-                                    placeholder="1-(111)-111-1111"
-                                    type="tel"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label"
-                                >GST No.</label
-                            >
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="gst"
-                                    class="form-control"
-                                    placeholder="GSTIN"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label"
-                                >Ground Size</label
-                            >
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="size"
-                                    class="form-control"
-                                    placeholder="100 x 100"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Image</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                    id="image"
-                                    class="form-control"
-                                    placeholder="Image Here"
-                                    type="file" 
-                                />
-                            </div>
-                        </div>
-                        
-        
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
-                            <div class="col-sm-12 col-md-10">
-                                <select class="custom-select col-12" id="branch_status">
-                                    <option selected="">Choose...</option>
-                                    <option value="1">Enable</option>
-                                    <option value="2">Disable</option>
-                                    
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                           
-                            <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
-                            
-                        </div>
-                       
-                    </form>
-                    <div class="collapse collapse-box" id="basic-form1">
-                        <div class="code-box">
-                            <div class="clearfix">
-                                <a
-                                    href="javascript:;"
-                                    class="btn btn-primary btn-sm code-copy pull-left"
-                                    data-clipboard-target="#copy-pre"
-                                    ><i class="fa fa-clipboard"></i> Copy Code</a
-                                >
-                                <a
-                                    href="#basic-form1"
-                                    class="btn btn-primary btn-sm pull-right"
-                                    rel="content-y"
-                                    data-toggle="collapse"
-                                    role="button"
-                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
-                                >
-                            </div>
-                            <pre><code class="xml copy-pre" id="copy-pre">
-
-                        </code></pre>
-                        </div>
+            </div>
+            <form id="branch_form">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Turf Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="name" class="form-control" type="text" placeholder="Turf Name Here" required
+                        onkeyup="checkNameLengthTurf()" />
                     </div>
                 </div>
-                <!-- Default Basic Forms End -->
-            </div>
-            <div class="footer-wrap pd-20 mb-20 card-box">
-                DeskApp - Bootstrap 4 Admin Template By
-                <a href="https://github.com/dropways" target="_blank"
-                    >Ankit Hingarajiya</a
-                >
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="branch_name" class="form-control" placeholder="Branch Name Here" type="text" required
+                        onkeyup="checkBranchNameLength()" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Email</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="email" class="form-control" placeholder="bootstrap@example.com" type="email" required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Address</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="address" class="form-control" placeholder="Type your address here" type="text" required />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Contact Number</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="contact" class="form-control" placeholder="1-(111)-111-1111" type="tel" required 
+                        onkeyup="validateIndianContact()"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">GST No.</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="gst" class="form-control" placeholder="GSTIN" type="text" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Ground Size</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="size" class="form-control" placeholder="100 x 100" type="text" required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Image</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="image" class="form-control" placeholder="Image Here" type="file" />
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="branch_status">
+                            <option selected="">Choose...</option>
+                            <option value="1">Enable</option>
+                            <option value="2">Disable</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+
+                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+
+                </div>
+
+            </form>
+            <div class="collapse collapse-box" id="basic-form1">
+                <div class="code-box">
+                    <div class="clearfix">
+                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                    </div>
+                    <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                </div>
             </div>
         </div>
+        <!-- Default Basic Forms End -->
+    </div>
+    <div class="footer-wrap pd-20 mb-20 card-box">
+        DeskApp - Bootstrap 4 Admin Template By
+        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
+</div>
 
 
-   
-    {{template "footer.html"}}
 
-    <script>
-        $(document).ready(function() {
-            $("#branch_form").submit(function(event) {
-                event.preventDefault();
-    
-                var formData = new FormData();  // Create a FormData object
-    
-                // Append form fields to the FormData object
-                formData.append("Turf_name", $("#name").val());
-                formData.append("Branch_email", $("#email").val());
-                formData.append("Branch_name", $("#branch_name").val());
-                formData.append("Branch_address", $("#address").val());
-                formData.append("Branch_contact_number", $("#contact").val());
-                formData.append("GST_no", $("#gst").val());
-                formData.append("Ground_Size", $("#size").val());
-                formData.append("Status", parseInt($('#branch_status').val(), 10));
-                // Append the file input
-                var imageInput = $('#image')[0];
-                if (imageInput.files.length > 0) {
-                    formData.append("image", imageInput.files[0]);
-                }
-    
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/add/branch",
-                    data: formData,
-                    processData: false,  // Prevent jQuery from processing data
-                    contentType: false,  // Prevent jQuery from setting content type
-                    dataType: "json",
-                }).done(function(data) {
-                    window.location.href = "/all/branch";
-                });
+{{template "footer.html"}}
+
+<script>
+     function checkNameLengthTurf() {
+            var nameInput = document.getElementById('name');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                // The name is valid
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+                // The name is too short
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+
+        function checkBranchNameLength() {
+            var nameInput = document.getElementById('branch_name');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                // The name is valid
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+                // The name is too short
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+
+        function validateEmail() {
+            var emailInput = document.getElementById('email');
+            var emailValue = emailValue.value.trim();
+
+        // Regular expression for basic email validation
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+            // The input is a valid integer
+            emailInput.classList.remove('form-control-danger'); // Remove danger class
+            emailInput.classList.add('form-control-success'); // Add success class
+        } else {
+            // The input is not a valid integer
+            emailInput.classList.remove('form-control-success'); // Remove success class
+            emailInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+
+    function validateIndianContact() {
+        var contactInput = document.getElementById('contact');
+            var contactValue = contactInput.value.trim();
+
+        // Regular expression for Indian contact number validation
+        // var contactRegex = /^[6-9]\d{9}$/;
+
+        if (/^[6-9]\d{9}$/.test(contactValue)) {
+            // The input is a valid integer
+            contactInput.classList.remove('form-control-danger'); // Remove danger class
+            contactInput.classList.add('form-control-success'); // Add success class
+        } else {
+            // The input is not a valid integer
+            contactInput.classList.remove('form-control-success'); // Remove success class
+            contactInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+       
+        $("#branch_form").submit(function (event) {
+            event.preventDefault();
+
+            var formData = new FormData();  // Create a FormData object
+
+            // Append form fields to the FormData object
+            formData.append("Turf_name", $("#name").val());
+            formData.append("Branch_email", $("#email").val());
+            formData.append("Branch_name", $("#branch_name").val());
+            formData.append("Branch_address", $("#address").val());
+            formData.append("Branch_contact_number", $("#contact").val());
+            formData.append("GST_no", $("#gst").val());
+            formData.append("Ground_Size", $("#size").val());
+            formData.append("Status", parseInt($('#branch_status').val(), 10));
+            // Append the file input
+            var imageInput = $('#image')[0];
+            if (imageInput.files.length > 0) {
+                formData.append("image", imageInput.files[0]);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/add/branch",
+                data: formData,
+                processData: false,  // Prevent jQuery from processing data
+                contentType: false,  // Prevent jQuery from setting content type
+                dataType: "json",
+            }).done(function (data) {
+                window.location.href = "/all/branch";
             });
         });
-    </script>
-    
-      
+    });
+</script>
+
+
 
 </body>
-</html>
 
-    
+</html>

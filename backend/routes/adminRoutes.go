@@ -11,15 +11,26 @@ func RegisterAdminRoutes(router *gin.Engine) {
 
 	adminRoutes := router.Group("/admin")
 	{
+		//Admin and Staff
 		adminRoutes.POST("/signup", controllers.AdminSignup)
 		adminRoutes.POST("/login", controllers.AdminLogin)
 		adminRoutes.PUT("/update", controllers.UpdateAdmin)
+		adminRoutes.GET("/staff/get", controllers.AllStaff)
+		adminRoutes.PATCH("/staff/update/:id", controllers.AdminUpdateById)
+		adminRoutes.GET("/staff/get/:id", controllers.AdminGetById)
+		adminRoutes.DELETE("/staff/delete/:id", controllers.AdminDelete)
+		adminRoutes.GET("/profile", controllers.AdminProfile)
+		adminRoutes.PATCH("update/profile", controllers.UpdateProfile)
+
+		adminRoutes.GET("/data/login", controllers.GetLoggedAdmin)
 		// Slot
 		adminRoutes.POST("/add/slot", controllers.AddSlot)
 		adminRoutes.POST("/update/slot/:id", controllers.UpdateSlot)
 		adminRoutes.GET("/get/slot", controllers.GetAllSlot)
 		adminRoutes.POST("/get/slot/:id", controllers.Get_Package)
 		adminRoutes.DELETE("/delete/slot/:id", controllers.DeleteSlot)
+		adminRoutes.POST("/get/avl/multi/slot", controllers.Get_Available_slots_Multi_Dates)
+
 		//package
 		adminRoutes.POST("/add/package", controllers.AddPackage)
 		adminRoutes.PATCH("/update/package/:id", controllers.UpdatePackage)
@@ -29,13 +40,18 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		//booking
 		adminRoutes.GET("/get/confirm/booking", controllers.Cnfrm_slots)
 		adminRoutes.GET("/get/confirm/booking/top5", controllers.GetConfirmBookingTop5)
-		adminRoutes.POST("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
+		// adminRoutes.GET("/get/confirm/booking/top5/:id", controllers.GetConfirmBookingTop5Super)
+		adminRoutes.PATCH("/update/confirm/booking/:id", controllers.UpdatecomfirmDetails)
 		adminRoutes.GET("/total/today/booking", controllers.Today_Total_Booking)
 		adminRoutes.POST("/add/screenshot/:id", controllers.AdminAddScreenshot)
 		adminRoutes.POST("/add/slot/:id", controllers.AddSlotForUser)
 		adminRoutes.POST("/get/booking/date", controllers.GetAllDetailbydate)
-		adminRoutes.POST("/remaining/payement/booking", controllers.Remaining_Payment_For_User)
+		adminRoutes.POST("/remaining/payement/booking", controllers.RemainingPaymentForUser)
 		adminRoutes.GET("/pending/bookings", controllers.Pending_bookings)
+		adminRoutes.GET("/pending/bookings/:id", controllers.Pending_bookings_by_ID)
+		adminRoutes.GET("/payments/:id", controllers.MultipleImages)
+
+		adminRoutes.POST("/multi/bookings/:id", controllers.Multiple_slot_booking)
 
 		//user Details
 		adminRoutes.POST("/add/user", controllers.AddUser)
@@ -44,6 +60,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/user/:id", controllers.GetAllUsersById)
 		adminRoutes.DELETE("/delete/user/:id", controllers.DeleteUser)
 		adminRoutes.GET("user/count", controllers.CountUser)
+		adminRoutes.GET("/count/user/monthly", controllers.GetMonthlyUsers)
 		// adminRoutes.GET("/get/branch/name", controllers.Select_branch)
 
 		//adminRoutes.GET("/pending/booking", controllers.Pending_bookings)
@@ -63,7 +80,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
 		//tetsimonials
 		adminRoutes.POST("/add/testimonials", controllers.Testimonials)
-		adminRoutes.PATCH("/update/testimonials/:id", controllers.Upadte_TestiMonilas)
+		adminRoutes.PATCH("/update/testimonials/:id", controllers.Upadte_Testimonials)
 		adminRoutes.PATCH("/update/image/testimonials/:id", controllers.UpdateImageForTestimonials)
 		adminRoutes.PATCH("/update/image/last/testimonials", controllers.UpdateImageForTestimonials2)
 		adminRoutes.GET("/get/testimonials", controllers.AllTestimonials)
@@ -92,6 +109,38 @@ func RegisterAdminRoutes(router *gin.Engine) {
 
 		//admin logout
 		adminRoutes.POST("/logout", controllers.AdminLogout)
+
+		//Navbar
+		adminRoutes.POST("/navbar/add", controllers.AddNavbar)
+		adminRoutes.GET("/navbar/get", controllers.GetAllNavbar)
+		adminRoutes.GET("/navbar/active", controllers.GetActiveNavbar)
+		adminRoutes.PATCH("/navbar/update/:id", controllers.UpadateNavbar)
+		adminRoutes.GET("/navbar/get/:id", controllers.GetNavbarById)
+		adminRoutes.DELETE("/navbar/delete/:id", controllers.DeleteNavbar)
+
+		//Other content
+		adminRoutes.POST("/heading/add", controllers.AddHeading)
+		adminRoutes.GET("/heading/get", controllers.GetAllHeading)
+		adminRoutes.GET("/heading/active", controllers.GetActiveHeading)
+		adminRoutes.PATCH("/heading/update/:id", controllers.UpadateHeading)
+		adminRoutes.GET("/heading/get/:id", controllers.GetHeadingById)
+		adminRoutes.DELETE("/heading/delete/:id", controllers.DeleteHeading)
+
+		//dashbard
+		adminRoutes.GET("/total/revenue", controllers.Total_Revenue)
+		adminRoutes.GET("/total/remaining/amount", controllers.Total_Remaining_amount)
+		adminRoutes.GET("/total/sales", controllers.Total_Sales)
+		adminRoutes.GET("/total/monthly/revenue", controllers.Total_Monthly_revenue)
+		adminRoutes.GET("/sales/rati0", controllers.Graph_API)
+		adminRoutes.GET("/package/list", controllers.PackageNameList)
+		adminRoutes.GET("/total/slot", controllers.TotalSlot)
+		//Social Icon
+		adminRoutes.POST("/icon/add", controllers.AddIcon)
+		adminRoutes.GET("/icon/get", controllers.GetAllIcon)
+		adminRoutes.GET("/icon/active", controllers.GetActiveIcon)
+		adminRoutes.PATCH("/icon/update/:id", controllers.UpadateIcon)
+		adminRoutes.GET("/icon/get/:id", controllers.GetIconById)
+		adminRoutes.DELETE("/icon/delete/:id", controllers.DeleteIcon)
 
 	}
 }
