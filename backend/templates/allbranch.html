@@ -56,7 +56,7 @@
                         '</a>' +
                         '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
                         '<a class="dropdown-item" href="update/branch?id=' + branchs.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
-                        '<a class="dropdown-item" href="/all/branch" onclick="deleteCarousel(' + branchs.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '<a class="dropdown-item" href="/all/branch" onclick="deleteBranch(' + branchs.ID + '); event.preventDefault();"><i class="dw dw-delete-3"></i> Delete</a>' +
                         '</div>' +
                         '</div>';
 
@@ -82,7 +82,7 @@
             }
         });
     });
-    function deleteCarousel(Id) {
+    function deleteBranch(Id) {
         var row_id = Id;
 
         $.ajax({
@@ -94,18 +94,19 @@
                 text: 'Branch Deleted successfully!',
                 icon: 'success',
                 showCancelButton: false,
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
                 allowOutsideClick: false,
                 timer: 10000,
             }).then((result) => {
                 // Check if the user clicked "OK"
                 if (result.isConfirmed) {
+                   
                     // Redirect the user to "/user"
-                    window.location.href = "/all/branch";
+                    
+                 window.location.href = "/all/branch";
                 } else if (result.isDismissed) {
+                    
                     // Handle the case when the user clicks "Cancel"
-                    window.location.href = "/slot";
+                     window.location.href = "/all/branch";
                 }
             });
         }).fail(function (data) {

@@ -198,9 +198,10 @@
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: function(response) {
+                    console.log(response);
                     Swal.fire({
                         title: 'Updated!',
-                        text: 'User Updated Successfully.',
+                        text: response.message || "User updated successfully!",
                         icon: "success",
                         timer: 3000
                     }).then(
