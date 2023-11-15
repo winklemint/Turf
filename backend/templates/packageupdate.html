@@ -1,210 +1,265 @@
 {{template "header.html"}}
-        <div class="pd-ltr-20 xs-pd-20-10">
-            <div class="min-height-200px">
-                <div class="page-header">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="title">
-                                <h4>Form</h4>
-                            </div>
-                            <nav aria-label="breadcrumb" role="navigation">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="/dashborad">Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        Form Basic
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                        <div class="col-md-6 col-sm-12 text-right">
-                            <div class="dropdown">
-                                <a
-                                    class="btn btn-secondary dropdown-toggle"
-                                    href="#"
-                                    role="button"
-                                    data-toggle="dropdown"
-                                >
-                                    January 2018
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">Export List</a>
-                                    <a class="dropdown-item" href="#">Policies</a>
-                                    <a class="dropdown-item" href="#">View Assets</a>
-                                </div>
-                            </div>
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/dashborad">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            January 2018
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Export List</a>
+                            <a class="dropdown-item" href="#">Policies</a>
+                            <a class="dropdown-item" href="#">View Assets</a>
                         </div>
                     </div>
                 </div>
-                <!-- Default Basic Forms Start -->
-                <div class="pd-20 card-box mb-30">
-                   
-                    <form  id = "update_form">
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Package Name</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="name"
-                                    class="form-control"
-                                    type="text"
-                                    placeholder="Package Name Here"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Package Charges</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id = "charges"
-                                    class="form-control"
-                                    placeholder="Package Charges Here"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Id</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="id"
-                                    class="form-control"
-                                    placeholder="Branch Here"
-                                    type="number"
-                                />
-                            </div>
-                        </div>
-                      
-                        
-                        <!-- <div class="form-group row">
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+        <div class="pd-20 card-box mb-30">
+
+            <form id="update_form">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Package Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="name" class="form-control" type="text" placeholder="Package Name Here" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Package Charges</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="charges" class="form-control" placeholder="Package Charges Here" type="text" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Id</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="id" class="form-control" placeholder="Branch Here" type="number" />
+                    </div>
+                </div>
+
+
+                <!-- <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
                             <div class="col-sm-12 col-md-10">
                                 <input class="form-control" value="100" type="number" />
                             </div>
                         </div> -->
-        
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Status</label>
-                            <div class="col-sm-12 col-md-10">
-                                <select class="custom-select col-12" id="package_status">
-                                    <option selected="">Choose...</option>
-                                    <option value="1">Enable</option>
-                                    <option value="2">Disable</option>
-                                    
-                                </select>
-                            </div>
-                        </div>
 
-                        <div>
-                           
-                            <input class="btn btn-primary" type="submit" value="Update" id="submit" />
-                            
-                        </div>
-                       
-                    </form>
-                    <div class="collapse collapse-box" id="basic-form1">
-                        <div class="code-box">
-                            <div class="clearfix">
-                                <a
-                                    href="javascript:;"
-                                    class="btn btn-primary btn-sm code-copy pull-left"
-                                    data-clipboard-target="#copy-pre"
-                                    ><i class="fa fa-clipboard"></i> Copy Code</a
-                                >
-                                <a
-                                    href="#basic-form1"
-                                    class="btn btn-primary btn-sm pull-right"
-                                    rel="content-y"
-                                    data-toggle="collapse"
-                                    role="button"
-                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
-                                >
-                            </div>
-                            <pre><code class="xml copy-pre" id="copy-pre">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Status</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="package_status">
+                            <option selected="">Choose...</option>
+                            <option value="1">Enable</option>
+                            <option value="2">Disable</option>
 
-                        </code></pre>
-                        </div>
+                        </select>
                     </div>
                 </div>
-                <!-- Default Basic Forms End -->
-            </div>
-            <div class="footer-wrap pd-20 mb-20 card-box">
-                DeskApp - Bootstrap 4 Admin Template By
-                <a href="https://github.com/dropways" target="_blank"
-                    >Ankit Hingarajiya</a
-                >
+
+                <!-- <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Days</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-around">
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">All Days</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck2">
+                            <label class="custom-control-label" for="customCheck2">Sunday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck3">
+                            <label class="custom-control-label" for="customCheck3">Monday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck4">
+                            <label class="custom-control-label" for="customCheck4">Tuesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck5">
+                            <label class="custom-control-label" for="customCheck5">Wednesday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck6">
+                            <label class="custom-control-label" for="customCheck6">Thursday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck7">
+                            <label class="custom-control-label" for="customCheck7">Friday</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-inline">
+                            <input type="checkbox" class="custom-control-input packageDays" id="customCheck8">
+                            <label class="custom-control-label" for="customCheck8">Saturday</label>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="form-group row slot_day" id="slot_sunday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Sunday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_sunday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" id="slot_monday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Monday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_monday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" id="slot_tuesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Tuesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_tuesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" id="slot_wednesday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Wednesday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_wednesday"></div>
+                </div>
+
+                <div class="form-group row slot_day" id="slot_thursday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Thursday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_thursday"></div>
+                </div>
+
+                <div class="form-group row slot_day" id="slot_friday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Friday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center" id="slot_div_friday">
+                    </div>
+                </div>
+
+                <div class="form-group row slot_day" id="slot_saturday">
+                    <label class="col-sm-12 col-md-2 pt-0 pb-0 col-form-label">Saturday Slots</label>
+                    <div class="col-sm-12 col-md-10 d-flex justify-content-left align-item-center"
+                        id="slot_div_saturday"></div>
+                </div>
+
+
+                <div>
+
+                    <input class="btn btn-primary" type="submit" value="Update" id="submit" />
+
+                </div>
+
+            </form>
+            <div class="collapse collapse-box" id="basic-form1">
+                <div class="code-box">
+                    <div class="clearfix">
+                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                    </div>
+                    <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                </div>
             </div>
         </div>
+        <!-- Default Basic Forms End -->
+    </div>
+    <div class="footer-wrap pd-20 mb-20 card-box">
+        DeskApp - Bootstrap 4 Admin Template By
+        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
+</div>
 
 
-   
-    {{template "footer.html"}}
+
+{{template "footer.html"}}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+        $(".slot_day").hide();
         // Retrieve the loan ID from the query parameter
         var Id = new URLSearchParams(window.location.search).get('id');
-        
+
         if (Id) {
             BranchDetails(Id);
         }
-    
+
         // Helper function to retrieve a specific cookie value by name
         function BranchDetails(Id) {
             $.ajax({
                 url: "/admin/get/package/" + Id,
                 method: "GET",
                 dataType: "json",
-                success: function(response) {
+                success: function (response) {
+                    console.log(response.data)
                     var branchs = response.data;
+
                     if (branchs) {
-                        $('#name').val(branchs.Name);
-                        $('#charges').val(branchs.Price);
-                        $('#id').val(branchs.Branch_id);
-                        $('#package_status').val(branchs.Status);
-                        
+                        $('#name').val(branchs[0].Name);
+                        $('#charges').val(branchs[0].Price);
+                        $('#id').val(branchs[0].BranchID);
+                        $('#package_status').val(branchs[0].Status);
+
+                        // Check checkboxes and append slots based on the API response
+                        handleCheckboxAndSlots(branchs);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
         }
-    
-        // Handle the form submission
-        $('#update_form').submit(function(event) {
-            event.preventDefault();
-    
-            var formData = {
-                Name: $('#name').val(),
-                Price:  parseFloat($('#charges').val()),
-                Branch_id: parseInt($('#id').val()),
-               
-                Status: parseInt($('#package_status').val()),
-                
 
+        // Handle the form submission
+        $('#update_form').submit(function (event) {
+            event.preventDefault();
+
+            // Collect form data
+            var formData = {
+                name: $('#name').val(),
+                price: parseFloat($('#charges').val()),
+                branch_id: parseInt($('#id').val()),
+                status: parseInt($('#package_status').val()),
+                slot_id: [] // Initialize selectedSlotIDs as an empty array
             };
-    
+
+            // Collect selected slot IDs
+            $('.packageDays:checked').each(function () {
+                formData.slot_id.push($(this).data('value').toString());
+            });
+
+            // Convert the array to a string representation like "[5]"
+            // formData.slot_id = "[" + formData.slot_id.join(",") + "]";
+
             // Send the update request using a PATCH method
             $.ajax({
                 url: "/admin/update/package/" + Id, // Update the URL as needed
                 method: "PATCH", // Use PATCH method for updating
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
-                success: function(response) {
+                success: function (response) {
                     Swal.fire({
                         title: 'Updated!',
                         text: 'Package Updated successfully.',
                         icon: "success",
-                        timer: 3000
+                        timer: 6000
                     }).then(
                         function () {
                             window.location.href = "/all/branch";
-                        },
-                        // handling the promise rejection
-                        function (dismiss) {
-                            if (dismiss === 'timer') {
-                                console.log('I was closed by the timer');
-                            }
                         }
                     );
                 },
@@ -220,9 +275,57 @@
                 }
             });
         });
-    });
-</script>   
-</body>
-</html>
 
-    
+        // Function to check checkboxes and append slots based on the API response
+        function handleCheckboxAndSlots(branchs) {
+            var allDaysChecked = true; // Assume all days are checked initially
+
+            for (var i = 0; i < branchs.length; i++) {
+                var branch = branchs[i];
+                var day = branch.Day.toLowerCase();
+                var checkboxId = "customCheck" + (dayToIndex(day) + 1);
+
+                // Check the checkbox for the corresponding day
+                $("#" + checkboxId).prop('checked', true);
+
+                // Check if the corresponding slot div exists
+                var slotDivId = "slot_" + day;
+                if ($("#" + slotDivId).length > 0) {
+                    $("#" + slotDivId).css('display', 'flex'); // Show the slot div
+
+                    // Append the slot to the corresponding day's slot_div
+                    var current_cb = "<div class='custom-control custom-checkbox d-inline d-flex'><input type='checkbox' checked data-value='" + branch.SlotID + "' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + branch.SlotID + "' data-branch-id='" + branch.BranchID + "' data-start-time='" + branch.StartTime + "' data-end-time='" + branch.EndTime + "'><label class='custom-control-label' for='" + day + "_slot_check_box_" + branch.SlotID + "'></label>" + branch.StartTime + " - " + branch.EndTime + " </div>";
+                    $("#" + slotDivId).append(current_cb);
+
+                    console.log("Showing slot div for " + day);
+                } else {
+                    console.log("Slot div not found for " + day);
+                }
+
+                // Check if the current day is not "All Days"
+                if (day !== "sunday" && day !== "monday" && day !== "tuesday" && day !== "wednesday" && day !== "thursday" && day !== "friday" && day !== "saturday") {
+                    allDaysChecked = false; // If any specific day is present, uncheck "All Days"
+                }
+            }
+
+            // Check or uncheck the "All Days" checkbox based on the flag
+            $("#customCheck1").prop('checked', allDaysChecked);
+
+            // Add event listener for packageDays checkboxes to log values when checked or unchecked
+            $(".packageDays").on("change", function () {
+                console.log("Checkbox with value " + $(this).data('value') + " is " + (this.checked ? "checked" : "unchecked"));
+            });
+        }
+
+        // Helper function to convert day name to index
+        function dayToIndex(day) {
+            return ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(day);
+        }
+    });
+</script>
+
+
+
+</body>
+
+</html>

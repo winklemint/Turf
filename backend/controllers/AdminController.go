@@ -1464,9 +1464,8 @@ func Get_Slot_by_day(c *gin.Context) {
 
 		result := config.DB.Debug().Model(&models.Time_Slot{}).
 			Select("time_slots.id, time_slots.start_time, time_slots.end_time, time_slots.day, time_slots.unique_slot_id, time_slots.branch_id, package_slot_relationships.id as psr_id").
-			Joins("JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
-			Joins("JOIN packages ON package_slot_relationships.package_id = packages.id").
-			Where("time_slots.day = ? AND time_slots.branch_id=? AND packages.status=1", body.Day[i], body.Branch_id).
+			Joins("LEFT JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
+			Where("time_slots.day = ? AND time_slots.branch_id=?", body.Day[i], body.Branch_id).
 			Scan(&slot)
 
 		if result.Error != nil {
@@ -1532,9 +1531,13 @@ func UpdatePackage(c *gin.Context) {
 	ID, _ := strconv.ParseUint(Id, 10, 0)
 
 	IDuint := uint(ID)
+
+	fmt.Println("id", IDuint)
 	//var psr models.Package_slot_relationship
 
 	config.DB.Exec("DELETE FROM package_slot_relationships WHERE package_id = ? ", Id)
+
+	fmt.Println("slt", body.Slot_id)
 
 	for i := 0; i < len(body.Slot_id); i++ {
 		psr := models.Package_slot_relationship{Package_id: IDuint, Slot_id: body.Slot_id[i]}
@@ -1768,24 +1771,43 @@ func GetAllPackageById(c *gin.Context) {
 		return
 	}
 	Id := c.Param("id")
-	var pkg models.Package
-	result := config.DB.Find(&pkg).Where("id=?", Id)
 
+	var results []struct {
+		PackageID     uint
+		Name          string
+		Price         float64
+		BranchID      uint
+		Status        int
+		PackageSlotID uint
+		SlotID        uint
+		StartTime     string
+		EndTime       string
+		Day           string
+	}
+
+	// Assuming you have the necessary associations set up in your models
+	result := config.DB.Table("packages").
+		Select("packages.id as package_id, packages.name, packages.price, packages.branch_id, packages.status, package_slot_relationships.id as package_slot_id, package_slot_relationships.slot_id, time_slots.start_time, time_slots.end_time, time_slots.day").
+		Joins("JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
+		Joins("JOIN time_slots ON package_slot_relationships.slot_id = time_slots.id").
+		Where("packages.id = ?", Id).
+		Scan(&results)
+
+	// Check for errors
 	if result.Error != nil {
-		logrus.Infof("Failed to Get Package Detail %v\n", result.Error)
+		logrus.Infof("Failed to retrieve data: %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
-			"message": "Failed To Get Package",
+			"message": "Failed to retrieve data",
 			"data":    nil,
 		})
 		return
-
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"message": "Package Details",
-		"data":    pkg,
+		"data":    results,
 	})
 }
 func DeletePackage(c *gin.Context) {
@@ -1798,12 +1820,27 @@ func DeletePackage(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var packages models.Package
-	result := config.DB.Model(&packages).Where("id=?", Id).Delete(&packages)
+	sqlQuery := "DELETE FROM packages WHERE id = ?"
+	result := config.DB.Exec(sqlQuery, Id)
 	if result.Error != nil {
 		logrus.Infof("Failed to Delete Package %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
 			"message": "Failed To Delete Package",
+			"data":    nil,
+		})
+		return
+
+	}
+
+	//var psr models.Package_slot_relationship
+	sqlQuery = "DELETE FROM package_slot_relationships WHERE package_id = ?"
+	result = config.DB.Exec(sqlQuery, Id)
+	if result.Error != nil {
+		logrus.Infof("Failed to Delete Package Sl0t Relati0nship %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "Failed To Delete PSR",
 			"data":    nil,
 		})
 		return
