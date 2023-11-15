@@ -266,14 +266,14 @@
         $("#start-date").on('change', function () {
             var startDate = $(this).val();
             var formattedStartDate = formatDateToDDMMYYYY(startDate);
-            updateInputField("#start-date", formattedStartDate);
+            // updateInputField("#start-date", formattedStartDate);
         });
 
         // Event listener to format the End Date input
         $("#end-date").on('change', function () {
             var endDate = $(this).val();
             var formattedEndDate = formatDateToDDMMYYYY(endDate);
-            updateInputField("#end-date", formattedEndDate);
+            // updateInputField("#end-date", formattedEndDate);
         });
 
         $.ajax({
@@ -306,21 +306,26 @@
             return startDate && endDate && branchName;
         }
 
+        
+
         // Function to handle the AJAX request
         function makeAjaxRequest() {
             if (allFieldsFilled()) {
                 formattedStartDate = formatDateToDDMMYYYY($("#start-date").val());
                 formattedEndDate = formatDateToDDMMYYYY($("#end-date").val());
 
+                var payload = JSON.stringify({
+                        Start_date: formattedStartDate,
+                        End_date: formattedEndDate,
+                        Branch_id: parseInt($("#branchSelect").val())
+    })
+
                 // All fields are filled, so make the AJAX request with formatted dates
                 $.ajax({
                     url: '/admin/get/avl/multi/slot',
                     method: 'POST',
-                    data: {
-                        Start_date: formattedStartDate,
-                        End_date: formattedEndDate,
-                        Branch_id: parseInt($("#branchSelect").val())
-                    },
+                    data: payload,
+                    contentType: "application/json",
                     dataType: 'json',
                     success: function (response) {
                         console.log(response);

@@ -516,7 +516,6 @@ func AdminLogin(c *gin.Context) {
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(body.Password))
-
 	if err != nil {
 		logrus.Infoln(err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -526,6 +525,19 @@ func AdminLogin(c *gin.Context) {
 		})
 		return
 	}
+
+	var branch models.Branch_info_management
+	result = config.DB.Find(&branch, "id=?", admin.Turf_branch_id)
+	if branch.Status != 1 || result.Error != nil {
+		logrus.Infoln("Admin l0gin - ", result.Error)
+		c.JSON(http.StatusForbidden, gin.H{
+			"status":  403,
+			"message": "Branch is Disabled kindly c0ntact Super Admin",
+			"data":    nil,
+		})
+		return
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": admin.ID,
 		"exp": time.Now().Add(time.Hour * 2).Unix(),
@@ -800,7 +812,7 @@ func GET_All_Branch(c *gin.Context) {
 	}
 
 	var branch []models.Branch_info_management
-	result := config.DB.Find(&branch)
+	result := config.DB.Find(&branch, "status=1")
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -869,7 +881,7 @@ func Get_IdBy_Branch_NAme(c *gin.Context) {
 	}
 
 	var branches models.Branch_info_management
-	result := config.DB.Find(&branches, "branch_name=?", body.Branch_Name)
+	result := config.DB.Find(&branches, "branch_name=? AND status=1", body.Branch_Name)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
