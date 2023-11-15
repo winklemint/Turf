@@ -5309,7 +5309,7 @@ func Graph_API(c *gin.Context) {
 }
 
 func PackageNameList(c *gin.Context) {
-	branchID, err := c.Request.Cookie("Branch_id")
+	branchID, err := c.Request.Cookie("branch_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
