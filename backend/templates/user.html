@@ -89,46 +89,42 @@
             url: "/admin/delete/user/" + Id,
             method: "DELETE",
             success: function (response) {
+                Swal.fire({
+                title: 'Deleted!',
+                text: 'Branch Deleted successfully!',
+                icon: 'success',
+                showCancelButton: false,
+                allowOutsideClick: false,
+                timer: 5000,
+                })
+
+                setTimeout(function () {
                 var rowid = 'rowN' + row_id;
-                alert(rowid);
                 var rowElement = document.getElementById(rowid);
                 if (rowElement) {
                     rowElement.style.display = 'none';
-                    alert("Testimonial with ID: " + Id + " deleted successfully");
                 }
+            }, 5000); // 5000 milliseconds (5 seconds)
+        
+                // var rowid = 'rowN' + row_id;
+                
+                // var rowElement = document.getElementById(rowid);
+                // if (rowElement) {
+                //     rowElement.style.display = 'none';
+                //     alert("Testimonial with ID: " + Id + " deleted successfully");
+                // }
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting testimonial with ID: " + Id);
-            }
-        });
-    }
-    function deleteTestimonial(Id) {
-        var row_id = Id;
-        
-        
-        $.ajax({
-            url: "/admin/delete/testimonial/" + Id,
-            method: "DELETE",
-            success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("User with ID: " + Id + " deleted successfully");
+                console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting user with ID: " + Id);
-            }
         });
     }
-    
-  
-   
-    
 </script>
 
 </body>
