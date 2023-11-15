@@ -718,9 +718,9 @@ func Update_Branch(c *gin.Context) {
 	if c.Bind(&body) != nil {
 		logrus.Infoln("failed t0 read b0dy Update_Branch")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"message":  "Failed To Read Body",
-			"data":   nil,
+			"status":  400,
+			"message": "Failed To Read Body",
+			"data":    nil,
 		})
 		return
 
@@ -731,9 +731,9 @@ func Update_Branch(c *gin.Context) {
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": 400,
-			"message":  "Something went wrong",
-			"data":   nil,
+			"status":  400,
+			"message": "Something went wrong",
+			"data":    nil,
 		})
 		return
 	}
@@ -757,9 +757,9 @@ func Update_Branch(c *gin.Context) {
 		if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
 			logrus.Infoln("Upload the right file format (jpg or png) Update branch func")
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"message":  "Upload The Right File Format (jpg or png)",
-				"data":   nil,
+				"status":  400,
+				"message": "Upload The Right File Format (jpg or png)",
+				"data":    nil,
 			})
 			return
 		}
@@ -771,9 +771,9 @@ func Update_Branch(c *gin.Context) {
 		if result.Error != nil {
 			logrus.Infof("Failed to get data from DB %v\n", result.Error)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-				"message":  "Something went wrong",
-				"data":   nil,
+				"status":  400,
+				"message": "Something went wrong",
+				"data":    nil,
 			})
 			return
 		}
@@ -5302,7 +5302,7 @@ func Graph_API(c *gin.Context) {
 }
 
 func PackageNameList(c *gin.Context) {
-	branchID, err := c.Request.Cookie("Branch_id")
+	branchID, err := c.Request.Cookie("branch_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": 400,

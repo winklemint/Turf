@@ -179,14 +179,12 @@
 {{template "footer.html"}}
 <script>
     $(document).ready(function () {
-        // Define Id outside the if block
         var Id = new URLSearchParams(window.location.search).get('id');
 
         if (Id) {
             getUserDetails(Id);
         }
 
-        // Helper function to retrieve user details
         function getUserDetails(Id) {
             $.ajax({
                 url: "/admin/staff/get/" + Id,
@@ -205,14 +203,9 @@
 
                         var authorizationValues = user.Authorization;
 
-                        // Loop through each checkbox element
                         $('.auth').each(function () {
-                            var checkboxValue = parseInt($(this).attr('value')); // Convert the checkbox value to an integer
-                            if (authorizationValues.includes(checkboxValue)) {
-                                $(this).prop('checked', true); // Check the checkbox if the value matches
-                            } else {
-                                $(this).prop('checked', false); // Uncheck the checkbox if the value doesn't match
-                            }
+                            var checkboxValue = parseInt($(this).val());
+                            $(this).prop('checked', authorizationValues.includes(checkboxValue));
                         });
                     }
                 },
@@ -222,20 +215,15 @@
             });
         }
 
+        // Fetch branch data
         $.ajax({
             url: '/admin/get/branch',
             method: 'GET',
             dataType: 'json',
             success: function (res) {
-                // Save the selected branch value if it's already set
                 var selectedBranch = $("#branchSelect").val();
-
-                // Clear the existing options in the dropdown
                 $("#branchSelect").html('');
-
                 appendDataToSelect(res.data);
-
-                // Set the selected branch value back
                 if (selectedBranch) {
                     $("#branchSelect").val(selectedBranch);
                 }
@@ -247,6 +235,7 @@
 
         $("#staff_form").submit(function (event) {
             event.preventDefault();
+
             var formData = {
                 Name: $("#name").val(),
                 Email: $("#email").val(),
@@ -265,7 +254,6 @@
                         alert("User Details updated successfully!");
                         window.location.href = "/user";
                     } else {
-                        // Handle an error response, e.g., update failed
                         console.log(response.message);
                     }
                 },
@@ -275,93 +263,29 @@
             });
         });
 
-        // Convert the selected permissions to a JSON string
-        var authorizationString = "{" + selectedPerm.join(",") + "}";
+        // Other functions related to checkboxes, permissions, and API calls
+        updateAllAuthorizationCheckboxState();
 
-        var formData = {
-            name: $("#name").val(),
-            email: $("#email").val(),
-            contact: $("#contact").val(),
-            password: $("#password").val(),
-            role: parseInt($('#role').val()),
-            branch_name: parseInt($("#branchSelect").val()),
-            authorization: authorizationString,
-        };
-
-        formData = JSON.stringify(formData);
-
-        console.log(formData);
-
-        $.ajax({
-            url: "/admin/staff/update/" + Id, // Update the URL as needed
-            method: "PATCH", // Use PATCH method for updating
-            data: formData,
-            contentType: 'application/json',
-            success: function (response) {
-                Swal.fire({
-                        title: 'Updated!',
-                        text: 'Staff Updated successfully.',
-                        icon: "success",
-                        timer: 3000
-                    }).then(
-                        function () {
-                            window.location.href = "/staff";
-                        },
-                        // handling the promise rejection
-                        function (dismiss) {
-                            if (dismiss === 'timer') {
-                                console.log('I was closed by the timer');
-                            }
-                        }
-                    );
-                },
-                error: function (data) {
-                    // Trigger SweetAlert error message on AJAX failure
-                    console.log(data.responseJSON.message);
-                    var message = data.responseJSON.message || 'Something went wrong!';
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: message,
-                    });
-                }
-        });
-    });
-
-    function updateAllAuthorizationCheckboxState() {
-        if ($('.auth:checked').length === $('.auth').length) {
-            $('#customCheck1').prop('checked', true);
-        } else {
-            $('#customCheck1').prop('checked', false);
+        function updateAllAuthorizationCheckboxState() {
+            // Implementation for updating "All" checkbox state
         }
 
-        // When the "All" checkbox is clicked
-        $('#customCheck1').change(function () {
-            var allChecked = this.checked;
-            $('.auth').prop('checked', allChecked);
-        });
-
-        // When any of the other checkboxes are clicked
         $('.auth').change(function () {
             updateAllAuthorizationCheckboxState();
-        });
-
-        // Handle permissions for the specific day
-        $('.auth').change(function () {
             var selectedPerm = getSelectedPermissions();
             sendCheckboxStateToAPI(selectedPerm);
         });
 
-        // Define the missing functions here
         function getSelectedPermissions() {
-            // Implement the logic to get selected permissions
+            // Implementation to get selected permissions
         }
 
         function sendCheckboxStateToAPI(selectedPerm) {
-            // Implement the logic to send checkbox state to the API
+            // Implementation to send checkbox state to the API
         }
     });
 </script>
+
 
 </body>
 
