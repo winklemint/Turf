@@ -1388,7 +1388,7 @@ func GetAllSlot(c *gin.Context) {
 
 	// role, _ := c.Request.Cookie("Role")
 	// Role, _ := strconv.Atoi(role.Value)
-	branchID, _ := c.Request.Cookie("Branch_id")
+	branchID, _ := c.Request.Cookie("branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 	// if Role != 1 {
 

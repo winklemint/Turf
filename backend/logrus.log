@@ -1644,3 +1644,5 @@ time="2023-11-14T20:03:44+05:30" level=info msg="Failed To Load Today Total Book
 time="2023-11-14T20:03:44+05:30" level=info msg="Failed t0 read image open uploads\\branch\\Wallpaper.jpg: The system cannot find the file specified.\n"
 time="2023-11-14T20:03:44+05:30" level=info msg="Failed t0 read image open uploads\\branch\\black_widow_in_avengers_movie-1920x1080.jpg: The system cannot find the file specified.\n"
 time="2023-11-14T20:03:44+05:30" level=info msg="Failed t0 read image open uploads\\branch\\spectacular_horizon-2880x1800.jpg: The system cannot find the file specified.\n"
+time="2023-11-15T11:17:25+05:30" level=info msg="Err0r readin the image file open uploads\\carousel\\water-2748695_1280.png: The system cannot find the file specified.\n"
+time="2023-11-15T11:17:50+05:30" level=info msg="Err0r readin the image file open uploads\\carousel\\water-2748695_1280.png: The system cannot find the file specified.\n"
