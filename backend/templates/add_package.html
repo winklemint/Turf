@@ -335,7 +335,8 @@
 
         function sendCheckboxStateToAPI(selectedDays) {
             var payload = {
-                "day": [selectedDays] // Send the array of selected days
+                "day": [selectedDays],
+                branch_id: parseInt($("#branchSelect").val()), // Send the array of selected days
             }
 
             // Make an AJAX request to your API with the updated payload
