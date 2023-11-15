@@ -140,6 +140,9 @@
 				<div class="alert alert-danger" role="alert" style="display:none" id="loginErrorMessage">
 					In correct credential.
 				</div>
+        <div class="alert alert-danger" role="alert" style="display:none" id="branchErrorMessage">
+					Branch is Disabled, Kindly c0ntact Super admin
+				</div>
                 <div class="input-group custom">
                   <input
                     type="text"
@@ -335,8 +338,13 @@
             },
 			error: function(error_response) {
 				if (error_response.status == 400) {
+          $("#branchErrorMessage").css("display", "none");
 					$("#loginErrorMessage").css("display", "");
-				  }
+				  } 
+          if (error_response.status == 403) {
+            $("#loginErrorMessage").css("display", "none");
+            $("#branchErrorMessage").css("display", "");
+          }
 			  },
           });
         });
