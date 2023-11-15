@@ -829,7 +829,7 @@ func ActiveBranch(c *gin.Context) {
 	}
 
 	var branch []models.Branch_info_management
-	result := config.DB.Find(&branch, "status=1")
+	result := config.DB.Find(&branch)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -1450,6 +1450,8 @@ func Get_Slot_by_day(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("ghsgjjk", body.Branch_id)
+
 	// Create a map to group time slots by day
 	days := make(map[string][]models.Time_Slot)
 
@@ -1462,8 +1464,9 @@ func Get_Slot_by_day(c *gin.Context) {
 
 		result := config.DB.Debug().Model(&models.Time_Slot{}).
 			Select("time_slots.id, time_slots.start_time, time_slots.end_time, time_slots.day, time_slots.unique_slot_id, time_slots.branch_id, package_slot_relationships.id as psr_id").
-			Joins("LEFT JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
-			Where("time_slots.day = ? AND time_slots.branch_id=?", body.Day[i], body.Branch_id).
+			Joins("JOIN package_slot_relationships ON time_slots.id = package_slot_relationships.slot_id").
+			Joins("JOIN packages ON package_slot_relationships.package_id = packages.id").
+			Where("time_slots.day = ? AND time_slots.branch_id=? AND packages.status=1", body.Day[i], body.Branch_id).
 			Scan(&slot)
 
 		if result.Error != nil {
@@ -5309,7 +5312,7 @@ func Graph_API(c *gin.Context) {
 }
 
 func PackageNameList(c *gin.Context) {
-	branchID, err := c.Request.Cookie("branch_id")
+	branchID, err := c.Request.Cookie("Branch_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,

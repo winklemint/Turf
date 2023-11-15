@@ -36,7 +36,7 @@
         var table = $('#allbranchstable').DataTable();
         // Make an AJAX request to fetch data from the URL
         $.ajax({
-            url: '/admin/get/branch', // Adjust the URL to match your API endpoint
+            url: '/admin/active/branch', // Adjust the URL to match your API endpoint
             method: 'GET',
             dataType: 'json',
             success: function (response) {
