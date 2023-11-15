@@ -1129,7 +1129,7 @@ func AddPackage(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name      string
+		Name      string 
 		Price     float64
 		Status    int
 		Branch_id int
@@ -1667,17 +1667,28 @@ func DeleteSlot(c *gin.Context) {
 
 	// Create a raw SQL query to delete the record by ID.
 	sqlQuery := "DELETE FROM time_slots WHERE id = ?"
-	config.DB.Exec(sqlQuery, id)
+	result := config.DB.Exec(sqlQuery, id)
 
-	// if err != nil {
-	// 	// Handle the error if the SQL query fails.
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"status": 500,
-	// 		"error":  "Failed to delete slot",
-	// 		"data":   nil,
-	// 	})
-	// 	return
-	// }
+	if result.Error != nil {
+		// Handle the error if the SQL query fails.
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "Failed to delete slot",
+			"data":   nil,
+		})
+		return
+	}
+	sqlQuery = "DELETE FROM package_slot_relationships WHERE slot_id = ?"
+	result = config.DB.Exec(sqlQuery, id)
+	if result.Error != nil {
+		// Handle the error if the SQL query fails.
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "Failed to delete slot",
+			"data":   nil,
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -1762,6 +1773,7 @@ func GetAllPackage(c *gin.Context) {
 		"data":    response, // Use the response data you built
 	})
 }
+
 func GetAllPackageById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -1788,8 +1800,8 @@ func GetAllPackageById(c *gin.Context) {
 	// Assuming you have the necessary associations set up in your models
 	result := config.DB.Table("packages").
 		Select("packages.id as package_id, packages.name, packages.price, packages.branch_id, packages.status, package_slot_relationships.id as package_slot_id, package_slot_relationships.slot_id, time_slots.start_time, time_slots.end_time, time_slots.day").
-		Joins("JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
-		Joins("JOIN time_slots ON package_slot_relationships.slot_id = time_slots.id").
+		Joins("LEFT JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
+		Joins("LEFT JOIN time_slots ON package_slot_relationships.slot_id = time_slots.id").
 		Where("packages.id = ?", Id).
 		Scan(&results)
 
@@ -1810,6 +1822,98 @@ func GetAllPackageById(c *gin.Context) {
 		"data":    results,
 	})
 }
+
+// func GetAllPackageById(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+// 	if c.Request.Method == "OPTIONS" {
+// 		c.JSON(http.StatusOK, gin.H{})
+// 		return
+// 	}
+// 	Id := c.Param("id")
+
+// 	// Query all time slots
+// 	timeSlots := make([]models.Time_Slot, 0)
+// 	if err := config.DB.Find(&timeSlots).Error; err != nil {
+// 		logrus.Infof("Failed to retrieve time slots: %v\n", err)
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status":  400,
+// 			"message": "Failed to retrieve time slots",
+// 			"data":    nil,
+// 		})
+// 		return
+// 	}
+// 	// Get all slot IDs associated with the given package
+// 	var packageSlotDetails []struct {
+// 		ID     uint `json:"psr_id"`
+// 		SlotID uint `json:"slot_id"`
+// 	}
+
+// 	if err := config.DB.Model(&models.Package_slot_relationship{}).
+// 		Where("package_id = ?", Id).
+// 		Select("id, slot_id").
+// 		Scan(&packageSlotDetails).Error; err != nil {
+// 		logrus.Infof("Failed to retrieve package slot details: %v\n", err)
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status":  400,
+// 			"message": "Failed to retrieve package slot details",
+// 			"data":    nil,
+// 		})
+// 		return
+// 	}
+
+// 	// Create a map to track unique time slot IDs
+// 	uniqueTimeSlots := make(map[uint]bool)
+
+// 	// Filter timeSlots based on packageSlotDetails
+// 	filteredTimeSlots := make([]models.Time_Slot, 0)
+// 	for _, slotDetail := range packageSlotDetails {
+// 		uniqueTimeSlots[slotDetail.SlotID] = true
+// 	}
+
+// 	for _, timeSlot := range timeSlots {
+// 		if _, found := uniqueTimeSlots[timeSlot.ID]; found {
+// 			// Include the time slot only once if it's in packageSlotDetails
+// 			filteredTimeSlots = append(filteredTimeSlots, timeSlot)
+// 		}
+// 	}
+
+// 	// Include the rest of the time slots
+// 	for _, timeSlot := range timeSlots {
+// 		if _, found := uniqueTimeSlots[timeSlot.ID]; !found {
+// 			filteredTimeSlots = append(filteredTimeSlots, timeSlot)
+// 		}
+
+// 		fmt.Println(filteredTimeSlots)
+// 	}
+
+// 	// Assuming you have the necessary associations set up in your models
+// 	// result := config.DB.Table("packages").
+// 	// 	Select("packages.id as package_id, packages.name, packages.price, packages.branch_id, packages.status, package_slot_relationships.id as package_slot_id, package_slot_relationships.slot_id, time_slots.start_time, time_slots.end_time, time_slots.day").
+// 	// 	Joins("LEFT JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
+// 	// 	Joins("LEFT JOIN time_slots ON package_slot_relationships.slot_id = time_slots.id").
+// 	// 	Where("packages.id = ?", Id).
+// 	// 	Scan(&results)
+
+// 	// // Check for errors
+// 	// if result.Error != nil {
+// 	// 	logrus.Infof("Failed to retrieve data: %v\n", result.Error)
+// 	// 	c.JSON(http.StatusBadRequest, gin.H{
+// 	// 		"status":  400,
+// 	// 		"message": "Failed to retrieve data",
+// 	// 		"data":    nil,
+// 	// 	})
+// 	// 	return
+// 	// }
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  200,
+// 		"message": "Package Details",
+// 		"data":    filteredTimeSlots,
+// 	})
+// }
+
 func DeletePackage(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")

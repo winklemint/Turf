@@ -370,6 +370,7 @@
                 contentType: 'application/json',
                 success: function (response) {
                     var data = response.data;
+                    console.log(data);
 
                     for (var day in data) {
                         var slot_div = $("#slot_div_" + day);
@@ -381,10 +382,11 @@
 
                             if (slotData.PSR_id > 0) {
                                 var checkbox_disabled = "disabled";
-                                var onClickString = "onclick='alert(\"this slot is already occupied by s\")'";
+                                var onClickString = "onclick='alert(\"this slot is already occupied by another package\")'";
 
                             } else {
                                 var checkbox_disabled = "";
+                                var onClickString = "";
 
                             }
                             var current_cb = "<div class='custom-control custom-checkbox d-inline' " + onClickString + "><input " + checkbox_disabled + " data-value= '" + slotData.ID + "' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "' ><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
