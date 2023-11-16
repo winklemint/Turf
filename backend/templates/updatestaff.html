@@ -18,7 +18,18 @@
                         </ol>
                     </nav>
                 </div>
-                
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            January 2018
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Export List</a>
+                            <a class="dropdown-item" href="#">Policies</a>
+                            <a class="dropdown-item" href="#">View Assets</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -86,7 +97,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Authourization</label>
+                    <label class="col-sm-12 col-md-2 col-form-label">Authorization</label>
                     <div class="col-sm-12 col-md-10 d-flex justify-content-around">
                         <div class="custom-control custom-checkbox d-inline">
                             <input type="checkbox" class="custom-control-input auth" id="customCheck1">
@@ -121,22 +132,22 @@
                             <label class="custom-control-label" for="customCheck8">Staff</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="8">
-                            <label class="custom-control-label" for="customCheck8">Slot Allocation</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck9" value="8">
+                            <label class="custom-control-label" for="customCheck9">Slot Allocation</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="9">
-                            <label class="custom-control-label" for="customCheck8">Booking</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck10" value="9">
+                            <label class="custom-control-label" for="customCheck10">Booking</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="10">
-                            <label class="custom-control-label" for="customCheck8">Other</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck11" value="10">
+                            <label class="custom-control-label" for="customCheck11">Other</label>
                         </div>
                     </div>
                 </div>
                 <div>
 
-                    <input class="btn btn-primary" type="submit" value="Update" id="submit" />
+                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
 
                 </div>
 
@@ -157,7 +168,10 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-   
+    <div class="footer-wrap pd-20 mb-20 card-box">
+        DeskApp - Bootstrap 4 Admin Template By
+        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
 </div>
 
 
@@ -165,114 +179,179 @@
 {{template "footer.html"}}
 <script>
     $(document).ready(function () {
-        var Id = new URLSearchParams(window.location.search).get('id');
+    // Define Id outside the if block
+    var Id = new URLSearchParams(window.location.search).get('id');
 
-        if (Id) {
-            getUserDetails(Id);
-        }
+    if (Id) {
+        getUserDetails(Id);
+    }
 
-        function getUserDetails(Id) {
-            $.ajax({
-                url: "/admin/staff/get/" + Id,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    var user = response.Data;
-                    console.log(response.Data);
-                    if (user) {
-                        $('#name').val(user.Name);
-                        $('#email').val(user.Email);
-                        $('#contact').val(user.Contact);
-
-                        $('#role').val(user.Role);
-                        $('#branch_select').val(user.Turf_branch_id);
-
-                        var authorizationValues = user.Authorization;
-
-                        $('.auth').each(function () {
-                            var checkboxValue = parseInt($(this).val());
-                            $(this).prop('checked', authorizationValues.includes(checkboxValue));
-                        });
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        }
-
-        // Fetch branch data
+    // Helper function to retrieve user details
+    function getUserDetails(Id) {
         $.ajax({
-            url: '/admin/get/branch',
-            method: 'GET',
-            dataType: 'json',
-            success: function (res) {
-                var selectedBranch = $("#branchSelect").val();
-                $("#branchSelect").html('');
-                appendDataToSelect(res.data);
-                if (selectedBranch) {
-                    $("#branchSelect").val(selectedBranch);
+            url: "/admin/staff/get/" + Id,
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                var user = response.Data;
+                console.log(response.Data);
+                if (user) {
+                    $('#name').val(user.Name);
+                    $('#email').val(user.Email);
+                    $('#contact').val(user.Contact);
+                   
+                    $('#role').val(user.Role);
+                    $('#branch_select').val(user.Turf_branch_id);
+
+                    var authorizationValues = user.Authorization;
+
+                    // Loop through each checkbox element
+                    $('.auth').each(function () {
+                        var checkboxValue = parseInt($(this).attr('value')); // Convert the checkbox value to an integer
+                        if (authorizationValues.includes(checkboxValue)) {
+                            $(this).prop('checked', true); // Check the checkbox if the value matches
+                        } else {
+                            $(this).prop('checked', false); // Uncheck the checkbox if the value doesn't match
+                        }
+                    });
                 }
             },
-            error: function () {
-                console.error('Failed to retrieve data from the server');
+            error: function (xhr, status, error) {
+                console.error(error);
             }
         });
+    }
 
-        $("#staff_form").submit(function (event) {
-            event.preventDefault();
+    $.ajax({
+        url: '/admin/get/branch',
+        method: 'GET',
+        dataType: 'json',
+        success: function (res) {
+            // Save the selected branch value if it's already set
+            var selectedBranch = $("#branchSelect").val();
 
-            var formData = {
-                Name: $("#name").val(),
-                Email: $("#email").val(),
-                Contact: $("#contact").val(),
-                Password: $("#password").val(),
-                Role: parseInt($('#role').val())
-            };
+            // Clear the existing options in the dropdown
+            $("#branchSelect").html('');
 
-            $.ajax({
-                url: "/admin/update/user/" + Id,
-                method: "PATCH",
-                data: JSON.stringify(formData),
-                contentType: 'application/json',
-                success: function (response) {
-                    if (response.success) {
-                        alert("User Details updated successfully!");
-                        window.location.href = "/user";
-                    } else {
-                        console.log(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
+            appendDataToSelect(res.data);
 
-        // Other functions related to checkboxes, permissions, and API calls
-        updateAllAuthorizationCheckboxState();
-
-        function updateAllAuthorizationCheckboxState() {
-            // Implementation for updating "All" checkbox state
-        }
-
-        $('.auth').change(function () {
-            updateAllAuthorizationCheckboxState();
-            var selectedPerm = getSelectedPermissions();
-            sendCheckboxStateToAPI(selectedPerm);
-        });
-
-        function getSelectedPermissions() {
-            // Implementation to get selected permissions
-        }
-
-        function sendCheckboxStateToAPI(selectedPerm) {
-            // Implementation to send checkbox state to the API
+            // Set the selected branch value back
+            if (selectedBranch) {
+                $("#branchSelect").val(selectedBranch);
+            }
+        },
+        error: function () {
+            console.error('Failed to retrieve data from the server');
         }
     });
+
+    function appendDataToSelect(data) {
+        const element = "<option value=''>Select Branch</option>";
+        $("#branchSelect").append(element);
+        for (let index = 0; index < data.length; index++) {
+            var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
+            $("#branchSelect").append(element_other);
+        }
+    }
+
+    // When the "All" checkbox is clicked
+    $('#customCheck1').change(function () {
+        var allChecked = this.checked;
+        $('.auth').prop('checked', allChecked);
+    });
+
+    // When any of the other checkboxes are clicked
+    $('.auth').change(function () {
+        updateAllAuthorizationCheckboxState();
+    });
+
+    // Handle permissions for the specific day
+    $('.auth').change(function () {
+        var selectedPerm = getSelectedPermissions();
+       
+    });
+
+   
+
+    $("#staff_form").submit(function (event) {
+        event.preventDefault();
+
+        var selectedPerm = getSelectedPermissions().filter(function (permission) {
+            return permission !== 'on'; // Filter out the 'on' value
+        }).map(function (permission) {
+            return parseInt(permission, 10); // Parse each permission as an integer
+        });
+
+        // Convert the selected permissions to a JSON string
+        var authorizationString = "{" + selectedPerm.join(",") + "}";
+
+        var formData = {
+            name: $("#name").val(),
+            email: $("#email").val(),
+            contact: $("#contact").val(),
+            password: $("#password").val(),
+            role: parseInt($('#role').val()),
+            branch_name: parseInt($("#branchSelect").val()),
+            authorization: authorizationString,
+        };
+
+        formData = JSON.stringify(formData);
+
+        console.log(formData);
+
+        $.ajax({
+            url: "/admin/staff/update/" + Id, // Update the URL as needed
+            method: "PATCH", // Use PATCH method for updating
+            data: formData,
+            contentType: 'application/json',
+            success: function (response) {
+                Swal.fire({
+                        title: 'Updated!',
+                        text: 'Staff Updated successfully.',
+                        icon: "success",
+                        timer: 3000
+                    }).then(
+                        function () {
+                            window.location.href = "/staff";
+                        },
+                        // handling the promise rejection
+                        function (dismiss) {
+                            if (dismiss === 'timer') {
+                                console.log('I was closed by the timer');
+                            }
+                        }
+                    );
+                },
+                error: function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
+                }
+        });
+    });
+
+    function updateAllAuthorizationCheckboxState() {
+        if ($('.auth:checked').length === $('.auth').length) {
+            $('#customCheck1').prop('checked', true);
+        } else {
+            $('#customCheck1').prop('checked', false);
+        }
+    }
+
+    function getSelectedPermissions() {
+        var selectedPerm = $('.auth:checked').map(function () {
+            return $(this).val();
+        }).get();
+        return selectedPerm;
+    }
+});
+ 
 </script>
-
-
 </body>
 
 </html>

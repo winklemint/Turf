@@ -29,12 +29,11 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name     string
-		Contact  string
-		Password string
-		Email    string
-		Role     int
-
+		Name          string
+		Contact       string
+		Password      string
+		Email         string
+		Role          int
 		Branch_name   int
 		Authorization string
 	}
@@ -59,18 +58,7 @@ func AdminSignup(c *gin.Context) {
 		return
 	}
 
-	// var branch models.Branch_info_management
-	// result := config.DB.Find(&branch, "branch_name=?", body.Branch_name)
-	// if result.Error != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"status": 400,
-	// 		"error":  "Error finding branch id",
-	// 		"data":   nil,
-	// 	})
-	// 	return
-	// }
-
-	BranchID := uint(body.Branch_name)
+	BranchID := int(body.Branch_name)
 
 	fmt.Println(BranchID)
 
@@ -81,8 +69,7 @@ func AdminSignup(c *gin.Context) {
 		Email:          body.Email,
 		Role:           body.Role,
 		Turf_branch_id: BranchID,
-
-		Authorization: body.Authorization,
+		Authorization:  body.Authorization,
 	}
 
 	result := config.DB.Create(&bodys)
@@ -152,7 +139,7 @@ func AdminUpdateById(c *gin.Context) {
 	adminToUpdate.Contact = body.Contact
 	adminToUpdate.Email = body.Email
 	adminToUpdate.Role = body.Role
-	adminToUpdate.Turf_branch_id = uint(body.Branch_name)
+	adminToUpdate.Turf_branch_id = body.Branch_name
 	adminToUpdate.Authorization = body.Authorization
 	// Update the admin using the provided 'id'
 	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
@@ -165,14 +152,14 @@ func AdminUpdateById(c *gin.Context) {
 		})
 		return
 	}
-	BranchID := uint(body.Branch_name)
-	fmt.Println(BranchID)
+	// BranchID := int(body.Branch_name)
+	// fmt.Println(BranchID)
 	bodys := models.Admin{
 		Name:           body.Name,
 		Contact:        body.Contact,
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: BranchID,
+		Turf_branch_id: body.Branch_name,
 		Authorization:  body.Authorization,
 	}
 	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
@@ -191,6 +178,7 @@ func AdminUpdateById(c *gin.Context) {
 		"data":    bodys,
 	})
 }
+
 func AdminGetById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -516,7 +504,6 @@ func AdminLogin(c *gin.Context) {
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(body.Password))
-
 	if err != nil {
 		logrus.Infoln(err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -526,6 +513,19 @@ func AdminLogin(c *gin.Context) {
 		})
 		return
 	}
+
+	var branch models.Branch_info_management
+	result = config.DB.Find(&branch, "id=?", admin.Turf_branch_id)
+	if branch.Status != 1 || result.Error != nil {
+		logrus.Infoln("Admin l0gin - ", result.Error)
+		c.JSON(http.StatusForbidden, gin.H{
+			"status":  403,
+			"message": "Branch is Disabled kindly c0ntact Super Admin",
+			"data":    nil,
+		})
+		return
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": admin.ID,
 		"exp": time.Now().Add(time.Hour * 2).Unix(),
@@ -551,9 +551,9 @@ func AdminLogin(c *gin.Context) {
 	// send the generated jwt token back & set it in cookies
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 7200, "", "", true, true)
-	c.SetCookie("AID", adminIDString, 7200, "", "", true, true)
-	c.SetCookie("Role", adminRole, 7200, "", "", true, true)
-	c.SetCookie("branch_id", adminBranch, 7200, "", "", true, true)
+	c.SetCookie("AID", adminIDString, 7200, "", "", false, false)
+	c.SetCookie("Role", adminRole, 7200, "", "", false, false)
+	c.SetCookie("Branch_id", adminBranch, 7200, "", "", false, false)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -800,7 +800,7 @@ func GET_All_Branch(c *gin.Context) {
 	}
 
 	var branch []models.Branch_info_management
-	result := config.DB.Find(&branch)
+	result := config.DB.Find(&branch, "status=1")
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -829,7 +829,7 @@ func ActiveBranch(c *gin.Context) {
 	}
 
 	var branch []models.Branch_info_management
-	result := config.DB.Find(&branch, "status=1")
+	result := config.DB.Find(&branch)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -869,7 +869,7 @@ func Get_IdBy_Branch_NAme(c *gin.Context) {
 	}
 
 	var branches models.Branch_info_management
-	result := config.DB.Find(&branches, "branch_name=?", body.Branch_Name)
+	result := config.DB.Find(&branches, "branch_name=? AND status=1", body.Branch_Name)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
@@ -905,7 +905,7 @@ func GET_All_Branch_Id(c *gin.Context) {
 	}
 
 	//Response
-	c.JSON(http.StatusCreated, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"message": "Get Branch Details Successfully",
 		"data":    branch,
@@ -1129,7 +1129,7 @@ func AddPackage(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name      string
+		Name      string 
 		Price     float64
 		Status    int
 		Branch_id int
@@ -1306,7 +1306,7 @@ func UpdateAdmin(c *gin.Context) {
 		// 		c.JSON(http.StatusBadRequest, gin.H{
 		// 			"status": 400,
 		// 			"error":  "You are not authorised for update branch",
-		// 			"data":   nil,/Update/staff
+		// 			"data":   nil,
 		// 		})
 		// 		return
 
@@ -1388,7 +1388,7 @@ func GetAllSlot(c *gin.Context) {
 
 	// role, _ := c.Request.Cookie("Role")
 	// Role, _ := strconv.Atoi(role.Value)
-	branchID, _ := c.Request.Cookie("branch_id")
+	branchID, _ := c.Request.Cookie("Branch_id")
 	branchid, _ := strconv.Atoi(branchID.Value)
 	// if Role != 1 {
 
@@ -1449,6 +1449,8 @@ func Get_Slot_by_day(c *gin.Context) {
 		})
 		return
 	}
+
+	fmt.Println("ghsgjjk", body.Branch_id)
 
 	// Create a map to group time slots by day
 	days := make(map[string][]models.Time_Slot)
@@ -1529,9 +1531,13 @@ func UpdatePackage(c *gin.Context) {
 	ID, _ := strconv.ParseUint(Id, 10, 0)
 
 	IDuint := uint(ID)
+
+	fmt.Println("id", IDuint)
 	//var psr models.Package_slot_relationship
 
 	config.DB.Exec("DELETE FROM package_slot_relationships WHERE package_id = ? ", Id)
+
+	fmt.Println("slt", body.Slot_id)
 
 	for i := 0; i < len(body.Slot_id); i++ {
 		psr := models.Package_slot_relationship{Package_id: IDuint, Slot_id: body.Slot_id[i]}
@@ -1661,17 +1667,28 @@ func DeleteSlot(c *gin.Context) {
 
 	// Create a raw SQL query to delete the record by ID.
 	sqlQuery := "DELETE FROM time_slots WHERE id = ?"
-	config.DB.Exec(sqlQuery, id)
+	result := config.DB.Exec(sqlQuery, id)
 
-	// if err != nil {
-	// 	// Handle the error if the SQL query fails.
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"status": 500,
-	// 		"error":  "Failed to delete slot",
-	// 		"data":   nil,
-	// 	})
-	// 	return
-	// }
+	if result.Error != nil {
+		// Handle the error if the SQL query fails.
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "Failed to delete slot",
+			"data":   nil,
+		})
+		return
+	}
+	sqlQuery = "DELETE FROM package_slot_relationships WHERE slot_id = ?"
+	result = config.DB.Exec(sqlQuery, id)
+	if result.Error != nil {
+		// Handle the error if the SQL query fails.
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"error":  "Failed to delete slot",
+			"data":   nil,
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
@@ -1756,6 +1773,7 @@ func GetAllPackage(c *gin.Context) {
 		"data":    response, // Use the response data you built
 	})
 }
+
 func GetAllPackageById(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -1765,26 +1783,137 @@ func GetAllPackageById(c *gin.Context) {
 		return
 	}
 	Id := c.Param("id")
-	var pkg models.Package
-	result := config.DB.Find(&pkg).Where("id=?", Id)
 
+	var results []struct {
+		PackageID     uint
+		Name          string
+		Price         float64
+		BranchID      uint
+		Status        int
+		PackageSlotID uint
+		SlotID        uint
+		StartTime     string
+		EndTime       string
+		Day           string
+	}
+
+	// Assuming you have the necessary associations set up in your models
+	result := config.DB.Table("packages").
+		Select("packages.id as package_id, packages.name, packages.price, packages.branch_id, packages.status, package_slot_relationships.id as package_slot_id, package_slot_relationships.slot_id, time_slots.start_time, time_slots.end_time, time_slots.day").
+		Joins("LEFT JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
+		Joins("LEFT JOIN time_slots ON package_slot_relationships.slot_id = time_slots.id").
+		Where("packages.id = ?", Id).
+		Scan(&results)
+
+	// Check for errors
 	if result.Error != nil {
-		logrus.Infof("Failed to Get Package Detail %v\n", result.Error)
+		logrus.Infof("Failed to retrieve data: %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
-			"message": "Failed To Get Package",
+			"message": "Failed to retrieve data",
 			"data":    nil,
 		})
 		return
-
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"message": "Package Details",
-		"data":    pkg,
+		"data":    results,
 	})
 }
+
+// func GetAllPackageById(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+// 	if c.Request.Method == "OPTIONS" {
+// 		c.JSON(http.StatusOK, gin.H{})
+// 		return
+// 	}
+// 	Id := c.Param("id")
+
+// 	// Query all time slots
+// 	timeSlots := make([]models.Time_Slot, 0)
+// 	if err := config.DB.Find(&timeSlots).Error; err != nil {
+// 		logrus.Infof("Failed to retrieve time slots: %v\n", err)
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status":  400,
+// 			"message": "Failed to retrieve time slots",
+// 			"data":    nil,
+// 		})
+// 		return
+// 	}
+// 	// Get all slot IDs associated with the given package
+// 	var packageSlotDetails []struct {
+// 		ID     uint `json:"psr_id"`
+// 		SlotID uint `json:"slot_id"`
+// 	}
+
+// 	if err := config.DB.Model(&models.Package_slot_relationship{}).
+// 		Where("package_id = ?", Id).
+// 		Select("id, slot_id").
+// 		Scan(&packageSlotDetails).Error; err != nil {
+// 		logrus.Infof("Failed to retrieve package slot details: %v\n", err)
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status":  400,
+// 			"message": "Failed to retrieve package slot details",
+// 			"data":    nil,
+// 		})
+// 		return
+// 	}
+
+// 	// Create a map to track unique time slot IDs
+// 	uniqueTimeSlots := make(map[uint]bool)
+
+// 	// Filter timeSlots based on packageSlotDetails
+// 	filteredTimeSlots := make([]models.Time_Slot, 0)
+// 	for _, slotDetail := range packageSlotDetails {
+// 		uniqueTimeSlots[slotDetail.SlotID] = true
+// 	}
+
+// 	for _, timeSlot := range timeSlots {
+// 		if _, found := uniqueTimeSlots[timeSlot.ID]; found {
+// 			// Include the time slot only once if it's in packageSlotDetails
+// 			filteredTimeSlots = append(filteredTimeSlots, timeSlot)
+// 		}
+// 	}
+
+// 	// Include the rest of the time slots
+// 	for _, timeSlot := range timeSlots {
+// 		if _, found := uniqueTimeSlots[timeSlot.ID]; !found {
+// 			filteredTimeSlots = append(filteredTimeSlots, timeSlot)
+// 		}
+
+// 		fmt.Println(filteredTimeSlots)
+// 	}
+
+// 	// Assuming you have the necessary associations set up in your models
+// 	// result := config.DB.Table("packages").
+// 	// 	Select("packages.id as package_id, packages.name, packages.price, packages.branch_id, packages.status, package_slot_relationships.id as package_slot_id, package_slot_relationships.slot_id, time_slots.start_time, time_slots.end_time, time_slots.day").
+// 	// 	Joins("LEFT JOIN package_slot_relationships ON packages.id = package_slot_relationships.package_id").
+// 	// 	Joins("LEFT JOIN time_slots ON package_slot_relationships.slot_id = time_slots.id").
+// 	// 	Where("packages.id = ?", Id).
+// 	// 	Scan(&results)
+
+// 	// // Check for errors
+// 	// if result.Error != nil {
+// 	// 	logrus.Infof("Failed to retrieve data: %v\n", result.Error)
+// 	// 	c.JSON(http.StatusBadRequest, gin.H{
+// 	// 		"status":  400,
+// 	// 		"message": "Failed to retrieve data",
+// 	// 		"data":    nil,
+// 	// 	})
+// 	// 	return
+// 	// }
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  200,
+// 		"message": "Package Details",
+// 		"data":    filteredTimeSlots,
+// 	})
+// }
+
 func DeletePackage(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -1795,12 +1924,27 @@ func DeletePackage(c *gin.Context) {
 	}
 	Id := c.Param("id")
 	var packages models.Package
-	result := config.DB.Model(&packages).Where("id=?", Id).Delete(&packages)
+	sqlQuery := "DELETE FROM packages WHERE id = ?"
+	result := config.DB.Exec(sqlQuery, Id)
 	if result.Error != nil {
 		logrus.Infof("Failed to Delete Package %v\n", result.Error)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
 			"message": "Failed To Delete Package",
+			"data":    nil,
+		})
+		return
+
+	}
+
+	//var psr models.Package_slot_relationship
+	sqlQuery = "DELETE FROM package_slot_relationships WHERE package_id = ?"
+	result = config.DB.Exec(sqlQuery, Id)
+	if result.Error != nil {
+		logrus.Infof("Failed to Delete Package Sl0t Relati0nship %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "Failed To Delete PSR",
 			"data":    nil,
 		})
 		return
@@ -3762,7 +3906,7 @@ func RemainingPaymentForUser(c *gin.Context) {
 	var booking []models.Confirm_Booking_Table
 
 	// Use the WHERE clause in the Find method to filter results
-	result := config.DB.Find(&booking, "date <= ? AND remaining_amount_to_pay > 0", date)
+	result := config.DB.Find(&booking, "date >= ? AND remaining_amount_to_pay > 0", date)
 
 	// Check if any matching records were found
 	if result.RowsAffected == 0 {
@@ -4882,7 +5026,6 @@ func DeleteIcon(c *gin.Context) {
 	})
 }
 func Multiple_slot_booking(c *gin.Context) {
-
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
@@ -4890,17 +5033,11 @@ func Multiple_slot_booking(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-
 	id := c.Param("id")
-
 	ID, _ := strconv.Atoi(id)
-
 	fmt.Println(ID)
-
 	Id := uint(ID)
-
 	fmt.Println(Id)
-
 	var body struct {
 		Start_date string
 		End_date   string
@@ -4917,11 +5054,8 @@ func Multiple_slot_booking(c *gin.Context) {
 		})
 		return
 	}
-
 	Booking_id, _ := uuid.NewRandom()
-
 	B_id := Booking_id.String()
-
 	// Parse start and end dates as time objects
 	startDate, err := time.Parse("02-01-2006", body.Start_date)
 	if err != nil {
@@ -4933,7 +5067,6 @@ func Multiple_slot_booking(c *gin.Context) {
 		})
 		return
 	}
-
 	endDate, err := time.Parse("02-01-2006", body.End_date)
 	if err != nil {
 		logrus.Infoln("Failed to get end date format", err)
@@ -4944,19 +5077,15 @@ func Multiple_slot_booking(c *gin.Context) {
 		})
 		return
 	}
-
 	// Loop through dates and create bookings
 	for currentDate := startDate; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
 		for i := 0; i < len(body.Slots); i++ {
 			var psr models.Package_slot_relationship
-
 			config.DB.First(&psr, "slot_id=?", int(body.Slots[i]))
-
 			// Fetch the price based on package id retrieved
 			var price models.Package
 			config.DB.Find(&price, "id=?", psr.Package_id)
 			price25 := percent.PercentFloat(25.0, price.Price)
-
 			booking := models.Turf_Bookings{
 				User_id:                  Id,
 				Date:                     currentDate.Format("02-01-2006"),
@@ -4969,7 +5098,6 @@ func Multiple_slot_booking(c *gin.Context) {
 				Is_booked:                4,
 				Branch_id:                body.Branch_id,
 			}
-
 			result := config.DB.Create(&booking)
 			if result.Error != nil {
 				logrus.Infof("Failed to get data from DB %v\n", result.Error)
@@ -4982,19 +5110,15 @@ func Multiple_slot_booking(c *gin.Context) {
 			}
 		}
 	}
-
 	var booking models.Turf_Bookings
-
 	// Confirm booking table
 	config.DB.Find(&booking, "order_id = ?", B_id)
-
 	var totalPrice float64
 	var total_min_amount float64
 	for p := 0; p < len(body.Slots); p++ {
 		totalPrice += booking.Price
 		total_min_amount += booking.Minimum_amount_to_pay
 	}
-
 	confirm_booking := models.Confirm_Booking_Table{
 		User_id:                 Id,
 		Date:                    body.Start_date,
@@ -5004,7 +5128,6 @@ func Multiple_slot_booking(c *gin.Context) {
 		Booking_status:          4,
 		Branch_id:               body.Branch_id,
 	}
-
 	result := config.DB.Create(&confirm_booking)
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
@@ -5015,14 +5138,12 @@ func Multiple_slot_booking(c *gin.Context) {
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"message": "Slots reserved successfully",
 		"data":    booking,
 	})
 }
-
 func Get_Available_slots_Multi_Dates(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -5031,7 +5152,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
-
 	var body struct {
 		Start_date string
 		End_date   string
@@ -5047,7 +5167,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		})
 		return
 	}
-
 	// Fetch all time slots
 	var slots []models.Time_Slot
 	result := config.DB.Find(&slots)
@@ -5055,10 +5174,8 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		fmt.Println(result.Error)
 		return
 	}
-
 	// Create a slice to store the final response for all dates
 	var response []gin.H
-
 	// Parse start and end dates as time objects
 	startDate, err := time.Parse("02-01-2006", body.Start_date)
 	if err != nil {
@@ -5069,7 +5186,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		})
 		return
 	}
-
 	endDate, err := time.Parse("02-01-2006", body.End_date)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -5079,13 +5195,11 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 		})
 		return
 	}
-
 	// Loop through dates within the range
 	for currentDate := startDate; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
 		// Fetch booked slots for the current date
 		var bookedSlots []models.Turf_Bookings
 		result = config.DB.Where("date = ? AND is_booked IN (1, 2, 3, 4) AND branch_id = ?", currentDate.Format("02-01-2006"), body.Branch_id).Find(&bookedSlots)
-
 		if result.Error != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status":  400,
@@ -5094,13 +5208,11 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 			})
 			return
 		}
-
 		// Create a map to store booked slots with their is_booked status
 		bookedSlotMap := make(map[int]int)
 		for _, bookedSlot := range bookedSlots {
 			bookedSlotMap[bookedSlot.Slot_id] = bookedSlot.Is_booked
 		}
-
 		// Create a slice to store available slots for the current date
 		var availableSlots []gin.H
 		for _, slot := range slots {
@@ -5108,7 +5220,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 			if !exists {
 				isBooked = 1
 			}
-
 			var psr models.Package_slot_relationship
 			result = config.DB.Where("slot_id = ?", slot.ID).Find(&psr)
 			if result.Error != nil {
@@ -5119,7 +5230,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 				})
 				return
 			}
-
 			var price models.Package
 			result = config.DB.Where("id = ?", psr.Package_id).Find(&price)
 			if result.Error != nil {
@@ -5130,7 +5240,6 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 				})
 				return
 			}
-
 			availableSlots = append(availableSlots, gin.H{
 				"Slot":      slot,
 				"Is_booked": isBooked,
@@ -5138,13 +5247,11 @@ func Get_Available_slots_Multi_Dates(c *gin.Context) {
 				"Price":     price.Price,
 			})
 		}
-
 		response = append(response, gin.H{
 			"Date":            currentDate.Format("02-01-2006"),
 			"Available_slots": availableSlots,
 		})
 	}
-
 	// Return the available slots for each date within the range
 	c.JSON(http.StatusOK, gin.H{
 		"status":          200,
@@ -5346,7 +5453,7 @@ func Graph_API(c *gin.Context) {
 }
 
 func PackageNameList(c *gin.Context) {
-	branchID, err := c.Request.Cookie("branch_id")
+	branchID, err := c.Request.Cookie("Branch_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,

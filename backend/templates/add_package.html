@@ -69,7 +69,7 @@
                     <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                     <div class="col-sm-12 col-md-10">
                         <select class="custom-select col-12" id="status_branch" required>
-                            <option selected="" selected disabled>Choose...</option>
+                            <option value="" disabled selected>Select Status</option>
                             <option value="1">Active</option>
                             <option value="2">Disabled</option>
                         </select>
@@ -77,27 +77,8 @@
                 </div>
 
 
-                <!-- <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input class="form-control" value="100" type="number" />
-                            </div>
-                        </div> -->
-
-                <!-- <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
-                    <div class="col-sm-12 col-md-10">
-                        <select class="custom-select col-12">
-                            <option selected="">Choose...</option>
-                            <option value="1">Enable</option>
-                            <option value="2">Disable</option>
-
-                        </select>
-                    </div>
-
-
-                </div> -->
-                <div class="form-group row">
+              
+                <div class="form-group row" id="daysRow" style="display: none;">
                     <label class="col-sm-12 col-md-2 col-form-label">Days</label>
                     <div class="col-sm-12 col-md-10 d-flex justify-content-around">
                         <div class="custom-control custom-checkbox d-inline">
@@ -205,6 +186,31 @@
 
 
 {{template "footer.html"}}
+
+<script>
+    document.getElementById('submit').disabled = true; // Initially disable the submit button
+
+    function checkBranchSelection() {
+        var branchSelect = document.getElementById('branchSelect');
+        var daysRow = document.getElementById('daysRow');
+        var allDaysCheckbox = document.getElementById('customCheck1');
+        var submitButton = document.getElementById('submit');
+        
+
+        if (branchSelect.value !== '' ) {
+            daysRow.style.display = 'flex'; // Show the days row
+            allDaysCheckbox.disabled = false;
+            submitButton.disabled = false;
+        } else {
+            daysRow.style.display = 'none'; // Hide the days row
+            allDaysCheckbox.disabled = true;
+            submitButton.disabled = true;
+        }
+    }
+
+    document.getElementById('branchSelect').addEventListener('change', checkBranchSelection);
+</script>
+
 <script>
     function checkNameLength() {
         var nameInput = document.getElementById('name');
@@ -241,6 +247,8 @@
 
 <script>
     $(document).ready(function () {
+
+        var checkboxCounter = 1;
 
         $.ajax({
             url: '/admin/get/branch',
@@ -335,7 +343,8 @@
 
         function sendCheckboxStateToAPI(selectedDays) {
             var payload = {
-                "day": [selectedDays] // Send the array of selected days
+                "day": [selectedDays],
+                branch_id: parseInt($("#branchSelect").val()), // Send the array of selected days
             }
 
             // Make an AJAX request to your API with the updated payload
@@ -347,6 +356,7 @@
                 contentType: 'application/json',
                 success: function (response) {
                     var data = response.data;
+                    console.log(data);
 
                     for (var day in data) {
                         var slot_div = $("#slot_div_" + day);
@@ -358,10 +368,11 @@
 
                             if (slotData.PSR_id > 0) {
                                 var checkbox_disabled = "disabled";
-                                var onClickString = "onclick='alert(\"this slot is already occupied by s\")'";
+                                var onClickString = "onclick='alert(\"this slot is already occupied by another package\")'";
 
                             } else {
                                 var checkbox_disabled = "";
+                                var onClickString = "";
 
                             }
                             var current_cb = "<div class='custom-control custom-checkbox d-inline' " + onClickString + "><input " + checkbox_disabled + " data-value= '" + slotData.ID + "' type='checkbox' class='custom-control-input packageDays' id='" + day + "_slot_check_box_" + slotData.ID + "' data-branch-id='" + slotData.Branch_id + "' data-start-time='" + slotData.Start_time + "' data-end-time='" + slotData.End_time + "' ><label class='custom-control-label' for='" + day + "_slot_check_box_" + slotData.ID + "'></label>" + slotData.Start_time + " - " + slotData.End_time + " </div>";
@@ -401,7 +412,7 @@
                 status: parseInt($("#status_branch").val()),
                 slot_id: selectedDataValues // Include the selected slot data, including ID
             };
-           
+
 
 
             // Now you have access to the selected slot IDs and their data
