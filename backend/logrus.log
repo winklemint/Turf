@@ -1768,3 +1768,4 @@ time="2023-11-16T11:52:34+05:30" level=info msg="admin signup- Error 1062 (23000
 time="2023-11-16T11:52:35+05:30" level=info msg="admin signup- Error 1062 (23000): Duplicate entry 'raksha.rajput98@gmail.com' for key 'email'"
 time="2023-11-16T11:52:35+05:30" level=info msg="admin signup- Error 1062 (23000): Duplicate entry 'raksha.rajput98@gmail.com' for key 'email'"
 time="2023-11-16T12:34:42+05:30" level=info msg="Failed to get data from DB <nil>\n"
+time="2023-11-16T14:26:50+05:30" level=info msg="Failed To Load Today Total Booking <nil>\n"
