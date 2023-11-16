@@ -1,50 +1,34 @@
 {{template "header.html"}}
-        <div class="pd-ltr-20 xs-pd-20-10">
-            <div class="min-height-200px">
-                <div class="page-header">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="title">
-                                <h4>Form</h4>
-                            </div>
-                            <nav aria-label="breadcrumb" role="navigation">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="/dashboard">Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        Form Basic
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                        <div class="col-md-6 col-sm-12 text-right">
-                            <div class="dropdown">
-                                <a
-                                    class="btn btn-secondary dropdown-toggle"
-                                    href="#"
-                                    role="button"
-                                    data-toggle="dropdown"
-                                >
-                                    January 2018
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">Export List</a>
-                                    <a class="dropdown-item" href="#">Policies</a>
-                                    <a class="dropdown-item" href="#">View Assets</a>
-                                </div>
-                            </div>
-                        </div>
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
                     </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/dashboard">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
                 </div>
-                <!-- Default Basic Forms Start -->
-                <div class="pd-20 card-box mb-30">
-                    <div class="clearfix">
-                        <div class="pull-left">
-                            <h4 class="text-blue h4">Carosel Content</h4>
-                            
-                        </div>
-                        <!-- <div class="pull-right">
+
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+        <div class="pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">Carosel Content</h4>
+
+                </div>
+                <!-- <div class="pull-right">
                             <a
                                 href="#basic-form1"
                                 class="btn btn-primary btn-sm scroll-click"
@@ -54,89 +38,64 @@
                                 ><i class="fa fa-code"></i> Source Code</a
                             >
                         </div> -->
+            </div>
+            <form id="content_form">
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Heading</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="heading" class="form-control" type="text" placeholder="Heading Here" required
+                            onkeyup="checkHeadingNameLength()" />
                     </div>
-                    <form  id = "content_form">
-                        
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">Heading</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="heading"
-                                    class="form-control"
-                                    type="text"
-                                    placeholder="Heading Here"
-                                    required onkeyup="checkHeadingNameLength()"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">SubHeading</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id = "subheading"
-                                    class="form-control"
-                                    placeholder="SubHeading Here"
-                                    type="text"
-                                    required onkeyup="checkSubHeadingNameLength()"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-12 col-md-2 col-form-label">button</label>
-                            <div class="col-sm-12 col-md-10">
-                                <input
-                                id="button"
-                                    class="form-control"
-                                    placeholder="Button Here"
-                                    type="text"
-                                    required onkeyup="checkButtonNameLength()"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                           
-                            <button type="submit" class="btn btn-primary"  id="update">Submit</button>
-                                
-                        </div>
-                    </form>
-                      
-                       
-                    
-                    <div class="collapse collapse-box" id="basic-form1">
-                        <div class="code-box">
-                            <div class="clearfix">
-                                <a
-                                    href="javascript:;"
-                                    class="btn btn-primary btn-sm code-copy pull-left"
-                                    data-clipboard-target="#copy-pre"
-                                    ><i class="fa fa-clipboard"></i> Copy Code</a
-                                >
-                                <a
-                                    href="#basic-form1"
-                                    class="btn btn-primary btn-sm pull-right"
-                                    rel="content-y"
-                                    data-toggle="collapse"
-                                    role="button"
-                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
-                                >
-                            </div>
-                            <pre><code class="xml copy-pre" id="copy-pre">
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">SubHeading</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="subheading" class="form-control" placeholder="SubHeading Here" type="text" required
+                            onkeyup="checkSubHeadingNameLength()" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">button</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="button" class="form-control" placeholder="Button Here" type="text" required
+                            onkeyup="checkButtonNameLength()" />
+                    </div>
+                </div>
+                <div>
+
+                    <button type="submit" class="btn btn-primary" id="update">Submit</button>
+
+                </div>
+            </form>
+
+
+
+            <div class="collapse collapse-box" id="basic-form1">
+                <div class="code-box">
+                    <div class="clearfix">
+                        <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                            data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                        <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                            data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                    </div>
+                    <pre><code class="xml copy-pre" id="copy-pre">
 
                         </code></pre>
-                        </div>
-                    </div>
                 </div>
-                <!-- Default Basic Forms End -->
             </div>
-            
         </div>
-        <div class="pd-20 card-box mb-30">
-            <div class="clearfix">
-                <div class="pull-left">
-                    <h4 class="text-blue h4">Other Content</h4>
-                    
-                </div>
-                <!-- <div class="pull-right">
+        <!-- Default Basic Forms End -->
+    </div>
+
+</div>
+<div class="pd-20 card-box mb-30">
+    <div class="clearfix">
+        <div class="pull-left">
+            <h4 class="text-blue h4">Other Content</h4>
+
+        </div>
+        <!-- <div class="pull-right">
                     <a
                         href="#basic-form1"
                         class="btn btn-primary btn-sm scroll-click"
@@ -146,253 +105,232 @@
                         ><i class="fa fa-code"></i> Source Code</a
                     >
                 </div> -->
-            </div>
-            <form  id = "other_form">
-                
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Slider Heading</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input
-                        id="slider"
-                            class="form-control"
-                            type="text"
-                            placeholder="Slider Heading Here"
-                            required onkeyup="checkSilderHeadingNameLength()"
-                        />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Testimonial Heading</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input
-                        id = "testimonial"
-                            class="form-control"
-                            placeholder="Testimonial Heading Here"
-                            type="text"
-                            required onkeyup="checkTestimonialHeadingNameLength()"
-                        />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Footer Heading</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input
-                        id="footer"
-                            class="form-control"
-                            placeholder="Footer Heading Here"
-                            type="text"
-                            required onkeyup="checkFooterHeadingNameLength()"
-                        />
-                    </div>
-                </div>
-               
-                <div>
-                   
-                    <button type="submit" class="btn btn-primary"  id="update">Submit</button>
-                        
-                </div>
-            </form>
-               
-            <div class="footer-wrap pd-20 mb-20 card-box">
-                DeskApp - Bootstrap 4 Admin Template By
-                <a href="https://github.com/dropways" target="_blank"
-                    >Ankit Hingarajiya</a
-                >
+    </div>
+    <form id="other_form">
+
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2 col-form-label">Slider Heading</label>
+            <div class="col-sm-12 col-md-10">
+                <input id="slider" class="form-control" type="text" placeholder="Slider Heading Here" required
+                    onkeyup="checkSilderHeadingNameLength()" />
             </div>
         </div>
-    {{template "footer.html"}}
-<script>
-    $(document).ready(function(e) {
-        $("#content_form").submit(function(event) { 
-          event.preventDefault();
-          var formData = {
-            Heading: $("#heading").val(),
-            SubHeading: $("#subheading").val(),
-            Button: $("#button").val(),
-            
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2 col-form-label">Testimonial Heading</label>
+            <div class="col-sm-12 col-md-10">
+                <input id="testimonial" class="form-control" placeholder="Testimonial Heading Here" type="text" required
+                    onkeyup="checkTestimonialHeadingNameLength()" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2 col-form-label">Footer Heading</label>
+            <div class="col-sm-12 col-md-10">
+                <input id="footer" class="form-control" placeholder="Footer Heading Here" type="text" required
+                    onkeyup="checkFooterHeadingNameLength()" />
+            </div>
+        </div>
 
-            
-          };
-    
-          $.ajax({
-            type: "POST",
-            url: "/admin/content/add",
-            data: formData,
-            dataType: "json",
-        
-          }).done(function(data) {
-            Swal.fire({
-                        title: 'Good job!',
-                        text: 'Content submitted successfully!',
-                        icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonClass: 'btn btn-success',
-                        cancelButtonClass: 'btn btn-danger',
-                        allowOutsideClick: false,
-                    }).then((result) => {
-                        // Check if the user clicked "OK"
-                        if (result.isConfirmed) {
-                            // Redirect the user to "/user"
-                            window.location.href = "/other";
-                        } else if (result.isDismissed) {
-                            // Handle the case when the user clicks "Cancel"
-                            window.location.href = "/other";
-                        }
-                    });
-                }).fail(function (data) {
-                    // Trigger SweetAlert error message on AJAX failure
-                    console.log(data.responseJSON.message);
-                    var message = data.responseJSON.message || 'Something went wrong!';
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: message,
-                    });
+        <div>
+
+            <button type="submit" class="btn btn-primary" id="update">Submit</button>
+
+        </div>
+    </form>
+
+
+</div>
+{{template "footer.html"}}
+<script>
+    $(document).ready(function (e) {
+        $("#content_form").submit(function (event) {
+            event.preventDefault();
+            var formData = {
+                Heading: $("#heading").val(),
+                SubHeading: $("#subheading").val(),
+                Button: $("#button").val(),
+
+
+
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/content/add",
+                data: formData,
+                dataType: "json",
+
+            }).done(function (data) {
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Content submitted successfully!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Check if the user clicked "OK"
+                    if (result.isConfirmed) {
+                        // Redirect the user to "/user"
+                        window.location.href = "/other";
+                    } else if (result.isDismissed) {
+                        // Handle the case when the user clicks "Cancel"
+                        window.location.href = "/other";
+                    }
+                });
+            }).fail(function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             });
         });
     });
-  
-       
-</script>    
 
-        
+
+</script>
+
+
 <script>
-    $(document).ready(function(e) {
-        $("#other_form").submit(function(event) { 
-          event.preventDefault();
-          var formData = {
-            Slider: $("#slider").val(),
-            Testimonials: $("#testimonial").val(),
-            Footer: $("#footer").val(),
-            
+    $(document).ready(function (e) {
+        $("#other_form").submit(function (event) {
+            event.preventDefault();
+            var formData = {
+                Slider: $("#slider").val(),
+                Testimonials: $("#testimonial").val(),
+                Footer: $("#footer").val(),
 
-            
-          };
-    
-          $.ajax({
-            type: "POST",
-            url: "/admin/heading/add",
-            data: formData,
-            dataType: "json",
-        
-          }).done(function(data) {
-            Swal.fire({
-                        title: 'Good job!',
-                        text: 'Content submitted successfully!',
-                        icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonClass: 'btn btn-success',
-                        cancelButtonClass: 'btn btn-danger',
-                        allowOutsideClick: false,
-                    }).then((result) => {
-                        // Check if the user clicked "OK"
-                        if (result.isConfirmed) {
-                            // Redirect the user to "/user"
-                            window.location.href = "/other";
-                        } else if (result.isDismissed) {
-                            // Handle the case when the user clicks "Cancel"
-                            window.location.href = "/other";
-                        }
-                    });
-                }).fail(function (data) {
-                    // Trigger SweetAlert error message on AJAX failure
-                    console.log(data.responseJSON.message);
-                    var message = data.responseJSON.message || 'Something went wrong!';
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: message,
-                    });
+
+
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/heading/add",
+                data: formData,
+                dataType: "json",
+
+            }).done(function (data) {
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Content submitted successfully!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Check if the user clicked "OK"
+                    if (result.isConfirmed) {
+                        // Redirect the user to "/user"
+                        window.location.href = "/other";
+                    } else if (result.isDismissed) {
+                        // Handle the case when the user clicks "Cancel"
+                        window.location.href = "/other";
+                    }
+                });
+            }).fail(function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             });
         });
     });
-      function checkHeadingNameLength() {
-            var nameInput = document.getElementById('heading');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+    function checkHeadingNameLength() {
+        var nameInput = document.getElementById('heading');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
 
-            if (nameValue.length > 3) {
-                
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-           
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
-        }
-        function checkSubHeadingNameLength() {
-            var nameInput = document.getElementById('subheading');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+        if (nameValue.length > 3) {
 
-            if (nameValue.length > 3) {
-                
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-           
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
-        }
-        function checkButtonNameLength() {
-            var nameInput = document.getElementById('button');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
 
-            if (nameValue.length > 3) {
-                
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-           
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
         }
-        function checkSilderHeadingNameLength(){
-            var nameInput = document.getElementById('slider');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+    }
+    function checkSubHeadingNameLength() {
+        var nameInput = document.getElementById('subheading');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
 
-            if (nameValue.length > 3) {
-                
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-           
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
-        }
-        function checkTestimonialHeadingNameLength(){
-            var nameInput = document.getElementById('testimonial');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+        if (nameValue.length > 3) {
 
-            if (nameValue.length > 3) {
-                
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-           
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
-        }
-        function checkFooterHeadingNameLength(){
-            var nameInput = document.getElementById('footer');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
 
-            if (nameValue.length > 3) {
-                
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-           
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
         }
-</script>    
-    
+    }
+    function checkButtonNameLength() {
+        var nameInput = document.getElementById('button');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkSilderHeadingNameLength() {
+        var nameInput = document.getElementById('slider');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkTestimonialHeadingNameLength() {
+        var nameInput = document.getElementById('testimonial');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkFooterHeadingNameLength() {
+        var nameInput = document.getElementById('footer');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+</script>
+
 </body>
-</html>
 
-    
+</html>
