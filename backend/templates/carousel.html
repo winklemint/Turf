@@ -51,7 +51,9 @@
                                     class="form-control"
                                     placeholder="Image Here"
                                     type="file" 
+                                    onchange="checkImageValidation(this)"
                                 />
+                                <span id="imageError" style="color: red;"></span>
                             </div>
                         </div>
         
@@ -219,7 +221,32 @@
                 }
             });
         }
+        function checkImageValidation(input) {
+        var file = input.files[0];
+        var imageError = document.getElementById('imageError');
         
+        if (!file) {
+            imageError.textContent = "No file selected.";
+            return;
+        }
+
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+            imageError.textContent = "Invalid file type. Please select a JPG, JPEG, PNG, or GIF file.";
+            input.value = '';
+            return;
+        }
+
+        var maxSizeInBytes = 5e+6; // 5MB
+        if (file.size > maxSizeInBytes) {
+            imageError.textContent = "File size is too large. Please select a file smaller than 5MB.";
+            input.value = '';
+            return;
+        }
+
+        // Clear error message if file is valid
+        imageError.textContent = '';
+    }
        
       
        

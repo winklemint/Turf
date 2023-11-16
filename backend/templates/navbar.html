@@ -49,6 +49,7 @@
                                     class="form-control"
                                     type="text"
                                     placeholder="Navbar Name Here"
+                                    required onkeyup="checkNavbarNameLength()"
                                 />
                             </div>
                         </div>
@@ -60,7 +61,9 @@
                                     class="form-control"
                                     placeholder="link Here"
                                     type="text"
+                                    required onkeyup="checkLinkNameLength()"
                                 />
+                                <span id="linkError" style="color: red;"></span>
                             </div>
                         </div>
                         
@@ -236,6 +239,34 @@ button, // Status button
                 alert("Error deleting Navbar with ID: " + Id);
             }
         });
+    }
+    function checkNavbarNameLength(){
+            var nameInput = document.getElementById('name');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+       
+    function checkLinkNameLength() {
+        var linkInput = document.getElementById('link').value;
+        var linkError = document.getElementById('linkError');
+
+        // Regular expression pattern for basic URL format
+        var urlPattern =/^(http:\/\/|https:\/\/)(localhost|127\.0\.0\.1)(:\d{1,5})?\/[\w\/]+$/;
+
+        if (!urlPattern.test(linkInput)) {
+            linkError.textContent = "Invalid link format. Please enter a valid URL.";
+        } else {
+            linkError.textContent = '';
+        }
     }
     
 </script>      

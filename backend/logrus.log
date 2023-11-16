@@ -1754,3 +1754,8 @@ time="2023-11-15T18:24:06+05:30" level=info msg="Failed t0 read image open uploa
 time="2023-11-15T18:24:06+05:30" level=info msg="Failed t0 read image open uploads\\branch\\flag_of_india-1920x1080.jpg: The system cannot find the file specified.\n"
 time="2023-11-15T19:55:14+05:30" level=info msg="Failed to get data from DB <nil>\n"
 time="2023-11-15T19:55:19+05:30" level=info msg="Failed to get data from DB <nil>\n"
+time="2023-11-16T10:36:55+05:30" level=info msg="Upload the right file format (jpg or png) AddImageF0rCar0usel"
+time="2023-11-16T10:37:01+05:30" level=info msg="Upload the right file format (jpg or png) AddImageF0rCar0usel"
+time="2023-11-16T10:37:13+05:30" level=info msg="err: http: no such file"
+time="2023-11-16T10:37:13+05:30" level=info msg="err: http: no such file"
+time="2023-11-16T10:37:22+05:30" level=info msg="Upload the right file format (jpg or png) AddImageF0rCar0usel"
