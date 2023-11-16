@@ -18,18 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-md-6 col-sm-12 text-right">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            January 2018
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Export List</a>
-                            <a class="dropdown-item" href="#">Policies</a>
-                            <a class="dropdown-item" href="#">View Assets</a>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -232,10 +221,7 @@
     </div>
     <!-- Default Basic Forms End -->
 </div>
-<div class="footer-wrap pd-20 mb-20 card-box">
-    DeskApp - Bootstrap 4 Admin Template By
-    <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-</div>
+
 </div>
 
 
@@ -262,10 +248,8 @@
     });
 </script>
 
-
 <script>
     $(document).ready(function () {
-
 
         var selectedSlotIDs = [];
         var formattedStartDate; // Declare the variable here
@@ -296,14 +280,14 @@
         // Event listener to format the Start Date input
         $("#start-date").on('change', function () {
             var startDate = $(this).val();
-            var formattedStartDate = formatDateToDDMMYYYY(startDate);
+            formattedStartDate = formatDateToDDMMYYYY(startDate);
             updateInputField("#start-date", formattedStartDate);
         });
 
         // Event listener to format the End Date input
         $("#end-date").on('change', function () {
             var endDate = $(this).val();
-            var formattedEndDate = formatDateToDDMMYYYY(endDate);
+            formattedEndDate = formatDateToDDMMYYYY(endDate);
             updateInputField("#end-date", formattedEndDate);
         });
 
@@ -357,54 +341,39 @@
                         console.log(response);
                         $("#slot_date_container").empty();
                         var available_slots = response.available_slots;
-                        for (let i = 0; i < available_slots.length; i++) 
-                        {
+                        for (let i = 0; i < available_slots.length; i++) {
                             var this_slot_data = available_slots[i];
-                            var this_slot_date =   this_slot_data.date;
-
+                            var this_slot_date = this_slot_data.date;
                             var this_avail_slot_data = this_slot_data.Available_slots;
-
-                            for (let j = 0; j < this_avail_slot_data.length; j++)
-                            {
-                                
+                            for (let j = 0; j < this_avail_slot_data.length; j++) {
                                 var j_avail_slot_data = this_avail_slot_data[j];
-
-
                                 var j_is_booked = j_avail_slot_data.Is_booked;
                                 var j_slot_id = j_avail_slot_data.Slot.ID;
                                 var j_slot_start_time = j_avail_slot_data.Slot.Start_time;
                                 var j_slot_end_time = j_avail_slot_data.Slot.End_time;
 
-                                if (j_is_booked == 1)
-                                {
+                                if (j_is_booked == 1) {
                                     var checkbox = $('<input type="checkbox">')
-                                            .attr('id', slotID)
-                                            .attr('value', slotID)
-                                            .attr('name', 'slots[]');
-                                }
-                                else
-                                {
+                                        .attr('id', slotID)
+                                        .attr('value', slotID)
+                                        .attr('name', 'slots[]');
+                                } else {
                                     var checkbox = $('<input type="checkbox">')
-                                            .attr('id', slotID)
-                                            .attr('value', slotID)
-                                            .attr('name', 'slots[]')
-                                            .prop('disabled', false);
+                                        .attr('id', slotID)
+                                        .attr('value', slotID)
+                                        .attr('name', 'slots[]')
+                                        .prop('disabled', false);
                                 }
-
                             }
-
-                            
                         }
-                    }
-                        });
                     }
                 });
             }
         }
 
-
         // Add input event listeners to the fields
         $("#start-date, #end-date, #branchSelect").on('input', makeAjaxRequest);
+
         // Add a click event listener to the submit button
         $("#submit").on('click', function (e) {
             e.preventDefault();
@@ -426,12 +395,40 @@
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response);
+                    Swal.fire({
+                        title: 'Good job!',
+                        text: 'Form submitted successfully!',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        // Check if the user clicked "OK"
+                        if (result.isConfirmed) {
+                            // Redirect the user to "/user"
+                            window.location.href = "/packages";
+                        } else if (result.isDismissed) {
+                            // Handle the case when the user clicks "Cancel"
+                            window.location.href = "/packages";
+                        }
+                    });
+                },
+                fail: function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
                 }
             });
         });
     });
 </script>
+
 </body>
 
 </html>

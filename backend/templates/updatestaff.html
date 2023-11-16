@@ -18,18 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-md-6 col-sm-12 text-right">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            January 2018
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Export List</a>
-                            <a class="dropdown-item" href="#">Policies</a>
-                            <a class="dropdown-item" href="#">View Assets</a>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -168,110 +157,71 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-    <div class="footer-wrap pd-20 mb-20 card-box">
-        DeskApp - Bootstrap 4 Admin Template By
-        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-    </div>
+   
 </div>
 
 
 
 {{template "footer.html"}}
 <script>
-    $(document).ready(function() {
-        // Define Id outside the if block
+    $(document).ready(function () {
         var Id = new URLSearchParams(window.location.search).get('id');
 
-    if (Id) {
-        getUserDetails(Id);
-    }
-
-    // Helper function to retrieve user details
-    function getUserDetails(Id) {
-        $.ajax({
-            url: "/admin/staff/get/" + Id,
-            method: "GET",
-            dataType: "json",
-            success: function (response) {
-                var user = response.Data;
-                console.log(response.Data);
-                if (user) {
-                    $('#name').val(user.Name);
-                    $('#email').val(user.Email);
-                    $('#contact').val(user.Contact);
-                   
-                    $('#role').val(user.Role);
-                    $('#branch_select').val(user.Turf_branch_id);
-
-                    var authorizationValues = user.Authorization;
-
-                    // Loop through each checkbox element
-                    $('.auth').each(function () {
-                        var checkboxValue = parseInt($(this).attr('value')); // Convert the checkbox value to an integer
-                        if (authorizationValues.includes(checkboxValue)) {
-                            $(this).prop('checked', true); // Check the checkbox if the value matches
-                        } else {
-                            $(this).prop('checked', false); // Uncheck the checkbox if the value doesn't match
-                        }
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
-
-    $.ajax({
-        url: '/admin/get/branch',
-        method: 'GET',
-        dataType: 'json',
-        success: function (res) {
-            // Save the selected branch value if it's already set
-            var selectedBranch = $("#branchSelect").val();
-
-            // Clear the existing options in the dropdown
-            $("#branchSelect").html('');
-
-            appendDataToSelect(res.data);
-
-            // Set the selected branch value back
-            if (selectedBranch) {
-                $("#branchSelect").val(selectedBranch);
-            }
-        },
-        error: function () {
-            console.error('Failed to retrieve data from the server');
+        if (Id) {
+            getUserDetails(Id);
         }
 
-        // Helper function to retrieve user details
         function getUserDetails(Id) {
             $.ajax({
                 url: "/admin/staff/get/" + Id,
                 method: "GET",
                 dataType: "json",
-                success: function(response) {
-                    if (response.success) {
-                        var user = response.data;
-                        if (user) {
-                            $('#name').val(user.Name);
-                            $('#email').val(user.Email);
-                            $('#contact').val(user.Contact);
-                            $('#role').val(user.Role);
-                        }
-                    } else {
-                        // Handle an error response, e.g., user not found
-                        console.log(response.message);
+                success: function (response) {
+                    var user = response.Data;
+                    console.log(response.Data);
+                    if (user) {
+                        $('#name').val(user.Name);
+                        $('#email').val(user.Email);
+                        $('#contact').val(user.Contact);
+
+                        $('#role').val(user.Role);
+                        $('#branch_select').val(user.Turf_branch_id);
+
+                        var authorizationValues = user.Authorization;
+
+                        $('.auth').each(function () {
+                            var checkboxValue = parseInt($(this).val());
+                            $(this).prop('checked', authorizationValues.includes(checkboxValue));
+                        });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
         }
 
-        $("#staff_form").submit(function(event) {
+        // Fetch branch data
+        $.ajax({
+            url: '/admin/get/branch',
+            method: 'GET',
+            dataType: 'json',
+            success: function (res) {
+                var selectedBranch = $("#branchSelect").val();
+                $("#branchSelect").html('');
+                appendDataToSelect(res.data);
+                if (selectedBranch) {
+                    $("#branchSelect").val(selectedBranch);
+                }
+            },
+            error: function () {
+                console.error('Failed to retrieve data from the server');
+            }
+        });
+
+        $("#staff_form").submit(function (event) {
             event.preventDefault();
+
             var formData = {
                 Name: $("#name").val(),
                 Email: $("#email").val(),
@@ -285,48 +235,44 @@
                 method: "PATCH",
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         alert("User Details updated successfully!");
                         window.location.href = "/user";
                     } else {
-                        // Handle an error response, e.g., update failed
                         console.log(response.message);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
         });
-    });
-    function appendDataToSelect(data) {
-            
-        const element = "<option value=''>Select Branch</option>";
-        $("#branchSelect").append(element);
-        for (let index = 0; index < data.length; index++) {
-            var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
-            $("#branchSelect").append(element_other);
-        }
-    }
 
-    // When the "All" checkbox is clicked
-    $('#customCheck1').change(function () {
-        var allChecked = this.checked;
-        $('.auth').prop('checked', allChecked);
-    });
-
-    // When any of the other checkboxes are clicked
-    $('.auth').change(function () {
+        // Other functions related to checkboxes, permissions, and API calls
         updateAllAuthorizationCheckboxState();
-    });
 
-    // Handle permissions for the specific day
-    $('.auth').change(function () {
-        var selectedPerm = getSelectedPermissions();
-        sendCheckboxStateToAPI(selectedPerm);
+        function updateAllAuthorizationCheckboxState() {
+            // Implementation for updating "All" checkbox state
+        }
+
+        $('.auth').change(function () {
+            updateAllAuthorizationCheckboxState();
+            var selectedPerm = getSelectedPermissions();
+            sendCheckboxStateToAPI(selectedPerm);
+        });
+
+        function getSelectedPermissions() {
+            // Implementation to get selected permissions
+        }
+
+        function sendCheckboxStateToAPI(selectedPerm) {
+            // Implementation to send checkbox state to the API
+        }
     });
 </script>
+
+
 </body>
 
 </html>

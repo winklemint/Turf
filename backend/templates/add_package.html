@@ -18,18 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-md-6 col-sm-12 text-right">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            January 2018
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Export List</a>
-                            <a class="dropdown-item" href="#">Policies</a>
-                            <a class="dropdown-item" href="#">View Assets</a>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -37,7 +26,7 @@
             <div class="clearfix">
                 <div class="pull-left">
                     <h4 class="text-blue h4">Package</h4>
-                   
+
                 </div>
                 <!-- <div class="pull-right">
                             <a
@@ -71,7 +60,7 @@
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
                     <div class="col-sm-12 col-md-10">
                         <select class="custom-select col-12" id="branchSelect" required>
-                           
+
                         </select>
                     </div>
                 </div>
@@ -210,10 +199,7 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-    <div class="footer-wrap pd-20 mb-20 card-box">
-        DeskApp - Bootstrap 4 Admin Template By
-        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-    </div>
+    
 </div>
 
 
@@ -263,7 +249,7 @@
             success: function (res) {
                 // The "data" variable contains the data received from the server
                 // You can now append the data to the <select> element
-                    
+
                 $("#branchSelect").html('');
                 appendDataToSelect(res.data);
             },
@@ -273,13 +259,11 @@
         });
 
 
-        function appendDataToSelect(data) 
-        {
+        function appendDataToSelect(data) {
             const element = "<option value=''>Select Branch</option>";
             $("#branchSelect").append(element);
-            for (let index = 0; index < data.length; index++) 
-            {
-                var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+            for (let index = 0; index < data.length; index++) {
+                var element_other = "<option value='" + data[index].ID + "'>" + data[index].Branch_name + "</option>";
                 $("#branchSelect").append(element_other);
                 console.log(element_other);
             }
@@ -419,6 +403,7 @@
             };
            
 
+
             // Now you have access to the selected slot IDs and their data
             console.log('Selected Slots:', formData);
 
@@ -429,9 +414,36 @@
                 contentType: "application/json", // Set the content type to JSON
                 dataType: "json",
             }).done(function (data) {
-
-                console.log(data);
+                
+                Swal.fire({
+                        title: 'Good job!',
+                        text: 'Form submitted successfully!',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        // Check if the user clicked "OK"
+                        if (result.isConfirmed) {
+                            // Redirect the user to "/user"
+                            window.location.href = "/packages";
+                        } else if (result.isDismissed) {
+                            // Handle the case when the user clicks "Cancel"
+                            window.location.href = "/packages";
+                        }
+                    });
+                }).fail(function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
+                });
             });
         });
-    });
+    
 </script>
