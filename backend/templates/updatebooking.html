@@ -183,36 +183,36 @@
                             // Handle the response data from the API here
                             console.log("API Response:", image_data);
                             console.log("API path:", image_data.Payment_screenshot);
-                            console.log(image_data.data.Payment_screenshot);
+                            // console.log(image_data.data.Payment_screenshot);
 
 
                             var imageURL = 'https://media.hudle.in/venues/10509542-c18a-49a9-afbf-96a87e966812/photo/636c8a1382366fe893cf16fc2d9bb57f219ff8ef';
 
-                            // console.log(imageURL);
+                             console.log(imageURL);
 
-                            // var image_div = "<img alt='Image Preview' style='max-width: 100%; max-height: 200px;' src='" + imageURL + "'>";
-                            // $('#imagePreview').html(image_div);
+                            var image_div = "<img alt='Image Preview' style='max-width: 100%; max-height: 200px;' src='" + imageURL + "'>";
+                            $('#imagePreview').html(image_div);
 
-                            document.getElementById('imageInput').addEventListener('change', function (event) {
-                                var file = event.target.files[0];
+                            // document.getElementById('imageInput').addEventListener('change', function (event) {
+                            //     var file = event.target.files[0];
 
-                                if (file) {
-                                    var imageURL = URL.createObjectURL(file);
+                            //     if (file) {
+                            //         var imageURL = URL.createObjectURL(file);
 
-                                    console.log(imageURL);
+                            //         console.log(imageURL);
 
-                                    var image_div = "<img alt='Image Preview' style='max-width: 100%; max-height: 200px;' src='" + imageURL + "'>";
-                                    document.getElementById('imagePreview').innerHTML = image_div;
-                                }
-                            });
-                            // if (imageURL) {
-                            //     // Set the 'src' attribute of the image to the received image URL
-                            //     $('#imagePreview').attr('src', imageURL);
+                            //         var image_div = "<img alt='Image Preview' style='max-width: 100%; max-height: 200px;' src='" + imageURL + "'>";
+                            //         document.getElementById('imagePreview').innerHTML = image_div;
+                            //     }
+                            // });
+                            if (imageURL) {
+                                // Set the 'src' attribute of the image to the received image URL
+                                $('#imagePreview').attr('src', imageURL);
 
 
-                            //     // Display the image element
-                            //     $('#imagePreview').show();
-                            // }
+                                // Display the image element
+                                $('#imagePreview').show();
+                            }
 
                             // You can perform additional actions with the API response
                         }).fail(function (jqXHR, textStatus, errorThrown) {
