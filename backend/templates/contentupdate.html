@@ -162,15 +162,36 @@
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: function (response) {
-                    alert("Content updated successfully!");
-                    window.location.href = "/content";
+                    Swal.fire({
+                        title: 'Updated!',
+                        text: response.message || "Content updated successfully!",
+                        icon: "success",
+                        timer: 3000
+                    }).then(
+                        function () {
+                            window.location.href = "/content";
+                        },
+                        // handling the promise rejection
+                        function (dismiss) {
+                            if (dismiss === 'timer') {
+                                console.log('I was closed by the timer');
+                            }
+                        }
+                    );
                 },
-                error: function (xhr, status, error) {
-                    console.error(error);
+                error: function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
                 }
             });
+          });
         });
-    });
     function checkHeadingNameLength() {
         var nameInput = document.getElementById('heading');
         var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
