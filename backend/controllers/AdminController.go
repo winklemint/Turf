@@ -1129,7 +1129,7 @@ func AddPackage(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name      string 
+		Name      string
 		Price     float64
 		Status    int
 		Branch_id int
@@ -3791,12 +3791,15 @@ func PSR_slots(c *gin.Context) {
 		Data []interface{}
 	}
 
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
 	var packages []models.Package
 	// var slots []models.Time_Slot
 
 	result := config.DB.Debug().Raw(`
-	SELECT p.id as ID, p.name as Name, p.price as Price, p.status as Status, p.branch_id as Branch_id, ts.start_time as Start_time, ts.end_time as End_time, ts.day as Day, ts.branch_id as Slot_Branch_id, psr.id as PSR_id, bim.branch_name as Branch_name FROM package_slot_relationships psr INNER JOIN packages p ON p.id = psr.package_id INNER JOIN time_slots ts ON psr.slot_id = ts.id INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
-`).Scan(&packages)
+	SELECT p.id as ID, p.name as Name, p.price as Price, p.status as Status, p.branch_id as Branch_id, ts.start_time as Start_time, ts.end_time as End_time, ts.day as Day, ts.branch_id as Slot_Branch_id, psr.id as PSR_id, bim.branch_name as Branch_name FROM package_slot_relationships psr INNER JOIN packages p ON p.id = psr.package_id INNER JOIN time_slots ts ON psr.slot_id = ts.id INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id WHERE ts.branch_id=?
+`, branchid).Scan(&packages)
 
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
