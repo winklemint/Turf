@@ -65,6 +65,7 @@
                                     class="form-control"
                                     type="text"
                                     placeholder="Heading Here"
+                                    required onkeyup="checkHeadingNameLength()"
                                 />
                             </div>
                         </div>
@@ -76,6 +77,7 @@
                                     class="form-control"
                                     placeholder="SubHeading Here"
                                     type="text"
+                                    required onkeyup="checkSubHeadingNameLength()"
                                 />
                             </div>
                         </div>
@@ -87,6 +89,7 @@
                                     class="form-control"
                                     placeholder="Button Here"
                                     type="text"
+                                    required onkeyup="checkButtonNameLength()"
                                 />
                             </div>
                         </div>
@@ -154,6 +157,7 @@
                             class="form-control"
                             type="text"
                             placeholder="Slider Heading Here"
+                            required onkeyup="checkSilderHeadingNameLength()"
                         />
                     </div>
                 </div>
@@ -165,6 +169,7 @@
                             class="form-control"
                             placeholder="Testimonial Heading Here"
                             type="text"
+                            required onkeyup="checkTestimonialHeadingNameLength()"
                         />
                     </div>
                 </div>
@@ -176,6 +181,7 @@
                             class="form-control"
                             placeholder="Footer Heading Here"
                             type="text"
+                            required onkeyup="checkFooterHeadingNameLength()"
                         />
                     </div>
                 </div>
@@ -248,8 +254,90 @@
           });
         });
       });
-  
-       
+      function checkHeadingNameLength() {
+            var nameInput = document.getElementById('heading');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkSubHeadingNameLength() {
+            var nameInput = document.getElementById('subheading');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkButtonNameLength() {
+            var nameInput = document.getElementById('button');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkSilderHeadingNameLength(){
+            var nameInput = document.getElementById('slider');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkTestimonialHeadingNameLength(){
+            var nameInput = document.getElementById('testimonial');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkFooterHeadingNameLength(){
+            var nameInput = document.getElementById('footer');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
 </script>    
     
 </body>

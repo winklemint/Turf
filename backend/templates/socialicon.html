@@ -64,7 +64,8 @@
                                 id="name"
                                     class="form-control"
                                     type="text"
-                                    placeholder="Navbar Name Here"
+                                    placeholder="Icon Name Here"
+                                    required onkeydown="checkIconNameValidation()"
                                 />
                             </div>
                         </div>
@@ -72,13 +73,16 @@
                             <label class="col-sm-12 col-md-2 col-form-label">Link</label>
                             <div class="col-sm-12 col-md-10">
                                 <input
-                                id = "link"
+                                    id="link"
                                     class="form-control"
-                                    placeholder="link Here"
+                                    placeholder="Link Here"
                                     type="text"
+                                    onkeyup="checkLinkValidation()"
                                 />
+                                <span id="linkError" style="color: red;"></span>
                             </div>
                         </div>
+                        
                         
                            
                             <button type="submit" class="btn btn-primary"  id="update">Submit</button>
@@ -258,6 +262,34 @@
             }
         });
     }
+    function checkIconNameValidation(){
+            var nameInput = document.getElementById('name');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkLinkValidation() {
+        var linkInput = document.getElementById('link').value;
+        var linkError = document.getElementById('linkError');
+
+        // Regular expression pattern for basic URL format
+        var urlPattern =/^(http:\/\/|https:\/\/)(localhost|127\.0\.0\.1)(:\d{1,5})?\/[\w\/]+$/;
+
+        if (!urlPattern.test(linkInput)) {
+            linkError.textContent = "Invalid link format. Please enter a valid URL.";
+        } else {
+            linkError.textContent = '';
+        }
+    }
+
     
 </script>      
 
