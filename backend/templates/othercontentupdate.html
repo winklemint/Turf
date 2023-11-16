@@ -28,34 +28,22 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Slider Heading</label>
                             <div class="col-sm-12 col-md-10">
-                                <input
-                                id="slider"
-                                    class="form-control"
-                                    type="text"
-                                    placeholder="Slider Heading Here"
-                                />
+                                <input id="slider" class="form-control" type="text" placeholder="Slider Heading Here" required
+                                    onkeyup="checkSilderHeadingNameLength()" />
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Testimonial Heading</label>
                             <div class="col-sm-12 col-md-10">
-                                <input
-                                id = "testimonial"
-                                    class="form-control"
-                                    placeholder="Testimonial Heading Here"
-                                    type="text"
-                                />
+                                <input id="testimonial" class="form-control" placeholder="Testimonial Heading Here" type="text" required
+                                    onkeyup="checkTestimonialHeadingNameLength()" />
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Footer Heading</label>
                             <div class="col-sm-12 col-md-10">
-                                <input
-                                id="footer"
-                                    class="form-control"
-                                    placeholder="Footer Heading Here"
-                                    type="text"
-                                />
+                                <input id="footer" class="form-control" placeholder="Footer Heading Here" type="text" required
+                                    onkeyup="checkFooterHeadingNameLength()" />
                             </div>
                         </div>
                         
@@ -165,6 +153,48 @@
             });
           });
         });
+        function checkSilderHeadingNameLength() {
+        var nameInput = document.getElementById('slider');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkTestimonialHeadingNameLength() {
+        var nameInput = document.getElementById('testimonial');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkFooterHeadingNameLength() {
+        var nameInput = document.getElementById('footer');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
     
 </script>   
 </body>
