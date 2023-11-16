@@ -221,10 +221,36 @@
             dataType: "json",
         
           }).done(function(data) {
-            window.location.href = "/other";
-          });
+            Swal.fire({
+                        title: 'Good job!',
+                        text: 'Content submitted successfully!',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        // Check if the user clicked "OK"
+                        if (result.isConfirmed) {
+                            // Redirect the user to "/user"
+                            window.location.href = "/other";
+                        } else if (result.isDismissed) {
+                            // Handle the case when the user clicks "Cancel"
+                            window.location.href = "/other";
+                        }
+                    });
+                }).fail(function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
+            });
         });
-      });
+    });
   
        
 </script>    
@@ -250,10 +276,36 @@
             dataType: "json",
         
           }).done(function(data) {
-            window.location.href = "/other";
-          });
+            Swal.fire({
+                        title: 'Good job!',
+                        text: 'Content submitted successfully!',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        // Check if the user clicked "OK"
+                        if (result.isConfirmed) {
+                            // Redirect the user to "/user"
+                            window.location.href = "/other";
+                        } else if (result.isDismissed) {
+                            // Handle the case when the user clicks "Cancel"
+                            window.location.href = "/other";
+                        }
+                    });
+                }).fail(function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
+            });
         });
-      });
+    });
       function checkHeadingNameLength() {
             var nameInput = document.getElementById('heading');
             var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
