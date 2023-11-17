@@ -76,7 +76,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
 
 	<div class="row pb-10">
@@ -149,74 +149,80 @@
 
 
 		<div class="col-md-4 mb-20">
-			<!-- First Card -->
-			<div class="card-box min-height-200px pd-30 mb-20" data-bgcolor="#455a64">
-				<div class="d-flex justify-content-between pb-20 text-white">
-					<div class="icon h1 text-white">
-						<div class="font-10">Live</div>
+			<div class="d-flex flex-column mb-4">
+
+				<div class="card-box min-height-200px pd-30 mb-20" data-bgcolor="#455a64">
+					<div class="d-flex justify-content-between pb-20 text-white">
+						<div class="icon h1 text-white">
+							<div class="font-10">Live</div>
+						</div>
 					</div>
-				</div>
-				<div class="d-flex justify-content-between align-items-end">
-					<div class="max-width-150">
-						<div id="appointment-chart">
-							<div>
-								<i class="icon-copy bi bi-person-fill"></i> <span id="user-name"></span>
-							</div>
-							<div>
-								<i class="icon-copy bi bi-telephone-fill"></i> <span id="contact-number"></span>
-							</div>
-							<div>
-								<i class="icon-copy bi bi-clock"></i> <span id="start-time"></span> - <span id="end-time"></span>
+					<div class="d-flex justify-content-between align-items-end">
+						<div class="max-width-150">
+							<div id="appointment-chart">
+								<div>
+									<i class="icon-copy bi bi-person-fill"></i> <span id="user-name"></span>
+								</div>
+								<div>
+									<i class="icon-copy bi bi-telephone-fill"></i> <span id="contact-number"></span>
+								</div>
+								<div>
+									<i class="icon-copy bi bi-clock"></i> <span id="start-time"></span> - <span
+										id="end-time"></span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		
-			<!-- Second Card -->
-			<div class="card-box min-height-200px pd-30  mb-20" data-bgcolor="#265ed7">
-				<div class="d-flex justify-content-between pb-20 text-white">
-					<div class="icon h1 text-white">
-						<div class="font-10">Revenue</div>
+
+			<div class="d-flex flex-column mb-4">
+				<div class="card-box min-height-200px pd-30  mb-20" data-bgcolor="#265ed7">
+					<div class="d-flex justify-content-between pb-20 text-white">
+						<div class="icon h1 text-white">
+							<div class="font-10">Revenue</div>
+						</div>
 					</div>
-				</div>
-				<div class="d-flex justify-content-between align-items-end">
-					<div class="text-white">
-						<div class="font-14">Total Revenue</div>
-						<div class="font-24 weight-500" id="total-revenue">Loading...</div>
-					</div>
-					<div class="text-white">
-						<div class="font-14">Monthly Revenue</div>
-						<div class="font-24 weight-500" id="monthly-revenue">Loading...</div>
-					</div>
-					<div class="max-width-150">
-						<div id="surgery-chart"></div>
+					<div class="d-flex justify-content-between align-items-end">
+						<div class="text-white">
+							<div class="font-14">Total Revenue</div>
+							<div class="font-24 weight-500" id="total-revenue">Loading...</div>
+						</div>
+						<div class="text-white">
+							<div class="font-14">Monthly Revenue</div>
+							<div class="font-24 weight-500" id="monthly-revenue">Loading...</div>
+						</div>
+						<div class="max-width-150">
+							<div id="surgery-chart"></div>
+						</div>
 					</div>
 				</div>
 			</div>
-		
-		
-		
-		
-			<div class="card-box min-height-200px pd-30  mb-20" data-bgcolor="#265ed7">
-				<div class="d-flex justify-content-between pb-20 text-white">
-					<div class="icon h1 text-white">
-						<div class="font-10">Slot</div>
+
+
+
+
+			<div class="d-flex flex-column mb-4">
+				<div class="card-box min-height-200px pd-30  mb-20" data-bgcolor="#265ed7">
+					<div class="d-flex justify-content-between pb-20 text-white">
+						<div class="icon h1 text-white">
+							<div class="font-10">Slot</div>
+						</div>
 					</div>
-				</div>
-				<div class="d-flex justify-content-between align-items-end">
-					<div class="text-white">
-						<div class="font-14">Total Today Slot</div>
-						<div class="font-24 weight-500" id="total-slot">Loading...</div>
-					</div>
-				
-					<div class="max-width-150">
-						<div id="surgery-chart"></div>
+					<div class="d-flex justify-content-between align-items-end">
+						<div class="text-white">
+							<div class="font-14">Total Today Slot</div>
+							<div class="font-24 weight-500" id="total-slot">Loading...</div>
+						</div>
+
+						<div class="max-width-150">
+							<div id="surgery-chart"></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
 
 	<div class="row">
@@ -242,7 +248,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="col-lg-4 col-md-12 mb-20">
 			<div class="card-box height-100-p pd-20 min-height-200px">
 				<div class="max-width-300 mx-auto">
@@ -615,19 +621,19 @@
 			});
 		}
 		$.get("/admin/package/list", function (data) {
-    if (data.status === 200) {
-        // Populate the package list
-        renderPackages(data.data);
-    } else {
-        console.log("Error fetching package data");
-    }
-});
+			if (data.status === 200) {
+				// Populate the package list
+				renderPackages(data.data);
+			} else {
+				console.log("Error fetching package data");
+			}
+		});
 
-function renderPackages(packages) {
-    var packageList = $("#packageulList");
+		function renderPackages(packages) {
+			var packageList = $("#packageulList");
 
-    packages.forEach(function (package) {
-        var packageCard = `
+			packages.forEach(function (package) {
+				var packageCard = `
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <div class="name-avatar d-flex align-items-center pr-2">
                     <div class="txt">
@@ -640,9 +646,9 @@ function renderPackages(packages) {
                 </div>
             </li>`;
 
-        packageList.append(packageCard);
-    });
-}
+				packageList.append(packageCard);
+			});
+		}
 
 		// Make an AJAX request to fetch the values
 		$.ajax({
