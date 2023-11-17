@@ -10,7 +10,7 @@
                     <nav aria-label="breadcrumb" role="navigation">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
-                                <a href="/dashborad">Home</a>
+                                <a href="/dashboard">Home</a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 Form Basic
@@ -18,18 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-md-6 col-sm-12 text-right">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            January 2018
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Export List</a>
-                            <a class="dropdown-item" href="#">Policies</a>
-                            <a class="dropdown-item" href="#">View Assets</a>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -66,8 +55,7 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Status</label>
                     <div class="col-sm-12 col-md-10">
-                        <select class="custom-select col-12" id="package_status">
-                            <option selected="">Choose...</option>
+                        <select class="custom-select col-12" id="package_stat">
                             <option value="1">Enable</option>
                             <option value="2">Disable</option>
 
@@ -179,10 +167,7 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-    <div class="footer-wrap pd-20 mb-20 card-box">
-        DeskApp - Bootstrap 4 Admin Template By
-        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-    </div>
+  
 </div>
 
 
@@ -212,7 +197,7 @@
                         $('#name').val(branchs[0].Name);
                         $('#charges').val(branchs[0].Price);
                         $('#id').val(branchs[0].BranchID);
-                        $('#package_status').val(branchs[0].Status);
+                        $('#package_stat').val(branchs[0].Status);
 
                         // Check checkboxes and append slots based on the API response
                         handleCheckboxAndSlots(branchs);
