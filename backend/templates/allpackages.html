@@ -43,9 +43,9 @@
                         var button;
                         console.log(packages.Status);
                         if (packages.Status == 1) {
-                            button = "<button type='button' class='btn btn-outline-success'>Active</button>";
+                            button = "<button type='button' class='btn btn-outline-success'>Enable</button>";
                         } else {
-                            button = "<button type='button' class='btn btn-outline-danger'>Hold</button>";
+                            button = "<button type='button' class='btn btn-outline-danger'>Disable</button>";
                         }
                         var action = '<div class="dropdown">' +
                             '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/view/package/' + packages.ID + '" role="button" data-toggle="dropdown">' +
