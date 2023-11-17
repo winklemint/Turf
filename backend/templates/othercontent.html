@@ -181,21 +181,24 @@
             url: "/admin/heading/delete/" + Id,
             method: "DELETE",
             success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("Content with ID: " + Id + " deleted successfully");
-                }
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Content Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting Content with ID: " + Id);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             }
         });
     }
-    
 </script>      
 <script>
     $(document).ready(function () {
@@ -256,17 +259,21 @@
             url: "/admin/content/delete/" + Id,
             method: "DELETE",
             success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("Content with ID: " + Id + " deleted successfully");
-                }
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Content Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting Content with ID: " + Id);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             }
         });
     }
