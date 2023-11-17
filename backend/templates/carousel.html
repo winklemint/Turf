@@ -233,20 +233,24 @@
                 url: "/admin/delete/carousel/" + Id,
                 method: "DELETE",
                 success: function (response) {
-                    var rowid = 'rowN' + row_id;
-                    alert(rowid);
-                    var rowElement = document.getElementById(rowid);
-                    if (rowElement) {
-                        rowElement.style.display = 'none';
-                        alert("Carousel with ID: " + Id + " deleted successfully");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                    alert("Error deleting Carousel with ID: " + Id);
-                }
-            });
-        }
+                    Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Carousel Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            }
+        });
+    }
         function checkImageValidation(input) {
         var file = input.files[0];
         var imageError = document.getElementById('imageError');

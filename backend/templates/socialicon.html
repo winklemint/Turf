@@ -252,17 +252,21 @@
             url: "/admin/icon/delete/" + Id,
             method: "DELETE",
             success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("Social Icon with ID: " + Id + " deleted successfully");
-                }
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Social Icon Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting Social Icon with ID: " + Id);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             }
         });
     }
