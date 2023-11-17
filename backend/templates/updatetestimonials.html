@@ -10,7 +10,7 @@
                             <nav aria-label="breadcrumb" role="navigation">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item">
-                                        <a href="/dashborad">Home</a>
+                                        <a href="/dashbard">Home</a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">
                                         Form Basic
@@ -41,7 +41,7 @@
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">
                         <div class="pull-left">
-                            <h4 class="text-blue h4"> Testimonilas Forms</h4>
+                            <h4 class="text-blue h4"> Testimonial Forms</h4>
                             
                         </div>
                         <!-- <div class="pull-right">
@@ -63,7 +63,8 @@
                                 id="name"
                                     class="form-control"
                                     type="text"
-                                    placeholder="TestiMonial Name Here"
+                                    placeholder="Testimonial Name Here"
+                                    required onkeyup="checkNameValidation()"
                                 />
                             </div>
                         </div>
@@ -75,6 +76,7 @@
                                     class="form-control"
                                     placeholder="Designation Here"
                                     type="text"
+                                    required onkeyup="checkDesigantionValidation()"
                                 />
                             </div>
                         </div>
@@ -86,6 +88,7 @@
                                     class="form-control"
                                     placeholder="Review Here"
                                     type="text"
+                                    required onkeyup="checkReviewValidation()"
                                 />
                             </div>
                         </div>
@@ -97,7 +100,9 @@
                                     class="form-control"
                                     placeholder="Image Here"
                                     type="file" 
-                                />
+                                    onchange="checkImageValidation(this)"
+                                    />
+                                    <span id="imageError" style="color: red;"></span>
                             </div>
                         </div>
                         
@@ -157,7 +162,6 @@
     {{template "footer.html"}}
 <script>
    $(document).ready(function() {
-    // Retrieve the testimonial ID from the query parameter
     var Id = new URLSearchParams(window.location.search).get('id');
     if (Id) {
         testimonialsDetails(Id);
@@ -198,10 +202,8 @@ $('#branch_form').submit(function(event) {
         form_image.append("image", imageInput.files[0]);
     }
 
-    // Retrieve the testimonial ID from the query parameter
     var Id = new URLSearchParams(window.location.search).get('id');
 
-    // Create a promise for the text fields update API
     var updateTextFieldsPromise = $.ajax({
         url: "/admin/update/testimonials/" + Id,
         method: "PATCH",
@@ -209,7 +211,6 @@ $('#branch_form').submit(function(event) {
         contentType: 'application/json',
     });
 
-    // Check if an image is specified, and create a promise for the image update API
     var updateImagePromise = null;
     if (form_image.get("image")) {
         updateImagePromise = $.ajax({
@@ -221,31 +222,141 @@ $('#branch_form').submit(function(event) {
         });
     }
 
-    // Use Promise.all to execute both requests if needed
     if (updateImagePromise) {
         Promise.all([updateTextFieldsPromise, updateImagePromise])
             .then(function(responses) {
-                // Handle both responses here
                 var textFieldsResponse = responses[0];
                 var imageResponse = responses[1];
 
-                alert("Testimonials updated successfully!");
-                window.location.href = "/testimonials";
+                // Handle success response using Swal
+                Swal.fire({
+                    title: 'Updated!',
+                    text: response.message || "Testimonial updated successfully!",
+                    icon: "success",
+                    timer: 3000
+                }).then(
+                    function() {
+                        window.location.href = "/testimonials";
+                    },
+                    function(dismiss) {
+                        if (dismiss === 'timer') {
+                            console.log('I was closed by the timer');
+                        }
+                    }
+                );
             })
-            .catch(function(errors) {
-                console.error(errors);
+            .catch(function(data) {
+                // Handle error using Swal
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             });
     } else {
-        // Only execute the text fields update if no image is selected
         updateTextFieldsPromise.then(function(response) {
-            alert("Testimonials updated successfully!");
-            window.location.href = "/testimonials";
-        }).catch(function(error) {
-            console.error(error);
-        });
+                // Handle success response using Swal
+                Swal.fire({
+                    title: 'Updated!',
+                    text: response.message || "Testimonial updated successfully!",
+                    icon: "success",
+                    timer: 3000
+                }).then(
+                    function() {
+                        window.location.href = "/testimonials";
+                    },
+                    function(dismiss) {
+                        if (dismiss === 'timer') {
+                            console.log('I was closed by the timer');
+                        }
+                    }
+                );
+            })
+            .catch(function(data) {
+                // Handle error using Swal
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            });
     }
 });
 
+// Validation functions (checkNameValidation, checkDesigantionValidation, checkReviewValidation, checkImageValidation) are defined here.
+
+function checkNameValidation() {
+        var nameInput = document.getElementById('name');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkDesigantionValidation() {
+        var nameInput = document.getElementById('designation');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkReviewValidation() {
+        var nameInput = document.getElementById('review');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkImageValidation(input) {
+        var file = input.files[0];
+        var imageError = document.getElementById('imageError');
+        
+        if (!file) {
+            imageError.textContent = "No file selected.";
+            return;
+        }
+
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+            imageError.textContent = "Invalid file type. Please select a JPG, JPEG, PNG, or GIF file.";
+            input.value = '';
+            return;
+        }
+
+        var maxSizeInBytes = 5e+6; // 5MB
+        if (file.size > maxSizeInBytes) {
+            imageError.textContent = "File size is too large. Please select a file smaller than 5MB.";
+            input.value = '';
+            return;
+        }
+
+        // Clear error message if file is valid
+        imageError.textContent = '';
+    }
 </script>    
       
 
