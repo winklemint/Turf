@@ -116,52 +116,36 @@
 			<div class="menu-icon bi bi-list"></div>
 			<div class="search-toggle-icon bi bi-search" data-toggle="header_search"></div>
 			<div class="header-search">
-				<form>
-					<div class="form-group mb-0">
-						<i class="dw dw-search2 search-icon"></i>
-						<input type="text" class="form-control search-input" placeholder="Search Here" />
-						<div class="dropdown">
-							<a class="dropdown-toggle no-arrow" href="#" role="button" data-toggle="dropdown">
-								<i class="ion-arrow-down-c"></i>
-							</a>
-							<div class="dropdown-menu dropdown-menu-right">
-								<div class="form-group row">
-									<label class="col-sm-12 col-md-2 col-form-label">From</label>
-									<div class="col-sm-12 col-md-10">
-										<input class="form-control form-control-sm form-control-line" type="text" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-12 col-md-2 col-form-label">To</label>
-									<div class="col-sm-12 col-md-10">
-										<input class="form-control form-control-sm form-control-line" type="text" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-12 col-md-2 col-form-label">Subject</label>
-									<div class="col-sm-12 col-md-10">
-										<input class="form-control form-control-sm form-control-line" type="text" />
-									</div>
-								</div>
-								<div class="text-right">
-									<button class="btn btn-primary">Search</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</form>
+				
 			</div>
 		</div>
 		<div class="header-right">
+			
 
 			<div class="form-group row">
-				<label class="col-sm-12 col-md-2 col-form-label"></label>
+				<label class="col-sm-11 col-md-3 col-form-label"></label>
 				<div class="col-sm-12 col-md-10 super_branch_div">
 					<select class="custom-select col-12" id="status" onchange="setNewBranch()">							
 					</select>
 				</div>
 			</div>
 			
+			
+			
+			
+			<div class="user-info-dropdown form-group row">
+				<div class="dropdown">
+					<a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" id="admin-name">
+						
+						<span class="user-name" >Loading...</span>
+					</a>
+					<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+						<a class="dropdown-item" href="/profile"><i class="dw dw-user1"></i> Profile</a>
+						
+						<a class="dropdown-item" href="index.html" id="logout"><i class="dw dw-logout"></i> Log Out</a>
+					</div>
+				</div>
+			</div>
 			<div class="dashboard-setting user-notification">
 				<div class="dropdown">
 					<a class="dropdown-toggle no-arrow" href="javascript:;" data-toggle="right-sidebar">
@@ -244,19 +228,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="user-info-dropdown">
-				<div class="dropdown">
-					<a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" id="admin-name">
-						
-						<span class="user-name" >Loading...</span>
-					</a>
-					<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-						<a class="dropdown-item" href="/profile"><i class="dw dw-user1"></i> Profile</a>
-						
-						<a class="dropdown-item" href="index.html" id="logout"><i class="dw dw-logout"></i> Log Out</a>
-					</div>
-				</div>
-			</div>
+			
 			
 		</div>
 	</div>
@@ -378,7 +350,7 @@
 
 					<li class="dropdown" id="auth_1" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Branch</span>
+							<span class="micon dw dw-map-1"></span><span class="mtext">Branch</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/all/branch">All Branch</a></li>
@@ -388,7 +360,7 @@
 					</li>
 					<li class="dropdown" id="auth_2" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Slot</span>
+							<span class="micon dw dw-wall-clock1"></span><span class="mtext">Slot</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/slot">All Slots</a></li>
@@ -398,20 +370,20 @@
 					</li>
 					<li class="dropdown" id="auth_3" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Packages</span>
+							<span class="micon bi bi-archive-fill"></span><span class="mtext">Packages</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/packages">All Packages</a></li>
 							<li><a href="/add/package">Create New Package</a></li>
 						</ul>
 					</li>
-					<li class="dropdown" id="auth-4" style="display: none;">
+					<li class="dropdown" id="auth_4" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">TestiMonials</span>
+							<span class="micon fa fa-comments-o"></span><span class="mtext">TestiMonials</span>
 						</a>
 						<ul class="submenu">
-							<li><a href="/testimonials">All TestiMonials</a></li>
-							<li><a href="/add/testimonial">New TestiMonial</a></li>
+							<li><a href="/testimonials">All Testimonial</a></li>
+							<li><a href="/add/testimonial">Add Testimonial</a></li>
 						</ul>
 					</li>
 					<!-- <li class="dropdown">
@@ -426,7 +398,7 @@
 					</li> -->
 					<li class="dropdown" id="auth_5" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Content</span>
+							<span class="micon bi bi-card-list"></span><span class="mtext">Content</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/content">Add Content</a></li>
@@ -438,7 +410,7 @@
 					</li>
 					<li class="dropdown" id="auth_6" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">User</span>
+							<span class="micon fa fa-user-plus"></span><span class="mtext">User</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/user">All Users</a></li>
@@ -447,7 +419,7 @@
 					</li>
 					<li class="dropdown" id="auth_7" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Admin</span>
+							<span class="micon fa fa-user-secret"></span><span class="mtext">Admin</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/add/staff">Add Admin </a></li>
@@ -457,7 +429,7 @@
 
 					<li class="dropdown" id="auth_8" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Slots Allocation</span>
+							<span class="micon fa fa-exchange"></span><span class="mtext">Slots Allocation</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/psr">Package-slots</a></li>
@@ -467,7 +439,7 @@
 
 					<li class="dropdown" id="auth_9" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Bookings</span>
+							<span class="micon  fi-clipboard-pencil"></span><span class="mtext">Bookings</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/all/bookings">Pending Bookings</a></li>
@@ -476,7 +448,7 @@
 					</li>
 					<li class="dropdown" id="auth_10" style="display: none;">
 						<a href="javascript:;" class="dropdown-toggle">
-							<span class="micon bi bi-house"></span><span class="mtext">Other</span>
+							<span class="micon fa fa-bookmark"></span><span class="mtext">Other</span>
 						</a>
 						<ul class="submenu">
 							<li><a href="/remaining">Remaining Amount</a></li>

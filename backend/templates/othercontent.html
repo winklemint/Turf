@@ -1,26 +1,7 @@
 {{template "header.html"}}
         <div class="pd-ltr-20 xs-pd-20-10">
             <div class="min-height-200px">
-                <div class="page-header">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="title">
-                                <h4>Form</h4>
-                            </div>
-                            <nav aria-label="breadcrumb" role="navigation">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="/dashborad">Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        Form Basic
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                      
-                    </div>
-                </div>
+                
                 <!-- Default Basic Forms Start -->
                 <div class="pd-20 card-box mb-30">
                     <div class="clearfix">
@@ -200,21 +181,24 @@
             url: "/admin/heading/delete/" + Id,
             method: "DELETE",
             success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("Content with ID: " + Id + " deleted successfully");
-                }
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Content Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting Content with ID: " + Id);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             }
         });
     }
-    
 </script>      
 <script>
     $(document).ready(function () {
@@ -275,17 +259,21 @@
             url: "/admin/content/delete/" + Id,
             method: "DELETE",
             success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("Content with ID: " + Id + " deleted successfully");
-                }
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Content Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting Content with ID: " + Id);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             }
         });
     }

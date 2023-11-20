@@ -111,22 +111,24 @@
             url: "/admin/delete/testimonial/" + Id,
             method: "DELETE",
             success: function (response) {
-                var rowid = 'rowN' + row_id;
-                alert(rowid);
-                var rowElement = document.getElementById(rowid);
-                if (rowElement) {
-                    rowElement.style.display = 'none';
-                    alert("Staff with ID: " + Id + " deleted successfully");
-                }
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Admin Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
             },
             error: function (xhr, status, error) {
-                console.error(error);
-                alert("Error deleting Staff with ID: " + Id);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             }
         });
     }
-    
-  
    
     
 </script>

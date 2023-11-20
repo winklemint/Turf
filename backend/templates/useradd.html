@@ -18,18 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-md-6 col-sm-12 text-right">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            January 2018
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Export List</a>
-                            <a class="dropdown-item" href="#">Policies</a>
-                            <a class="dropdown-item" href="#">View Assets</a>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -39,28 +28,30 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Name</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="name" class="form-control" type="text" placeholder="User Name Here" />
+                        <input id="name" class="form-control" type="text" placeholder="User Name Here"  required onkeyup="checkNameValidaton()"/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Email</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="email" class="form-control" placeholder="bootstrap@example.com" type="text" />
+                        <input id="email" class="form-control" placeholder="bootstrap@example.com" type="email" required onkeyup="checkEmailValidation()" />
+                        <span id="emailError" style="color: red;"></span>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Contact</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="contact" class="form-control" placeholder="1-(111)-111-1111" type="number" />
+                        <input id="contact" class="form-control" placeholder="1-(111)-111-1111" type="text" required onkeyup="checkContactValidation()" />
+                        <span id="contactError" style="color: red;"></span>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Password</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="password" class="form-control" placeholder="*********" type="text" />
+                        <input id="password" class="form-control" placeholder="*********" type="password" required onkeyup="checkPasswordValidation()" />
+                        <span id="passwordError" style="color: red;"></span>
                     </div>
                 </div>
-
 
 
                 <!-- <div class="form-group row">
@@ -95,10 +86,7 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-    <div class="footer-wrap pd-20 mb-20 card-box">
-        DeskApp - Bootstrap 4 Admin Template By
-        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-    </div>
+ 
 </div>
 
 
@@ -153,6 +141,57 @@
                 });
         });
     });
+    function checkNameValidaton(){
+            var nameInput = document.getElementById('name');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkEmailValidation() {
+        var emailInput = document.getElementById('email').value;
+        var emailError = document.getElementById('emailError');
+
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(emailInput)) {
+            emailError.textContent = "Invalid email format. Please enter a valid email.";
+        } else {
+            emailError.textContent = '';
+        }
+    }
+    function checkContactValidation() {
+        var contactInput = document.getElementById('contact').value;
+        var contactError = document.getElementById('contactError');
+
+        var contactPattern =/^[6-9]\d{9}$/;
+
+        if (!contactPattern.test(contactInput)) {
+            contactError.textContent = "Invalid contact format. Please enter a valid contact number.";
+        } else {
+            contactError.textContent = '';
+        }
+    }
+    function checkPasswordValidation() {
+        var passwordInput = document.getElementById('password').value;
+        var passwordError = document.getElementById('passwordError');
+
+        // Example: Password should have minimum 8 characters including at least one uppercase letter, one lowercase letter, one number, and one special character
+        var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordPattern.test(passwordInput)) {
+            passwordError.textContent = "Password should have minimum 8 characters including at least one uppercase letter, one lowercase letter, one number, and one special character.";
+        } else {
+            passwordError.textContent = '';
+        }
+    }
 </script>
 
 

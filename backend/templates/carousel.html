@@ -51,7 +51,9 @@
                                     class="form-control"
                                     placeholder="Image Here"
                                     type="file" 
+                                    onchange="checkImageValidation(this)"
                                 />
+                                <span id="imageError" style="color: red;"></span>
                             </div>
                         </div>
         
@@ -136,10 +138,36 @@
               contentType: false,
               processData: false, // Set processData to false to prevent jQuery from transforming the data into a query string
             }).done(function(data) {
-                window.location.href = "/carousel";
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Carousel submitted successfully!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Check if the user clicked "OK"
+                    if (result.isConfirmed) {
+                        // Redirect the user to "/user"
+                        window.location.href = "/carousel";
+                    } else if (result.isDismissed) {
+                        // Handle the case when the user clicks "Cancel"
+                        window.location.href = "/carousel";
+                    }
+                });
+            }).fail(function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             });
-          });
         });
+    });
     </script>
     <script>
         $(document).ready(function() {
@@ -205,21 +233,50 @@
                 url: "/admin/delete/carousel/" + Id,
                 method: "DELETE",
                 success: function (response) {
-                    var rowid = 'rowN' + row_id;
-                    alert(rowid);
-                    var rowElement = document.getElementById(rowid);
-                    if (rowElement) {
-                        rowElement.style.display = 'none';
-                        alert("Carousel with ID: " + Id + " deleted successfully");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                    alert("Error deleting Carousel with ID: " + Id);
-                }
-            });
-        }
+                    Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Carousel Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            }
+        });
+    }
+        function checkImageValidation(input) {
+        var file = input.files[0];
+        var imageError = document.getElementById('imageError');
         
+        if (!file) {
+            imageError.textContent = "No file selected.";
+            return;
+        }
+
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+            imageError.textContent = "Invalid file type. Please select a JPG, JPEG, PNG, or GIF file.";
+            input.value = '';
+            return;
+        }
+
+        var maxSizeInBytes = 5e+6; // 5MB
+        if (file.size > maxSizeInBytes) {
+            imageError.textContent = "File size is too large. Please select a file smaller than 5MB.";
+            input.value = '';
+            return;
+        }
+
+        // Clear error message if file is valid
+        imageError.textContent = '';
+    }
        
       
        

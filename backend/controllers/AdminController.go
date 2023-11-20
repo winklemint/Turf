@@ -68,7 +68,7 @@ func AdminSignup(c *gin.Context) {
 		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: BranchID,
+		Turf_branch_id: body.Branch_name,
 		Authorization:  body.Authorization,
 	}
 
@@ -405,67 +405,6 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		"data":    responseData,
 	})
 }
-
-// func GetConfirmBookingTop5Super(c *gin.Context) {
-// 	c.Header("Access-Control-Allow-Origin", "*")
-// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
-// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
-// 	if c.Request.Method == "OPTIONS" {
-// 		c.JSON(http.StatusOK, gin.H{})
-// 		return
-// 	}
-
-// 	var data []models.Confirm_Booking_Table
-// 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
-// 	if result.Error != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": 404,
-// 			"error":  "failed to get confirmed booking details",
-// 		})
-// 		return
-// 	}
-// 	var responseData []interface{}
-// 	for _, booking := range data {
-// 		var user models.User
-// 		result := config.DB.Find(&user, booking.User_id)
-// 		if result.Error != nil {
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"status": 404,
-// 				"error":  "failed to user name",
-// 			})
-// 			return
-// 		}
-// 		var branch models.Branch_info_management
-// 		result = config.DB.Find(&branch, booking.Branch_id)
-// 		if result.Error != nil {
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"status": 404,
-// 				"error":  "failed to fetch  branch name",
-// 			})
-// 			return
-// 		}
-// 		bookingData := map[string]interface{}{
-// 			"ID":                      booking.ID,
-// 			"CreatedAt":               booking.CreatedAt,
-// 			"User_id":                 booking.User_id,
-// 			"User_name":               user.Full_Name,
-// 			"Date":                    booking.Date,
-// 			"Booking_order_id":        booking.Booking_order_id,
-// 			"Total_price":             booking.Total_price,
-// 			"Total_min_amount_to_pay": booking.Total_min_amount_to_pay,
-// 			"Paid_amount":             booking.Paid_amount,
-// 			"Remaining_amount_to_pay": booking.Remaining_amount_to_pay,
-// 			"Booking_status":          booking.Booking_status,
-// 			"Branch_name":             branch.Branch_name,
-// 		}
-// 		responseData = append(responseData, bookingData)
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  200,
-// 		"success": "confirmed booking details",
-// 		"data":    responseData,
-// 	})
-// }
 
 func AdminLogin(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
@@ -1129,7 +1068,7 @@ func AddPackage(c *gin.Context) {
 		return
 	}
 	var body struct {
-		Name      string 
+		Name      string
 		Price     float64
 		Status    int
 		Branch_id int
@@ -3368,22 +3307,56 @@ func UpdateContent(c *gin.Context) {
 		})
 		return
 	}
-	content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button, Status: body.Status}
-	result := config.DB.Model(&content).Where("id=?", Id).Updates(&content)
-	if result.Error != nil {
-		logrus.Infof("Failed To Upadte Content %v\n", result.Error)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "Failed to update content",
-			"data":    nil,
-		})
-		return
+	if body.Status != "" {
+		var count int64
+		var content models.Content
+		result := config.DB.Model(&content).Where("status=1").Count(&count)
+		if result.Error != nil {
+			logrus.Infof("Failed To Upadte Content %v\n", result.Error)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status":  400,
+				"message": "Failed to count active content",
+				"data":    nil,
+			})
+			return
+		}
+		if count == 0 {
+			content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button, Status: body.Status}
+			result := config.DB.Model(&content).Where("id=?", Id).Updates(&content)
+			if result.Error != nil {
+				logrus.Infof("Failed To Upadte Content %v\n", result.Error)
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status":  400,
+					"message": "Failed to update content",
+					"data":    nil,
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"message": "Success to update content",
+				"data":    content,
+			})
+		} else {
+			content := models.Content{Heading: body.Heading, SubHeading: body.SubHeading, Button: body.Button}
+			result := config.DB.Model(&content).Where("id=?", Id).Updates(&content)
+			if result.Error != nil {
+				logrus.Infof("Failed To Upadte Content %v\n", result.Error)
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status":  400,
+					"message": "Failed to update content",
+					"data":    nil,
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"message": "Success to update content",
+				"data":    content,
+			})
+
+		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"message": "Success to update content",
-		"data":    content,
-	})
 
 }
 func GetContentById(c *gin.Context) {
@@ -3791,12 +3764,15 @@ func PSR_slots(c *gin.Context) {
 		Data []interface{}
 	}
 
+	branchID, _ := c.Request.Cookie("Branch_id")
+	branchid, _ := strconv.Atoi(branchID.Value)
+
 	var packages []models.Package
 	// var slots []models.Time_Slot
 
 	result := config.DB.Debug().Raw(`
-	SELECT p.id as ID, p.name as Name, p.price as Price, p.status as Status, p.branch_id as Branch_id, ts.start_time as Start_time, ts.end_time as End_time, ts.day as Day, ts.branch_id as Slot_Branch_id, psr.id as PSR_id, bim.branch_name as Branch_name FROM package_slot_relationships psr INNER JOIN packages p ON p.id = psr.package_id INNER JOIN time_slots ts ON psr.slot_id = ts.id INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id
-`).Scan(&packages)
+	SELECT p.id as ID, p.name as Name, p.price as Price, p.status as Status, p.branch_id as Branch_id, ts.start_time as Start_time, ts.end_time as End_time, ts.day as Day, ts.branch_id as Slot_Branch_id, psr.id as PSR_id, bim.branch_name as Branch_name FROM package_slot_relationships psr INNER JOIN packages p ON p.id = psr.package_id INNER JOIN time_slots ts ON psr.slot_id = ts.id INNER JOIN branch_info_managements bim ON ts.branch_id = bim.id WHERE ts.branch_id=?
+`, branchid).Scan(&packages)
 
 	if result.Error != nil {
 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
@@ -4552,23 +4528,49 @@ func UpadateHeading(c *gin.Context) {
 		})
 		return
 	}
-	heading := models.Heading{Slider: body.Slider, Testimonials: body.Testimonials, Footer: body.Footer, Status: body.Status}
-	result := config.DB.Model(&heading).Where("id=?", id).Updates(&heading)
-	if result.Error != nil {
-		logrus.Infof("Failed to update data from DB %v\n", result.Error)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "failed to Update heading",
-			"data":    nil,
-		})
-		return
-	}
+	if body.Status != "" {
+		var count int64
+		var heading models.Heading
+		result := config.DB.Model(&heading).Where("status=1").Count(&count)
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"message": "heading Updated successfully",
-		"data":    heading,
-	})
+		if count == 0 {
+			heading = models.Heading{Slider: body.Slider, Testimonials: body.Testimonials, Footer: body.Footer, Status: body.Status}
+			result = config.DB.Model(&heading).Where("id=?", id).Updates(&heading)
+			if result.Error != nil {
+				logrus.Infof("Failed to update data from DB %v\n", result.Error)
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status":  400,
+					"message": "failed to Update heading",
+					"data":    nil,
+				})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"message": "heading Updated successfully",
+				"data":    heading,
+			})
+		} else {
+			heading = models.Heading{Slider: body.Slider, Testimonials: body.Testimonials, Footer: body.Footer}
+			result = config.DB.Model(&heading).Where("id=?", id).Updates(&heading)
+			if result.Error != nil {
+				logrus.Infof("Failed to update data from DB %v\n", result.Error)
+				c.JSON(http.StatusBadRequest, gin.H{
+					"status":  400,
+					"message": "failed to Update heading",
+					"data":    nil,
+				})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"status":  200,
+				"message": "heading Updated successfully",
+				"data":    heading,
+			})
+		}
+	}
 
 }
 func GetHeadingById(c *gin.Context) {
