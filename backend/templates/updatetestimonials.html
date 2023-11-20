@@ -93,8 +93,27 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Rating</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input id="rating" class="form-control" placeholder="Rating Here" type="text" required
+                                    onkeyup="checkRatingValidation()" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                            <div class="col-sm-12 col-md-10">
+                                <select class="custom-select col-12" id="branchSelect" required>
+                                   
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Image</label>
                             <div class="col-sm-12 col-md-10">
+                                
+               
+
                                 <input
                                     id="image"
                                     class="form-control"
@@ -167,7 +186,37 @@
         testimonialsDetails(Id);
     }
 });
+$.ajax({
+            url: '/admin/get/branch',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                // The "data" variable contains the data received from the server
+                // You can now append the data to the <select> element
+                    
+                $("#branchSelect").html('');
+                appendDataToSelect(response.data);
+            },
+            error: function () {
+                console.error('Failed to retrieve data from the server');
+            }
+        });
 
+
+        function appendDataToSelect(data) 
+        {
+            console.log(data);
+            const element = "<option value=''>Select Branch</option>";
+            $("#branchSelect").append(element);
+            for (let index = 0; index < data.length; index++) 
+            {
+                // var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+                var element_other = `<option value='${data[index].ID}'>${data[index].Branch_name}</option>`;
+
+                $("#branchSelect").append(element_other);
+                console.log(element_other);
+            }
+        }
 function testimonialsDetails(id) {
     $.ajax({
         url: "/admin/get/testimonial/" + id,
@@ -179,6 +228,7 @@ function testimonialsDetails(id) {
                 $('#name').val(testimonial.Name);
                 $('#designation').val(testimonial.Designation);
                 $('#review').val(testimonial.Review);
+                $('#rating').val(testimonial.Rating);
             }
         },
         error: function(xhr, status, error) {
@@ -194,6 +244,8 @@ $('#branch_form').submit(function(event) {
         "name": $('#name').val(),
         "designation": $('#designation').val(),
         "review": $('#review').val(),
+        "rating": $('#rating').val(),
+        "branch_id":parseInt($('#branchSelect').val()),
     };
 
     var form_image = new FormData();
@@ -201,7 +253,7 @@ $('#branch_form').submit(function(event) {
     if (imageInput.files.length > 0) {
         form_image.append("image", imageInput.files[0]);
     }
-
+    console.log(form_data)
     var Id = new URLSearchParams(window.location.search).get('id');
 
     var updateTextFieldsPromise = $.ajax({
@@ -357,6 +409,20 @@ function checkNameValidation() {
         // Clear error message if file is valid
         imageError.textContent = '';
     }
+    function checkRatingValidation() {
+            var nameInput = document.getElementById('rating');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 0) {
+
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
 </script>    
       
 

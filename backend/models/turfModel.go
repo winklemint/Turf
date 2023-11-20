@@ -87,4 +87,6 @@ type Testi_Monial struct {
 	Designation string
 	Review      string
 	Image       string
+	Rating      string
+	Branch_id   int
 }

@@ -87,6 +87,7 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/testimonial/:id", controllers.GETTestimonialsById)
 		adminRoutes.GET("/get/testimonial/image/:id", controllers.GETTestimonialsimagesById)
 		adminRoutes.DELETE("/delete/testimonial/:id", controllers.DeleteTestimonials)
+		adminRoutes.GET("/testimonial/get/:branchid", controllers.GetTestimonialsBybranchId)
 
 		//Content
 		adminRoutes.POST("/content/add", controllers.AddContent)
