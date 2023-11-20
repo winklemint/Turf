@@ -63,6 +63,25 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Rating</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input id="rating" class="form-control" placeholder="Rating Here" type="text" required
+                            onkeyup="checkRatingValidation()" />
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" id="branchSelect" required>
+                           
+                        </select>
+                    </div>
+                </div>
+
+               
+
+                <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Image</label>
                     <div class="col-sm-12 col-md-10">
                         <input id="image" class="form-control" placeholder="Image Here" type="file"
@@ -113,6 +132,37 @@
 
 <script>
     $(document).ready(function () {
+        $.ajax({
+            url: '/admin/get/branch',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                // The "data" variable contains the data received from the server
+                // You can now append the data to the <select> element
+                    
+                $("#branchSelect").html('');
+                appendDataToSelect(response.data);
+            },
+            error: function () {
+                console.error('Failed to retrieve data from the server');
+            }
+        });
+
+
+        function appendDataToSelect(data) 
+        {
+            console.log(data);
+            const element = "<option value=''>Select Branch</option>";
+            $("#branchSelect").append(element);
+            for (let index = 0; index < data.length; index++) 
+            {
+                // var element_other = "<option value='"+ data[index].ID+"'>"+ data[index].Branch_name+"</option>";
+                var element_other = `<option value='${data[index].ID}'>${data[index].Branch_name}</option>`;
+
+                $("#branchSelect").append(element_other);
+                console.log(element_other);
+            }
+        }
         $('#branch_form').submit(function (event) {
             event.preventDefault();
 
@@ -122,6 +172,10 @@
             formData.append("Name", $('#name').val());
             formData.append("Designation", $('#designation').val());
             formData.append("Review", $('#review').val());
+            formData.append("Rating", $('#rating').val());
+            formData.append("Branch_id", parseInt($('#branchSelect').val()));
+
+
 
             // Add the image file to the FormData object
             var imageInput = $('#image')[0];
@@ -202,6 +256,20 @@
             var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
 
             if (nameValue.length > 3) {
+
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkRatingValidation() {
+            var nameInput = document.getElementById('rating');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 0) {
 
                 nameInput.classList.remove('form-control-danger'); // Remove danger class
                 nameInput.classList.add('form-control-success'); // Add success class

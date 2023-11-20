@@ -2859,6 +2859,8 @@ func Testimonials(c *gin.Context) {
 		Designation string
 		Review      string
 		Image       string
+		Rating      string
+		Branch_id   int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -2893,7 +2895,7 @@ func Testimonials(c *gin.Context) {
 		return
 	}
 
-	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: filePath}
+	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Rating: body.Rating, Branch_id: body.Branch_id, Review: body.Review, Image: filePath}
 	result := config.DB.Create(&testimonial)
 	if result.Error != nil {
 		logrus.Infof("Failed To Create Testimonials %v\n", err)
@@ -2925,6 +2927,8 @@ func Upadte_Testimonials(c *gin.Context) {
 		Designation string
 		Review      string
 		Image       string
+		Rating      string
+		Branch_id   int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -2938,7 +2942,7 @@ func Upadte_Testimonials(c *gin.Context) {
 
 	}
 
-	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review}
+	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Rating: body.Rating, Branch_id: body.Branch_id, Review: body.Review}
 	result := config.DB.Model(&testimonial).Where("id=?", id).Updates(&testimonial)
 	if result.Error != nil {
 		logrus.Infof("Failed To Update Testimonials Details %v\n", result.Error)
@@ -3152,6 +3156,35 @@ func GETTestimonialsById(c *gin.Context) {
 		"data":    testimonials,
 	})
 
+}
+func GetTestimonialsBybranchId(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+
+	var testimonials []models.Testi_Monial
+	result := config.DB.Find(&testimonials, "id=?", id)
+
+	if result.Error != nil {
+		logrus.Infof("Failed To Get Testimonials By Id %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to fetch testimonial by id",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "testimonial fetch successfully by id",
+		"data":    testimonials,
+	})
 }
 
 func GETTestimonialsimagesById(c *gin.Context) {
