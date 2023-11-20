@@ -1,19 +1,16 @@
-import './App.css';
-import Footer from './components/Footer';
-import Section2 from './components/Section2';
-import Header from './components/header';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import BookNow from './components/BookNow';
-import Section1 from './components/section1';
+import Header from './components/header';
 
 function App() {
   return (
-    <div className="body">
-      <Header />
-      <Section1 />
-      <Section2 />
-      <Footer />
-      <BookNow />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Header />} />
+        <Route path="/booknow" element={<BookNow />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

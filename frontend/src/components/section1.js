@@ -5,6 +5,24 @@ import './section1.css';
 
 function Section1() {
   const [branchData, setBranchData] = useState([]);
+  const [headingData, setHeadingData] = useState([]);
+
+  useEffect(() => {
+    const fetchHeadingData = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/admin/heading/active'
+        );
+        if (response.status === 200) {
+          const data = await response.json();
+          setHeadingData(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching branch data:', error.message);
+      }
+    };
+    fetchHeadingData();
+  }, []);
 
   useEffect(() => {
     // Inside your React component's useEffect hook
@@ -75,17 +93,13 @@ function Section1() {
       <div className="row">
         <div className="col-md-12 col-sm-12 col-lg-12">
           <div className="slider-sec2-heading ml-5">
-            <p className="ex-p text-secondary fs-4">EXCLUSIVELY</p>
-            <p className="works-p fs-1 fw-bold">
-              <span className="font-weight-bold" style={{ color: 'purple' }}>
-                works
-              </span>{' '}
-              with
-            </p>
-            <p className="start-p fs-1 fw-bold">Startups and founders</p>
+            <h1 className="ex-p text-secondary fw-bold ">
+              {headingData.Slider}
+            </h1>
           </div>
         </div>
-        <div className="col-md-12 col-sm-12 col-lg-12">
+
+        <div className="col-md-12 col-sm-12 col-lg-12 mt-4">
           <div className="mySwiper swiper-container d-flex overflow-hidden">
             <div className="swiper-wrapper">
               {branchData.map((data) => (

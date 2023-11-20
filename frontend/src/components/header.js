@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Heading from './Heading.js';
-import SliderHeader from './SliderHeader';
+import SliderHeader from './SliderHeader.js';
 import { Container, Nav } from 'react-bootstrap';
 import { HiOutlineMenuAlt3 } from 'react-icons/hi';
 import { RxCross1 } from 'react-icons/rx';
+import Section1 from './section1.js';
+import Section2 from './Section2.js';
+import Footer from './Footer.js';
 
 const Header = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [showMenuIcon, setShowMenuIcon] = useState(true);
+  const [navbarItems, setNavbarItems] = useState([]);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -18,6 +22,18 @@ const Header = () => {
     setMenuVisible(false);
     setShowMenuIcon(true);
   };
+
+  const fetchNavbarData = () => {
+    fetch('http://localhost:8080/admin/navbar/get')
+      .then((res) => res.json())
+      .then((data) => {
+        setNavbarItems(data.data);
+      });
+  };
+
+  useEffect(() => {
+    fetchNavbarData();
+  }, []);
 
   return (
     <div className="App">
@@ -35,18 +51,15 @@ const Header = () => {
                   menuVisible ? '' : 'd-none '
                 }`}
               >
-                <Nav.Link href="#" className="me-3 fs-3 text-white">
-                  Home
-                </Nav.Link>
-                <Nav.Link href="#" className="me-3 fs-3 text-white">
-                  Portfolio
-                </Nav.Link>
-                <Nav.Link href="#" className="me-3 fs-3 text-white">
-                  About
-                </Nav.Link>
-                <Nav.Link href="#" className="me-3 fs-3 text-white">
-                  Contact
-                </Nav.Link>
+                {navbarItems.map((item) => (
+                  <Nav.Link
+                    key={item.ID}
+                    href={item.Link}
+                    className="me-3 fs-3 text-white"
+                  >
+                    {item.Name}
+                  </Nav.Link>
+                ))}
               </div>
               <div
                 className="menu-toggle d-flex justify-content-end"
@@ -69,6 +82,15 @@ const Header = () => {
           </div>
         </div>
       </Container>
+      <div>
+        <Section1 />
+      </div>
+      <div>
+        <Section2 />
+      </div>
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 };

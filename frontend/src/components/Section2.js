@@ -1,17 +1,31 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import './section2.css';
-
-// import './styles.css';
-
-// import required modules
 import { Pagination } from 'swiper/modules';
 
 function Section2() {
   const [testimonials, setTestimonials] = useState([]);
+  const [headingData, setHeadingData] = useState([]);
+
+  useEffect(() => {
+    const fetchHeadingData = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/admin/heading/active'
+        );
+        if (response.status === 200) {
+          const data = await response.json();
+          setHeadingData(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching branch data:', error.message);
+      }
+    };
+    fetchHeadingData();
+  }, []);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -32,49 +46,7 @@ function Section2() {
     };
 
     fetchTestimonials();
-
-    // Initialize the Swiper after data is fetched
-    //   const mySwiper = new Swiper('.mySwiper', {
-    //     slidesPerView: 'auto',
-    //     spaceBetween: 10,
-    //     freeMode: true,
-    //     navigation: {
-    //       nextEl: '.swiper-button-next',
-    //       prevEl: '.swiper-button-prev',
-    //     },
-    //     preventInteractionOnTransition: true,
-    //     allowTouchMove: false,
-    //     breakpoints: {
-    //       767: {
-    //         slidesPerView: 3,
-    //         spaceBetween: 10,
-    //       },
-    //       576: {
-    //         slidesPerView: 1,
-    //         spaceBetween: 10,
-    //       },
-    //       // Add more breakpoints if needed
-    //     },
-    //   });
-
-    //   const handleNextClick = () => {
-    //     mySwiper.slideNext();
-    //   };
-
-    //   // Event handler for the Previous button
-    //   const handlePrevClick = () => {
-    //     mySwiper.slidePrev();
-    //   };
-
-    //   // Event listener for the Next and Previous buttons
-    //   document
-    //     .getElementById('swiper-button-next')
-    //     .addEventListener('click', handleNextClick);
-
-    //   document
-    //     .getElementById('swiper-button-prev')
-    //     .addEventListener('click', handlePrevClick);
-  }, []); // Add an empty dependency array to ensure this effect runs only once
+  }, []);
 
   return (
     <>
@@ -83,7 +55,7 @@ function Section2() {
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
               <h1 className="text-dark text-uppercase">
-                Customers <b className="text-secondary">Testimonial</b>
+                <b className="text-secondary"> {headingData.Testimonials}</b>
               </h1>
               <hr className="w-100 mx-auto mb-5 mb-xl-9 border-dark-subtle" />
             </div>
