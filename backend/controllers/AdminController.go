@@ -68,7 +68,7 @@ func AdminSignup(c *gin.Context) {
 		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: uint(BranchID),
+		Turf_branch_id: body.Branch_name,
 		Authorization:  body.Authorization,
 	}
 
@@ -139,7 +139,7 @@ func AdminUpdateById(c *gin.Context) {
 	adminToUpdate.Contact = body.Contact
 	adminToUpdate.Email = body.Email
 	adminToUpdate.Role = body.Role
-	adminToUpdate.Turf_branch_id = uint(body.Branch_name)
+	adminToUpdate.Turf_branch_id = body.Branch_name
 	adminToUpdate.Authorization = body.Authorization
 	// Update the admin using the provided 'id'
 	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
@@ -159,7 +159,7 @@ func AdminUpdateById(c *gin.Context) {
 		Contact:        body.Contact,
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: uint(body.Branch_name),
+		Turf_branch_id: body.Branch_name,
 		Authorization:  body.Authorization,
 	}
 	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
@@ -405,67 +405,6 @@ func GetConfirmBookingTop5(c *gin.Context) {
 		"data":    responseData,
 	})
 }
-
-// func GetConfirmBookingTop5Super(c *gin.Context) {
-// 	c.Header("Access-Control-Allow-Origin", "*")
-// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
-// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
-// 	if c.Request.Method == "OPTIONS" {
-// 		c.JSON(http.StatusOK, gin.H{})
-// 		return
-// 	}
-
-// 	var data []models.Confirm_Booking_Table
-// 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
-// 	if result.Error != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"status": 404,
-// 			"error":  "failed to get confirmed booking details",
-// 		})
-// 		return
-// 	}
-// 	var responseData []interface{}
-// 	for _, booking := range data {
-// 		var user models.User
-// 		result := config.DB.Find(&user, booking.User_id)
-// 		if result.Error != nil {
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"status": 404,
-// 				"error":  "failed to user name",
-// 			})
-// 			return
-// 		}
-// 		var branch models.Branch_info_management
-// 		result = config.DB.Find(&branch, booking.Branch_id)
-// 		if result.Error != nil {
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"status": 404,
-// 				"error":  "failed to fetch  branch name",
-// 			})
-// 			return
-// 		}
-// 		bookingData := map[string]interface{}{
-// 			"ID":                      booking.ID,
-// 			"CreatedAt":               booking.CreatedAt,
-// 			"User_id":                 booking.User_id,
-// 			"User_name":               user.Full_Name,
-// 			"Date":                    booking.Date,
-// 			"Booking_order_id":        booking.Booking_order_id,
-// 			"Total_price":             booking.Total_price,
-// 			"Total_min_amount_to_pay": booking.Total_min_amount_to_pay,
-// 			"Paid_amount":             booking.Paid_amount,
-// 			"Remaining_amount_to_pay": booking.Remaining_amount_to_pay,
-// 			"Booking_status":          booking.Booking_status,
-// 			"Branch_name":             branch.Branch_name,
-// 		}
-// 		responseData = append(responseData, bookingData)
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  200,
-// 		"success": "confirmed booking details",
-// 		"data":    responseData,
-// 	})
-// }
 
 func AdminLogin(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
