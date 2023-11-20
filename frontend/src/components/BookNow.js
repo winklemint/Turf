@@ -150,9 +150,9 @@ function BookingForm() {
       })
       .then((responseJson) => {
         // Check if the response has a "data" property
-        if (responseJson && responseJson.data) {
+        if (responseJson && responseJson.available_slots) {
           console.log("success");
-          setAvailableSlots(responseJson.data);
+          setAvailableSlots(responseJson.available_slots);
           setLoading(false);
           setShowSlotBooking(true);
         } else {
