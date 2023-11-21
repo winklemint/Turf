@@ -139,6 +139,43 @@
 
 
 </div>
+<div class="pd-20 card-box mb-30">
+    <div class="clearfix">
+        <div class="pull-left">
+            <h4 class="text-blue h4">Term And Condition</h4>
+
+        </div>
+        <!-- <div class="pull-right">
+                    <a
+                        href="#basic-form1"
+                        class="btn btn-primary btn-sm scroll-click"
+                        rel="content-y"
+                        data-toggle="collapse"
+                        role="button"
+                        ><i class="fa fa-code"></i> Source Code</a
+                    >
+                </div> -->
+    </div>
+    <form id="condition_form">
+
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2 col-form-label">Content</label>
+            <div class="col-sm-12 col-md-10">
+                <input id="condition" class="form-control" type="text" placeholder="TermAndCondition Here" required
+                    onkeyup="checkTermAndConditionNameLength()" />
+            </div>
+        </div>
+     
+
+        <div>
+
+            <button type="submit" class="btn btn-primary" id="update">Submit</button>
+
+        </div>
+    </form>
+
+
+</div>
 {{template "footer.html"}}
 <script>
     $(document).ready(function (e) {
@@ -244,6 +281,53 @@
                 });
             });
         });
+    
+    $("#condition_form").submit(function (event) {
+            event.preventDefault();
+            var formData = {
+                Content: $("#condition").val(),
+              
+
+
+
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/condition/add",
+                data: formData,
+                dataType: "json",
+
+            }).done(function (data) {
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'TermAndCondition submitted successfully!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Check if the user clicked "OK"
+                    if (result.isConfirmed) {
+                        // Redirect the user to "/user"
+                        window.location.href = "/other";
+                    } else if (result.isDismissed) {
+                        // Handle the case when the user clicks "Cancel"
+                        window.location.href = "/other";
+                    }
+                });
+            }).fail(function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            });
+        });
     });
     function checkHeadingNameLength() {
         var nameInput = document.getElementById('heading');
@@ -317,6 +401,20 @@
     }
     function checkFooterHeadingNameLength() {
         var nameInput = document.getElementById('footer');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+        if (nameValue.length > 3) {
+
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
+        }
+    }
+    function checkTermAndConditionNameLength() {
+        var nameInput = document.getElementById('condition')
         var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
 
         if (nameValue.length > 3) {

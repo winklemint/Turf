@@ -143,5 +143,14 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/icon/get/:id", controllers.GetIconById)
 		adminRoutes.DELETE("/icon/delete/:id", controllers.DeleteIcon)
 
+		//TermsAndConditions
+		adminRoutes.POST("/condition/add", controllers.AddTermsAndConditions)
+		adminRoutes.GET("/condition/get", controllers.GetAllTermAndCondition)
+		adminRoutes.GET("/condition/active", controllers.GetActiveTermAndCondition)
+		adminRoutes.PATCH("/condition/update/:id", controllers.UpadateTermAndCondition)
+		adminRoutes.GET("/condition/get/:id", controllers.GetTermAndConditionById)
+		adminRoutes.DELETE("/condition/delete/:id", controllers.DeleteTermAndCondition)
+
 	}
+
 }

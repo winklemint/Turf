@@ -1982,3 +1982,5 @@ time="2023-11-20T18:20:45+05:30" level=info msg="Failed To Load Today Total Book
 time="2023-11-20T18:25:41+05:30" level=info msg="Failed To Load Today Total Booking <nil>\n"
 time="2023-11-20T18:26:40+05:30" level=info msg="Failed To Load Today Total Booking <nil>\n"
 time="2023-11-20T18:30:16+05:30" level=info msg="Failed To Load Today Total Booking <nil>\n"
+time="2023-11-21T15:26:17+05:30" level=info msg="Failed to read body"
+time="2023-11-21T16:05:21+05:30" level=info msg="Failed To Load Today Total Booking <nil>\n"

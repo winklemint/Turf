@@ -90,3 +90,9 @@ type Testi_Monial struct {
 	Rating      string
 	Branch_id   int
 }
+type TermsAndConditions struct {
+	gorm.Model
+
+	Content string
+	Status  string
+}
