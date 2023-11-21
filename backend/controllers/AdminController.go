@@ -5570,3 +5570,191 @@ func TotalSlot(c *gin.Context) {
 		"data":    count,
 	})
 }
+func AddTermsAndConditions(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var body struct {
+		Content string
+		Status  string
+	}
+	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to read body",
+			"data":    nil,
+		})
+		return
+	}
+	condition := models.TermsAndConditions{Content: body.Content, Status: "1"}
+	result := config.DB.Create(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to add data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Add TermAndCondition",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "TermAndCondition Add successfully",
+		"data":    condition,
+	})
+
+}
+func GetAllTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var condition []models.TermsAndConditions
+	result := config.DB.Find(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Get TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get TermAndCondition Details successfully",
+		"data":    condition,
+	})
+}
+func GetActiveTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var condition []models.TermsAndConditions
+	result := config.DB.Find(&condition, "status=1")
+	if result.Error != nil {
+		logrus.Infof("Failed to get  data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Active TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get Active TermAndCondition Details successfully",
+		"data":    condition,
+	})
+}
+func UpadateTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var body struct {
+		Content string
+		Status  string
+	}
+	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to read body",
+			"data":    nil,
+		})
+		return
+	}
+	condition := models.TermsAndConditions{Content: body.Content, Status: body.Status}
+	result := config.DB.Model(&condition).Where("id=?", id).Updates(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to update data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Update TermAndCondition",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "TermAndCondition Updated successfully",
+		"data":    condition,
+	})
+
+}
+func GetTermAndConditionById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var condition models.TermsAndConditions
+	result := config.DB.Find(&condition, "id=?", id)
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Get TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get TermAndCondition Details successfully",
+		"data":    condition,
+	})
+}
+func DeleteTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var condition models.TermsAndConditions
+	result := config.DB.Model(&condition).Where("id=?", id).Delete(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to delete data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Delete TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Delete TermAndCondition Details successfully",
+		"data":    nil,
+	})
+}

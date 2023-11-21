@@ -18,4 +18,5 @@ func SyncDB() {
 	DB.AutoMigrate(&models.Navbar{})
 	DB.AutoMigrate(&models.Heading{})
 	DB.AutoMigrate(&models.Icon{})
+	DB.AutoMigrate(&models.TermsAndConditions{})
 }
