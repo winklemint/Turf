@@ -1,0 +1,374 @@
+{{template "header.html"}}
+<style>
+    input#update_img {
+        position: absolute;
+        z-index: 1000;
+        opacity: 0;
+        cursor: pointer;
+        right: 0;
+        top: 0;
+        height: 100%;
+        font-size: 24px;
+        width: 100%;
+    }
+
+    .choose_btn {
+        position: relative;
+        float: left;
+        cursor: pointer;
+        background: transparent;
+        margin-right: 10px;
+    }
+
+    .choose_btn:hover {
+        background-color: #28a745;
+        color: #fff;
+    }
+</style>
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Form</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/dashboard">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Form Basic
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+        <!-- Default Basic Forms Start -->
+         <div class="pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">Add Image</h4>
+
+                </div>
+             <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> 
+            </div>
+            <form id="image_form">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Image</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input
+                            id="image"
+                            class="form-control"
+                            placeholder="Image Here"
+                            type="file" 
+                            onchange="checkImageValidation(this)"
+                        />
+                        <span id="imageError" style="color: red;"></span>
+                    </div>
+                </div>
+                <!-- Other form fields if needed -->
+                <button type="submit" class="btn btn-primary">Upload Image</button>
+            
+            </form>
+            
+    <div class="card-box pb-10">
+        <!-- Export Datatable start -->
+        <div class="card-box mb-30">
+            <div class="pd-20">
+                <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
+            </div>
+            <div class="pb-20">
+                <table class="table hover multiple-select-row data-table-export nowrap" id="all_image">
+                    <thead>
+                        <tr>
+                            <th>Sn.</th>
+                            <th>image</th>
+
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+
+
+
+
+
+
+        <div class="collapse collapse-box" id="basic-form1">
+            <div class="code-box">
+                <div class="clearfix">
+                    <a href="javascript:;" class="btn btn-primary btn-sm code-copy pull-left"
+                        data-clipboard-target="#copy-pre"><i class="fa fa-clipboard"></i> Copy Code</a>
+                    <a href="#basic-form1" class="btn btn-primary btn-sm pull-right" rel="content-y"
+                        data-toggle="collapse" role="button"><i class="fa fa-eye-slash"></i> Hide Code</a>
+                </div>
+                <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+            </div>
+        </div>
+    </div>
+    <!-- Default Basic Forms End -->
+</div>
+
+</div>
+
+
+
+{{template "footer.html"}}
+
+<script>
+
+$(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    var table = $('#all_image').DataTable();
+
+    $.ajax({
+        url: '/admin/get/branch/image/' + id,
+        method: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            table.clear().draw(); // Clear existing table data
+            
+            $.each(response.data, function (index, packages) {
+                var action = '<div class="img_update_btns"><div class="update_btn"><div class="choose_btn btn btn-outline-success">Choose File <input type="file" class="fileChoose" id="update_img" data-id="' + packages.ID + '"></div><div class="delete_img_box"><button class="delete_img btn btn-outline-danger" onclick="DeleteImage(' + packages.ID + ');">Delete</button></div></div></div>';
+                var viewImage = '<a href="javascript:void(0);" class="testimonial-image" data-testimonial-id="' + packages.ID + '">View Image</a>';
+
+                table.row.add([
+                    index + 1,
+                    viewImage, // Add 'View Image' link in the table
+                    action,
+                ]);
+            });
+
+            table.draw();
+        },
+        error: function (error) {
+            console.error('Error fetching data: ' + error);
+        }
+    });
+
+    // Handle click event on 'View Image' links
+    $('#all_image').on('click', '.testimonial-image', function () {
+        var $aElement = $(this);
+        var branchImageId = $aElement.data('testimonial-id');
+        console.log('Branch Image ID:', branchImageId);
+
+        var imageUrl = 'http://localhost:8080/admin/get/image/' + branchImageId;
+        window.open(imageUrl, '_blank');
+    });
+});
+
+
+
+    function DeleteImage(Id) {
+        var row_id = Id;
+
+        $.ajax({
+            url: "/admin/delete/branch/image/" + Id,
+            method: "DELETE",
+            success: function (response) {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Branch Image Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                }).then(
+                    function () {
+                        var Id = new URLSearchParams(window.location.search).get('id');
+                        if (Id) {
+                            // Open a new tab with the backend route for updating the image
+                            window.location.href = '/all/update/branch?id=' + Id;
+                        }
+                    },
+                    // handling the promise rejection
+                    function (dismiss) {
+                        if (dismiss === 'timer') {
+                            console.log('I was closed by the timer');
+                        }
+                    }
+                );
+            },
+            error: function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            }
+        });
+    }
+
+  
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        // Event listener for the file input change
+        $(document).on('change', '.fileChoose', function () {
+            var id = $(this).data('id');
+            var formData = new FormData();
+            formData.append('image', $(this)[0].files[0]);
+
+            $.ajax({
+                url: '/admin/update/branch/image/' + id, // Replace with your backend URL for image update
+                type: 'PATCH',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Updated!',
+                        text: response.message || "Image updated successfully!",
+                        icon: "success",
+                        timer: 3000
+                    }).then(
+                        function () {
+                            var Id = new URLSearchParams(window.location.search).get('id');
+                            if (Id) {
+                                // Open a new tab with the backend route for updating the image
+                                window.location.href = '/all/update/branch?id=' + Id;
+                            }
+
+                        },
+                        // handling the promise rejection
+                        function (dismiss) {
+                            if (dismiss === 'timer') {
+                                console.log('I was closed by the timer');
+                            }
+                        }
+                    );
+                },
+                error: function (data) {
+                    // Trigger SweetAlert error message on AJAX failure
+                    console.log(data.responseJSON.message);
+                    var message = data.responseJSON.message || 'Something went wrong!';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: message,
+                    });
+                }
+            });
+        });
+    });
+    $('#image_form').submit(function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    const imageInput = $('#image')[0].files[0];
+
+    const formData = new FormData();
+    formData.append('BranchID', id);
+    formData.append('Image', imageInput);
+
+    $.ajax({
+        url: '/admin/add/branch/image',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            Swal.fire({
+                title: 'Good job!',
+                text: 'Image submitted successfully!',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                allowOutsideClick: false,
+            }).then((result) => {
+                // Check if the user clicked "OK"
+                if (result.isConfirmed || result.isDismissed) {
+                    var Id = new URLSearchParams(window.location.search).get('id');
+                            if (Id) {
+                                // Open a new tab with the backend route for updating the image
+                                window.location.href = '/all/update/branch?id=' + Id;
+                            }
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            // Trigger SweetAlert error message on AJAX failure
+            console.error(error);
+            var message = xhr.responseJSON.message || 'Something went wrong!';
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: message,
+            });
+        },
+    });
+});
+
+    function checkImageValidation(input) {
+        var file = input.files[0];
+        var imageError = document.getElementById('imageError');
+        
+        if (!file) {
+            imageError.textContent = "No file selected.";
+            return;
+        }
+
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+            imageError.textContent = "Invalid file type. Please select a JPG, JPEG, PNG, or GIF file.";
+            input.value = '';
+            return;
+        }
+
+        var maxSizeInBytes = 5e+6; // 5MB
+        if (file.size > maxSizeInBytes) {
+            imageError.textContent = "File size is too large. Please select a file smaller than 5MB.";
+            input.value = '';
+            return;
+        }
+
+        // Clear error message if file is valid
+        imageError.textContent = '';
+    }
+       
+      
+       
+       
+</script>
+
+</body>
+
+</html>

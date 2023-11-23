@@ -253,6 +253,21 @@ func RegisterAdminPanelUpdatepackage(router *gin.Engine) {
 	})
 
 }
+func RegisterAdminPanelUpdateBranchImage(router *gin.Engine) {
+	router.Use(IsAuthenticated())
+	router.LoadHTMLGlob("templates/*.html")
+	router.GET("/branch/image", func(c *gin.Context) {
+		// Retrieve the "id" query parameter from the request UR
+		id := c.DefaultQuery("id", "default_value_if_not_provided")
+
+		// Now, you can use the "id" variable in your code as needed.
+		// For example, you can use it to fetch data related to this ID.
+
+		// Render your HTML template (updatetestimonials.html) with the data
+		c.HTML(http.StatusOK, "updatebranchimage.html", gin.H{"id": id})
+	})
+
+}
 func RegisterAdminPanelUpdateUser(router *gin.Engine) {
 	router.Use(IsAuthenticated())
 	router.LoadHTMLGlob("templates/*.html")

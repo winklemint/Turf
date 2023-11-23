@@ -18,7 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-               
+
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -44,33 +44,35 @@
                     <label class="col-sm-12 col-md-2 col-form-label">Turf Name</label>
                     <div class="col-sm-12 col-md-10">
                         <input id="name" class="form-control" type="text" placeholder="Turf Name Here" required
-                        onkeyup="checkNameLengthTurf()" />
+                            onkeyup="checkNameLengthTurf()" />
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Name</label>
                     <div class="col-sm-12 col-md-10">
                         <input id="branch_name" class="form-control" placeholder="Branch Name Here" type="text" required
-                        onkeyup="checkBranchNameLength()" />
+                            onkeyup="checkBranchNameLength()" />
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Email</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="email" class="form-control" placeholder="bootstrap@example.com" type="email" required/>
+                        <input id="email" class="form-control" placeholder="bootstrap@example.com" type="email"
+                            required />
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Address</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="address" class="form-control" placeholder="Type your address here" type="text" required />
+                        <input id="address" class="form-control" placeholder="Type your address here" type="text"
+                            required />
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Branch Contact Number</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="contact" class="form-control" placeholder="1-(111)-111-1111" type="tel" required 
-                        onkeyup="validateIndianContact()"/>
+                        <input id="contact" class="form-control" placeholder="1-(111)-111-1111" type="tel" required
+                            onkeyup="validateIndianContact()" />
                     </div>
                 </div>
                 <div class="form-group row">
@@ -83,13 +85,13 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Ground Size</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="size" class="form-control" placeholder="100 x 100" type="text" required/>
+                        <input id="size" class="form-control" placeholder="100 x 100" type="text" required />
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-md-2 col-form-label">Image</label>
                     <div class="col-sm-12 col-md-10">
-                        <input id="image" class="form-control" placeholder="Image Here" type="file" />
+                        <input id="image" class="form-control" placeholder="Image Here" type="file" multiple />
                     </div>
                 </div>
 
@@ -129,7 +131,7 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-    
+
 </div>
 
 
@@ -137,39 +139,39 @@
 {{template "footer.html"}}
 
 <script>
-     function checkNameLengthTurf() {
-            var nameInput = document.getElementById('name');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+    function checkNameLengthTurf() {
+        var nameInput = document.getElementById('name');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
 
-            if (nameValue.length > 3) {
-                // The name is valid
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-                // The name is too short
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
+        if (nameValue.length > 3) {
+            // The name is valid
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+            // The name is too short
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
         }
+    }
 
-        function checkBranchNameLength() {
-            var nameInput = document.getElementById('branch_name');
-            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+    function checkBranchNameLength() {
+        var nameInput = document.getElementById('branch_name');
+        var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
 
-            if (nameValue.length > 3) {
-                // The name is valid
-                nameInput.classList.remove('form-control-danger'); // Remove danger class
-                nameInput.classList.add('form-control-success'); // Add success class
-            } else {
-                // The name is too short
-                nameInput.classList.remove('form-control-success'); // Remove success class
-                nameInput.classList.add('form-control-danger'); // Add danger class
-            }
+        if (nameValue.length > 3) {
+            // The name is valid
+            nameInput.classList.remove('form-control-danger'); // Remove danger class
+            nameInput.classList.add('form-control-success'); // Add success class
+        } else {
+            // The name is too short
+            nameInput.classList.remove('form-control-success'); // Remove success class
+            nameInput.classList.add('form-control-danger'); // Add danger class
         }
+    }
 
-        function validateEmail() {
-            var emailInput = document.getElementById('email');
-            var emailValue = emailValue.value.trim();
+    function validateEmail() {
+        var emailInput = document.getElementById('email');
+        var emailValue = emailValue.value.trim();
 
         // Regular expression for basic email validation
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -187,7 +189,7 @@
 
     function validateIndianContact() {
         var contactInput = document.getElementById('contact');
-            var contactValue = contactInput.value.trim();
+        var contactValue = contactInput.value.trim();
 
         // Regular expression for Indian contact number validation
         // var contactRegex = /^[6-9]\d{9}$/;
@@ -205,8 +207,14 @@
 </script>
 
 <script>
-    $(document).ready(function () {
+     function appendImages(formData, imageInput) {
+        var files = imageInput.files;
+        for (var i = 0; i < files.length; i++) {
+            formData.append("images", files[i]); // Append each file individually
+        }
+    }
 
+    $(document).ready(function () {
        
         $("#branch_form").submit(function (event) {
             event.preventDefault();
@@ -225,8 +233,9 @@
             // Append the file input
             var imageInput = $('#image')[0];
             if (imageInput.files.length > 0) {
-                formData.append("image", imageInput.files[0]);
+                appendImages(formData, imageInput);
             }
+
 
             $.ajax({
                 type: "POST",
@@ -237,32 +246,32 @@
                 dataType: "json",
             }).done(function (data) {
                 Swal.fire({
-                        title: 'Good job!',
-                        text: 'Form submitted successfully!',
-                        icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonClass: 'btn btn-success',
-                        cancelButtonClass: 'btn btn-danger',
-                        allowOutsideClick: false,
-                    }).then((result) => {
-                        // Check if the user clicked "OK"
-                        if (result.isConfirmed) {
-                            // Redirect the user to "/user"
-                            window.location.href = "/all/branch";
-                        } else if (result.isDismissed) {
-                            // Handle the case when the user clicks "Cancel"
-                            window.location.href = "/all/branch";
-                        }
-                    });
-                }).fail(function (data) {
-                    // Trigger SweetAlert error message on AJAX failure
-                    console.log(data.responseJSON.message);
-                    var message = data.responseJSON.message || 'Something went wrong!';
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: message,
-                    });
+                    title: 'Good job!',
+                    text: 'Form submitted successfully!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Check if the user clicked "OK"
+                    if (result.isConfirmed) {
+                        // Redirect the user to "/user"
+                        window.location.href = "/all/branch";
+                    } else if (result.isDismissed) {
+                        // Handle the case when the user clicks "Cancel"
+                        window.location.href = "/all/branch";
+                    }
+                });
+            }).fail(function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
             });
         });
     });
