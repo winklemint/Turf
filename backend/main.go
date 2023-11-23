@@ -56,6 +56,7 @@ func main() {
 	route.RegisterAdminPaneladdContent(r)
 	route.RegisterAdminPanelOtherContent(r)
 	route.RegisterAdminPanelUpdateOtherContent(r)
+	route.RegisterAdminPanelUpdateBranchImage(r)
 	// Branchs
 	route.RegisterAdminPanelUpdatebranchs(r)
 	route.RegisterAdminPanelAllBranch(r)

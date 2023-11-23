@@ -18,7 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-              
+
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -61,12 +61,7 @@
                         <input id="gst" class="form-control" placeholder="GSTIN" type="text" />
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Image</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input id="image" class="form-control" placeholder="Image Here" type="file" />
-                    </div>
-                </div>
+
 
 
                 <div class="form-group row">
@@ -80,7 +75,12 @@
                         </select>
                     </div>
                 </div>
-
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Update Image</label>
+                    <div class="col-sm-12 col-md-10">
+                        <button class="btn btn-primary" onclick="openImageUpdateTab()">Update Image</button>
+                    </div>
+                </div>
                 <div>
 
                     <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
@@ -104,13 +104,20 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-   
+
 </div>
 
 
 
 {{template "footer.html"}}
 <script>
+    function openImageUpdateTab() {
+    var Id = new URLSearchParams(window.location.search).get('id');
+    if (Id) {
+        // Open a new tab with the backend route for updating the image
+        window.open('/branch/image?id=' + Id, '_blank');
+    }
+}
     $(document).ready(function () {
         // Retrieve the loan ID from the query parameter
         var Id = new URLSearchParams(window.location.search).get('id');

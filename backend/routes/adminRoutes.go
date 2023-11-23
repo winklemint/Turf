@@ -69,13 +69,19 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.GET("/get/live/data", middleware.RequireAdminAuth, controllers.LiveUser)
 		//Branch
 		adminRoutes.POST("/add/branch", controllers.Add_Branch)
-		adminRoutes.PATCH("/update/branch/:id", controllers.Update_Branch)
+		//adminRoutes.PATCH("/update/branch/:id", controllers.Update_Branch)
 		adminRoutes.GET("/get/branch", controllers.GET_All_Branch)
 		adminRoutes.GET("/active/branch", controllers.ActiveBranch)
 		adminRoutes.POST("set/id/branch", controllers.Get_IdBy_Branch_NAme)
 		adminRoutes.GET("/get/branch/:id", controllers.GET_All_Branch_Id)
 		adminRoutes.DELETE("/delete/branch/:id", controllers.Delete_Branch)
-		adminRoutes.GET("/branch/image/active/:id", controllers.GetBranchimagesById)
+		adminRoutes.GET("/get/branch/image/:id", controllers.ImagesById)
+		adminRoutes.PATCH("/update/branch/image/:id", controllers.UpdateImageById)
+		adminRoutes.DELETE("/delete/branch/image/:id", controllers.DeleteImageById)
+		adminRoutes.POST("/add/branch/image", controllers.AddImageForBranch)
+		adminRoutes.GET("/get/image/:id", controllers.GetImageById)
+
+		// adminRoutes.GET("/branch/image/active/:image", controllers.GetImageByImageName)
 
 		adminRoutes.POST("/get/slot/by/day", controllers.Get_Slot_by_day)
 		//tetsimonials

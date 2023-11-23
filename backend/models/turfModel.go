@@ -96,3 +96,8 @@ type TermsAndConditions struct {
 	Content string
 	Status  string
 }
+type BranchImage struct {
+	gorm.Model
+	Branch_Id int
+	Image     string
+}
