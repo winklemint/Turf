@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import React from "react";
 import Brandicon from "./Brandicon";
-import BookingForm from "./BookNow";
+import BookingForm from "../BookNow"
 
 const Heading = () => {
   const [contant, setcontant] = useState({});

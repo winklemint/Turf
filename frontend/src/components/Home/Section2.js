@@ -5,6 +5,14 @@ import 'swiper/swiper-bundle.css';
 
 function Section2(props) {
     const [carouselData, setCarouselData] = useState([]);
+    const [Heading, setHeading] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/admin/heading/active")
+      .then((response) => response.json())
+      .then((data) => setHeading(data.data))
+      .catch((error) => console.error("Error fetching Heading data:", error));
+  }, []);
 
     useEffect(() => {
         fetch('http://localhost:8080/admin/get/testimonials')
@@ -18,7 +26,7 @@ function Section2(props) {
         <section className="section3">
             <div className="container heading">
                 <p className="client"><span style={{ color: "#ef1b40", fontWeight: "600" }}>Clients</span> memo</p>
-                <p>{props.Headingdata.Testimonials}</p>
+                <p>{Heading.Testimonials}</p>
                 <p className="border-line"></p>
             </div>
 

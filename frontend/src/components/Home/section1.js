@@ -3,10 +3,19 @@ import Carousel from "react-bootstrap/Carousel";
 import Swiper from "swiper";
 import "./section1.css";
 
-function Section1(props) {
+function Section1() {
   // console.log(Heading);
 
   const [branchData, setBranchData] = useState([]);
+  const [Heading, setHeading] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/admin/heading/active")
+      .then((response) => response.json())
+      .then((data) => setHeading(data.data))
+      .catch((error) => console.error("Error fetching Heading data:", error));
+  }, []);
+
   useEffect(() => {
     // Inside your React component's useEffect hook
     // Fetch data from the API
@@ -80,7 +89,7 @@ function Section1(props) {
               <span style={{ color: "purple", fontWeight: "bold" }}>works</span>{" "}
               with
             </p>
-            <p className="start-p">{props.Headingdata.Slider}</p>
+            <p className="start-p">{Heading.Slider}</p>
           </div>
         </div>
         <div className="col-md-12 col-sm-12 col-lg-12">

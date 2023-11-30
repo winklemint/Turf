@@ -57,4 +57,33 @@
     margin-top: 200px; 
     margin-bottom: 20px; 
   }
-  
+ .mySwiper2.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden.mySwiper2 {
+    height: 457px;
+    width: 429px;
+} 
+/*
+.mySwiper2.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+  position: absolute;
+  top: 174px; 
+} */
+/* .swiper.swiper-initialized.swiper-horizontal.swiper-css-mode.mySwiper2 {
+  width: 478px;
+  height: 353px;
+} */
+
+span.swiper-pagination-bullet {
+  top: 47px;
+  position: relative;
+}
+h2.fw-1.float-left.branch-name {
+  position: relative;
+  right: 170px;
+}
+.branch-add {
+  position: relative;
+  right: 191px;
+}
+.col-1.location-sign {
+  position: relative;
+  right: 18px;
+}
