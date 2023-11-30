@@ -18,18 +18,7 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-md-6 col-sm-12 text-right">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            January 2018
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Export List</a>
-                            <a class="dropdown-item" href="#">Policies</a>
-                            <a class="dropdown-item" href="#">View Assets</a>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
         <!-- Default Basic Forms Start -->
@@ -102,7 +91,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-12 col-md-2 col-form-label">Authorization</label>
+                    <label class="col-sm-12 col-md-2 col-form-label">Authourization</label>
                     <div class="col-sm-12 col-md-10 d-flex justify-content-around">
                         <div class="custom-control custom-checkbox d-inline">
                             <input type="checkbox" class="custom-control-input auth" id="customCheck1">
@@ -137,22 +126,22 @@
                             <label class="custom-control-label" for="customCheck8">Staff</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck9" value="8">
-                            <label class="custom-control-label" for="customCheck9">Slot Allocation</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="8">
+                            <label class="custom-control-label" for="customCheck8">Slot Allocation</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck10" value="9">
-                            <label class="custom-control-label" for="customCheck10">Booking</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="9">
+                            <label class="custom-control-label" for="customCheck8">Booking</label>
                         </div>
                         <div class="custom-control custom-checkbox d-inline">
-                            <input type="checkbox" class="custom-control-input auth" id="customCheck11" value="10">
-                            <label class="custom-control-label" for="customCheck11">Other</label>
+                            <input type="checkbox" class="custom-control-input auth" id="customCheck8" value="10">
+                            <label class="custom-control-label" for="customCheck8">Other</label>
                         </div>
                     </div>
                 </div>
                 <div>
 
-                    <input class="btn btn-primary" type="submit" value="Submit" id="submit" />
+                    <input class="btn btn-primary" type="submit" value="Update" id="submit" />
 
                 </div>
 
@@ -173,17 +162,14 @@
         </div>
         <!-- Default Basic Forms End -->
     </div>
-    <div class="footer-wrap pd-20 mb-20 card-box">
-        DeskApp - Bootstrap 4 Admin Template By
-        <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
-    </div>
+   
 </div>
 
 
 
 {{template "footer.html"}}
 <script>
-    $(document).ready(function () {
+   $(document).ready(function () {
     // Define Id outside the if block
     var Id = new URLSearchParams(window.location.search).get('id');
 
@@ -407,6 +393,8 @@
         }
     }
 </script>
+
+
 </body>
 
 </html>

@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -68,7 +69,7 @@ func AdminSignup(c *gin.Context) {
 		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: body.Branch_name,
+		Turf_branch_id: uint(BranchID),
 		Authorization:  body.Authorization,
 	}
 
@@ -139,7 +140,7 @@ func AdminUpdateById(c *gin.Context) {
 	adminToUpdate.Contact = body.Contact
 	adminToUpdate.Email = body.Email
 	adminToUpdate.Role = body.Role
-	adminToUpdate.Turf_branch_id = body.Branch_name
+	adminToUpdate.Turf_branch_id = uint(body.Branch_name)
 	adminToUpdate.Authorization = body.Authorization
 	// Update the admin using the provided 'id'
 	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
@@ -159,7 +160,7 @@ func AdminUpdateById(c *gin.Context) {
 		Contact:        body.Contact,
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: body.Branch_name,
+		Turf_branch_id: uint(body.Branch_name),
 		Authorization:  body.Authorization,
 	}
 	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
@@ -406,6 +407,67 @@ func GetConfirmBookingTop5(c *gin.Context) {
 	})
 }
 
+// func GetConfirmBookingTop5Super(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+// 	if c.Request.Method == "OPTIONS" {
+// 		c.JSON(http.StatusOK, gin.H{})
+// 		return
+// 	}
+
+// 	var data []models.Confirm_Booking_Table
+// 	result := config.DB.Model(&models.Confirm_Booking_Table{}).Limit(5).Order("ID DESC").Find(&data)
+// 	if result.Error != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status": 404,
+// 			"error":  "failed to get confirmed booking details",
+// 		})
+// 		return
+// 	}
+// 	var responseData []interface{}
+// 	for _, booking := range data {
+// 		var user models.User
+// 		result := config.DB.Find(&user, booking.User_id)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"status": 404,
+// 				"error":  "failed to user name",
+// 			})
+// 			return
+// 		}
+// 		var branch models.Branch_info_management
+// 		result = config.DB.Find(&branch, booking.Branch_id)
+// 		if result.Error != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"status": 404,
+// 				"error":  "failed to fetch  branch name",
+// 			})
+// 			return
+// 		}
+// 		bookingData := map[string]interface{}{
+// 			"ID":                      booking.ID,
+// 			"CreatedAt":               booking.CreatedAt,
+// 			"User_id":                 booking.User_id,
+// 			"User_name":               user.Full_Name,
+// 			"Date":                    booking.Date,
+// 			"Booking_order_id":        booking.Booking_order_id,
+// 			"Total_price":             booking.Total_price,
+// 			"Total_min_amount_to_pay": booking.Total_min_amount_to_pay,
+// 			"Paid_amount":             booking.Paid_amount,
+// 			"Remaining_amount_to_pay": booking.Remaining_amount_to_pay,
+// 			"Booking_status":          booking.Booking_status,
+// 			"Branch_name":             branch.Branch_name,
+// 		}
+// 		responseData = append(responseData, bookingData)
+// 	}
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  200,
+// 		"success": "confirmed booking details",
+// 		"data":    responseData,
+// 	})
+// }
+
 func AdminLogin(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -571,10 +633,12 @@ func Add_Branch(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+
 	if c.Request.Method == "OPTIONS" {
 		c.JSON(http.StatusOK, gin.H{})
 		return
 	}
+
 	var body struct {
 		Turf_name             string
 		Branch_name           string
@@ -584,12 +648,12 @@ func Add_Branch(c *gin.Context) {
 		GST_no                string
 		Status                int
 		Ground_Size           string
+		Branch_Id             int
 		Image                 string
 	}
 
-	err := c.Bind(&body)
-	if err != nil {
-		logrus.Infoln(err)
+	// Bind form data to the 'body' struct
+	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
 			"message": "Failed To Read Body",
@@ -597,137 +661,223 @@ func Add_Branch(c *gin.Context) {
 		})
 		return
 	}
-	file, err := c.FormFile("image")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+
+	// Handle image uploads
+	form, _ := c.MultipartForm()
+
+	files := form.File["images"]
+
+	brnch := models.Branch_info_management{
+		Turf_name:             body.Turf_name,
+		Branch_name:           body.Branch_name,
+		Branch_email:          body.Branch_email,
+		Branch_contact_number: body.Branch_contact_number,
+		Branch_address:        body.Branch_address,
+		GST_no:                body.GST_no,
+		Status:                body.Status,
+		Ground_Size:           body.Ground_Size,
 	}
 
-	filePath := filepath.Join("./uploads/branch", file.Filename)
-
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-		return
-	}
-	if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+	if err := config.DB.Create(&brnch).Error; err != nil {
+		log.Printf("Failed to add data from DB %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  400,
-			"message": "Upload The Right File Format (jpg or png)",
+			"message": "Failed to Create Branch",
 			"data":    nil,
 		})
 		return
 	}
-	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status, Ground_Size: body.Ground_Size, Image: filePath}
-	result := config.DB.Create(&branch)
-	if result.Error != nil {
-		logrus.Infof("Failed to get data from DB %v\n", result.Error)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "Branch Already Exist",
-			"data":    nil,
-		})
-		return
-	}
-
-	//Response
-	c.JSON(http.StatusCreated, gin.H{
-		"status":  200,
-		"message": "Branch Successfully Created",
-		"data":    branch,
-	})
-}
-func Update_Branch(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
-	if c.Request.Method == "OPTIONS" {
-		c.JSON(http.StatusOK, gin.H{})
-		return
-	}
-	id := c.Param("id")
-	var body struct {
-		Turf_name             string
-		Branch_name           string
-		Branch_address        string
-		Branch_email          string
-		Branch_contact_number string
-		GST_no                string
-		Status                int
-		Image                 string
-	}
-	if c.Bind(&body) != nil {
-		logrus.Infoln("failed t0 read b0dy Update_Branch")
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "Failed To Read Body",
-			"data":    nil,
-		})
-		return
-
-	}
-
-	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status}
-	result := config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
-	if result.Error != nil {
-		logrus.Infof("Failed to get data from DB %v\n", result.Error)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "Something went wrong",
-			"data":    nil,
-		})
-		return
-	}
-
-	if body.Image != "" {
-
-		file, err := c.FormFile("image")
-		if err != nil {
-			logrus.Infof("Failed to read image fr0m DB %v\n", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		filePath := filepath.Join("./uploads/branch", file.Filename)
-
-		if err := c.SaveUploadedFile(file, filePath); err != nil {
-			logrus.Infof("Failed to save file in DB %v\n", err)
+	for _, file := range files {
+		// Save each file
+		filename := filepath.Join("./uploads/branch", file.Filename)
+		if err := c.SaveUploadedFile(file, filename); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 			return
 		}
-		if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
-			logrus.Infoln("Upload the right file format (jpg or png) Update branch func")
+		image := models.BranchImage{
+			Branch_Id: int(brnch.ID),
+			Image:     filename,
+		}
+		if err := config.DB.Create(&image).Error; err != nil {
+			log.Printf("Failed to add data from DB %v\n", err)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status":  400,
-				"message": "Upload The Right File Format (jpg or png)",
+				"message": "Failed to Create Branch",
 				"data":    nil,
 			})
 			return
 		}
 
-		fmt.Println(filePath)
-
-		branch = models.Branch_info_management{Image: filePath}
-		result = config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
-		if result.Error != nil {
-			logrus.Infof("Failed to get data from DB %v\n", result.Error)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status":  400,
-				"message": "Something went wrong",
-				"data":    nil,
-			})
-			return
-		}
-	} else {
-		fmt.Println("n image")
-
-		c.JSON(http.StatusCreated, gin.H{
-			"status":  200,
-			"message": "Branch Successfully Updated",
-			"data":    branch,
-		})
 	}
 
+	// Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"message": "Branch Successfully Created",
+	})
 }
+
+// func Add_Branch(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+
+// 	if c.Request.Method == "OPTIONS" {
+// 		c.JSON(http.StatusOK, gin.H{})
+// 		return
+// 	}
+
+// 	var body struct {
+// 		Turf_name             string
+// 		Branch_name           string
+// 		Branch_address        string
+// 		Branch_email          string
+// 		Branch_contact_number string
+// 		GST_no                string
+// 		Status                int
+// 		Ground_Size           string
+// 		Image
+// 	}
+
+// 	err := c.Bind(&body)
+// 	if err != nil {
+// 		logrus.Infoln(err)
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status":  400,
+// 			"message": "Failed To Read Body",
+// 			"data":    nil,
+// 		})
+// 		return
+// 	}
+
+// 	form, err := c.MultipartForm()
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	files := form.File["image"]
+
+// 	for _, file := range files {
+// 		filePath := filepath.Join("./uploads/branch", file.Filename)
+
+// 		if err := c.SaveUploadedFile(file, filePath); err != nil {
+// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+// 			return
+// 		}
+
+// 		if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"status":  400,
+// 				"message": "Upload The Right File Format (jpg or png)",
+// 				"data":    nil,
+// 			})
+// 			return
+// 		}
+// 	}
+
+// 	// Rest of your code to handle branch info creation in the database
+
+// 	// Response
+// 	c.JSON(http.StatusCreated, gin.H{
+// 		"status":  200,
+// 		"message": "Branch Successfully Created",
+// 		"data":    nil,
+// 	})
+// }
+
+// func Update_Branch(c *gin.Context) {
+// 	c.Header("Access-Control-Allow-Origin", "*")
+// 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+// 	if c.Request.Method == "OPTIONS" {
+// 		c.JSON(http.StatusOK, gin.H{})
+// 		return
+// 	}
+// 	id := c.Param("id")
+// 	var body struct {
+// 		Turf_name             string
+// 		Branch_name           string
+// 		Branch_address        string
+// 		Branch_email          string
+// 		Branch_contact_number string
+// 		GST_no                string
+// 		Status                int
+// 		Image                 []string
+// 	}
+// 	if c.Bind(&body) != nil {
+// 		logrus.Infoln("failed t0 read b0dy Update_Branch")
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status":  400,
+// 			"message": "Failed To Read Body",
+// 			"data":    nil,
+// 		})
+// 		return
+
+// 	}
+
+// 	branch := models.Branch_info_management{Turf_name: body.Turf_name, Branch_name: body.Branch_name, Branch_email: body.Branch_email, Branch_contact_number: body.Branch_contact_number, Branch_address: body.Branch_address, GST_no: body.GST_no, Status: body.Status}
+// 	result := config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
+// 	if result.Error != nil {
+// 		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"status":  400,
+// 			"message": "Something went wrong",
+// 			"data":    nil,
+// 		})
+// 		return
+// 	}
+
+// 	if body.Image != "" {
+
+// 		file, err := c.FormFile("image")
+// 		if err != nil {
+// 			logrus.Infof("Failed to read image fr0m DB %v\n", err)
+// 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 			return
+// 		}
+
+// 		filePath := filepath.Join("./uploads/branch", file.Filename)
+
+// 		if err := c.SaveUploadedFile(file, filePath); err != nil {
+// 			logrus.Infof("Failed to save file in DB %v\n", err)
+// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+// 			return
+// 		}
+// 		if filepath.Ext(filePath) != ".jpg" && filepath.Ext(filePath) != ".png" {
+// 			logrus.Infoln("Upload the right file format (jpg or png) Update branch func")
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"status":  400,
+// 				"message": "Upload The Right File Format (jpg or png)",
+// 				"data":    nil,
+// 			})
+// 			return
+// 		}
+
+// 		fmt.Println(filePath)
+
+// 		branch = models.Branch_info_management{Image: filePath}
+// 		result = config.DB.Model(&branch).Where("id=?", id).Updates(&branch)
+// 		if result.Error != nil {
+// 			logrus.Infof("Failed to get data from DB %v\n", result.Error)
+// 			c.JSON(http.StatusBadRequest, gin.H{
+// 				"status":  400,
+// 				"message": "Something went wrong",
+// 				"data":    nil,
+// 			})
+// 			return
+// 		}
+// 	} else {
+// 		fmt.Println("n image")
+
+// 		c.JSON(http.StatusCreated, gin.H{
+// 			"status":  200,
+// 			"message": "Branch Successfully Updated",
+// 			"data":    branch,
+// 		})
+// 	}
+
+// }
 
 func GET_All_Branch(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
@@ -787,6 +937,229 @@ func ActiveBranch(c *gin.Context) {
 	})
 
 }
+func ImagesById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+
+	var image []models.BranchImage
+	result := config.DB.Find(&image, "branch_id", id)
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "No image Found",
+			"data":    nil,
+		})
+		return
+	}
+
+	//Response
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  200,
+		"message": "All image  Successfully",
+		"data":    image,
+	})
+
+}
+func UpdateImageById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	Id := c.Param("id")
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		logrus.Infof("err: %s", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/branch", file.Filename)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+
+		logrus.Infof("Failed to save uploaded file: %s", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	image := models.BranchImage{Image: filePath}
+	result := config.DB.Model(image).Where("id = ?", Id).Updates(image)
+	if result.Error != nil {
+		logrus.Infof("Failed To User Detail Updated %v\n", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Image Update UnSuccessfully",
+			"data":   nil,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Image Update Successfully",
+	})
+
+}
+func DeleteImageById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var image models.BranchImage
+	result := config.DB.Model(&image).Where("id=?", id).Delete(&image)
+	if result.RowsAffected == 0 {
+		logrus.Infof("Failed To Delete Branch Image %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "unsuccessfully Deleted Branch Image",
+			"data":    nil,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "successfully Deleted Branch Image",
+		"data":    nil,
+	})
+
+}
+func AddImageForBranch(c *gin.Context) {
+	// Set CORS headers
+
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+
+	// Handle preflight OPTIONS request
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+
+	var body struct {
+		BranchID int
+	}
+
+	// Bind form data to the 'body' struct
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "Failed To Read Body",
+			"data":    nil,
+		})
+		return
+	}
+
+	// Retrieve the uploaded image file from the request
+	file, err := c.FormFile("Image")
+
+	if err != nil {
+		logrus.Infof("Error retrieving uploaded file: %s", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to retrieve uploaded file"})
+		return
+	}
+
+	filePath := filepath.Join("./uploads/branch", file.Filename)
+
+	// Save the uploaded file
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		logrus.Infof("Failed to save uploaded file: %s", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	// Create a database record for the image
+	image := models.BranchImage{Image: filePath, Branch_Id: body.BranchID}
+	result := config.DB.Create(&image)
+	if result.Error != nil {
+		logrus.Infof("Failed to update branch image: %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"error":  "Failed to update branch image",
+			"data":   nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Image updated successfully",
+		"data":    image,
+	})
+}
+func GetImageById(c *gin.Context) {
+
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+
+	var image models.BranchImage
+	result := config.DB.Find(&image, "id=?", id)
+
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to fetch carousel image for id",
+			"data":    nil,
+		})
+		return
+	}
+
+	// Determine the file path based on the file format (you may need to store this information in your model)
+	var filePath string
+	if strings.HasSuffix(image.Image, ".jpg") {
+		filePath = image.Image
+		c.Header("Content-Type", "image/jpeg")
+	} else if strings.HasSuffix(image.Image, ".png") {
+		filePath = image.Image
+		c.Header("Content-Type", "image/png")
+	} else {
+
+		// Handle unsupported image formats
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "unsupported image format",
+			"data":    nil,
+		})
+		return
+	}
+
+	// Read the image file
+	imageData, err := os.ReadFile(filePath)
+	if err != nil {
+		logrus.Infof("Err0r readin the image file %v\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  500,
+			"message": "internal server error",
+			"data":    nil,
+		})
+		return
+	}
+
+	// Send the image data as the response
+	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
+}
+
 func Get_IdBy_Branch_NAme(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -902,62 +1275,36 @@ func Delete_Branch(c *gin.Context) {
 		"data":    nil,
 	})
 }
-func GetBranchimagesById(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
-	if c.Request.Method == "OPTIONS" {
-		c.JSON(http.StatusOK, gin.H{})
-		return
-	}
-	id := c.Param("id")
 
-	var branch models.Branch_info_management
-	result := config.DB.Find(&branch, "id=?", id)
+// func GetImageByImageName(c *gin.Context) {
+// 	// Retrieve the image name from the URL parameter
+// 	imageName := c.Param("imageName")
 
-	if result.Error != nil {
-		logrus.Infof("Failed to get data from DB %v\n", result.Error)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "Failed To Fetch Branch Image",
-			"data":    nil,
-		})
-		return
-	}
+// 	// Assuming you have the image directory path
+// 	imageDir := "./uploads/branch"
+// 	// Construct the full file path using the image name
+// 	fullPath := filepath.Join(imageDir, imageName)
 
-	// Determine the file path based on the file format (you may need to store this information in your model)
-	var filePath string
-	if strings.HasSuffix(branch.Image, ".jpg") {
-		filePath = branch.Image
-		c.Header("Content-Type", "image/jpeg")
-	} else if strings.HasSuffix(branch.Image, ".png") {
-		filePath = branch.Image
-		c.Header("Content-Type", "image/png")
-	} else {
-		// Handle unsupported image formats
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  400,
-			"message": "Unsupported Image Format",
-			"data":    nil,
-		})
-		return
-	}
+// 	// Read the image file
+// 	imageData, err := os.ReadFile(fullPath)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		c.JSON(http.StatusInternalServerError, gin.H{
 
-	// Read the image file
-	imageData, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		logrus.Infof("Failed t0 read image %v\n", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  500,
-			"message": "Internal Server Error",
-			"data":    nil,
-		})
-		return
-	}
+// 			"status":  500,
+// 			"message": "Failed to read image",
+// 		})
+// 		return
+// 	}
 
-	// Send the image data as the response
-	c.Data(http.StatusOK, c.GetHeader("Content-Type"), imageData)
-}
+// 	// Set Content-Type header based on image file type
+// 	contentType := http.DetectContentType(imageData)
+// 	c.Header("Content-Type", contentType)
+
+// 	// Send image as response
+// 	c.Data(http.StatusOK, contentType, imageData)
+// }
+
 func AddSlot(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
@@ -2798,6 +3145,8 @@ func Testimonials(c *gin.Context) {
 		Designation string
 		Review      string
 		Image       string
+		Rating      string
+		Branch_id   int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -2832,7 +3181,7 @@ func Testimonials(c *gin.Context) {
 		return
 	}
 
-	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review, Image: filePath}
+	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Rating: body.Rating, Branch_id: body.Branch_id, Review: body.Review, Image: filePath}
 	result := config.DB.Create(&testimonial)
 	if result.Error != nil {
 		logrus.Infof("Failed To Create Testimonials %v\n", err)
@@ -2864,6 +3213,8 @@ func Upadte_Testimonials(c *gin.Context) {
 		Designation string
 		Review      string
 		Image       string
+		Rating      string
+		Branch_id   int
 	}
 	err := c.Bind(&body)
 	if err != nil {
@@ -2877,7 +3228,7 @@ func Upadte_Testimonials(c *gin.Context) {
 
 	}
 
-	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Review: body.Review}
+	testimonial := &models.Testi_Monial{Name: body.Name, Designation: body.Designation, Rating: body.Rating, Branch_id: body.Branch_id, Review: body.Review}
 	result := config.DB.Model(&testimonial).Where("id=?", id).Updates(&testimonial)
 	if result.Error != nil {
 		logrus.Infof("Failed To Update Testimonials Details %v\n", result.Error)
@@ -3091,6 +3442,35 @@ func GETTestimonialsById(c *gin.Context) {
 		"data":    testimonials,
 	})
 
+}
+func GetTestimonialsBybranchId(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+
+	var testimonials []models.Testi_Monial
+	result := config.DB.Find(&testimonials, "id=?", id)
+
+	if result.Error != nil {
+		logrus.Infof("Failed To Get Testimonials By Id %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to fetch testimonial by id",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "testimonial fetch successfully by id",
+		"data":    testimonials,
+	})
 }
 
 func GETTestimonialsimagesById(c *gin.Context) {
@@ -3993,7 +4373,7 @@ func GetCarouselimagesById(c *gin.Context) {
 	}
 
 	// Read the image file
-	imageData, err := ioutil.ReadFile(filePath)
+	imageData, err := os.ReadFile(filePath)
 	if err != nil {
 		logrus.Infof("Err0r readin the image file %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -5535,5 +5915,193 @@ func TotalSlot(c *gin.Context) {
 		"status":  200,
 		"message": "Successfully count slot",
 		"data":    count,
+	})
+}
+func AddTermsAndConditions(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var body struct {
+		Content string
+		Status  string
+	}
+	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to read body",
+			"data":    nil,
+		})
+		return
+	}
+	condition := models.TermsAndConditions{Content: body.Content, Status: "1"}
+	result := config.DB.Create(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to add data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Add TermAndCondition",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "TermAndCondition Add successfully",
+		"data":    condition,
+	})
+
+}
+func GetAllTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var condition []models.TermsAndConditions
+	result := config.DB.Find(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Get TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get TermAndCondition Details successfully",
+		"data":    condition,
+	})
+}
+func GetActiveTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var condition []models.TermsAndConditions
+	result := config.DB.Find(&condition, "status=1")
+	if result.Error != nil {
+		logrus.Infof("Failed to get  data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Active TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get Active TermAndCondition Details successfully",
+		"data":    condition,
+	})
+}
+func UpadateTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var body struct {
+		Content string
+		Status  string
+	}
+	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to read body",
+			"data":    nil,
+		})
+		return
+	}
+	condition := models.TermsAndConditions{Content: body.Content, Status: body.Status}
+	result := config.DB.Model(&condition).Where("id=?", id).Updates(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to update data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Update TermAndCondition",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "TermAndCondition Updated successfully",
+		"data":    condition,
+	})
+
+}
+func GetTermAndConditionById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var condition models.TermsAndConditions
+	result := config.DB.Find(&condition, "id=?", id)
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Get TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get TermAndCondition Details successfully",
+		"data":    condition,
+	})
+}
+func DeleteTermAndCondition(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var condition models.TermsAndConditions
+	result := config.DB.Model(&condition).Where("id=?", id).Delete(&condition)
+	if result.Error != nil {
+		logrus.Infof("Failed to delete data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Delete TermAndCondition Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Delete TermAndCondition Details successfully",
+		"data":    nil,
 	})
 }

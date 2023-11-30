@@ -14,6 +14,7 @@
                         <th>Designation</th>
                         <th>Review</th>
                         <th>Image</th>
+                        <th>Rating</th>
                         <th >Actions</th>
                     </tr>
                 </thead>
@@ -54,8 +55,9 @@
                         testimonials.Name, // Name
                         testimonials.Designation, // Designation
                         testimonials.Review, // Review
+                        
                         '<td data-testimonial-id="' + testimonials.ID + '"><a href="javascript:void(0);" class="testimonial-image" data-testimonial-id="' + testimonials.ID + '">View Image</a></td>',
-
+                        testimonials.Rating,
                         action, // Actions
                     ]);
                 });

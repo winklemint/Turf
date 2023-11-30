@@ -87,4 +87,17 @@ type Testi_Monial struct {
 	Designation string
 	Review      string
 	Image       string
+	Rating      string
+	Branch_id   int
+}
+type TermsAndConditions struct {
+	gorm.Model
+
+	Content string
+	Status  string
+}
+type BranchImage struct {
+	gorm.Model
+	Branch_Id int
+	Image     string
 }
