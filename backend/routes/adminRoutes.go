@@ -153,9 +153,16 @@ func RegisterAdminRoutes(router *gin.Engine) {
 		adminRoutes.POST("/condition/add", controllers.AddTermsAndConditions)
 		adminRoutes.GET("/condition/get", controllers.GetAllTermAndCondition)
 		adminRoutes.GET("/condition/active", controllers.GetActiveTermAndCondition)
-		adminRoutes.PATCH("/condition/update/:id", controllers.UpadateTermAndCondition)
+		adminRoutes.PATCH("/condition/update/:id", controllers.UpdateTermAndCondition)
 		adminRoutes.GET("/condition/get/:id", controllers.GetTermAndConditionById)
 		adminRoutes.DELETE("/condition/delete/:id", controllers.DeleteTermAndCondition)
+		//Details
+		adminRoutes.POST("/details/add", controllers.AddDescriptionAndCancellation)
+		adminRoutes.GET("/details/get", controllers.GetDescriptionAndCancellation)
+		adminRoutes.GET("/details/active", controllers.GetActiveDescriptionAndCancellation)
+		adminRoutes.PATCH("/details/update/:id", controllers.UpdateDescriptionAndCancellation)
+		adminRoutes.GET("/details/get/:id", controllers.GetDescriptionAndCancellationById)
+		adminRoutes.DELETE("/details/delete/:id", controllers.DeleteDescriptionAndCancellation)
 
 	}
 

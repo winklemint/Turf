@@ -101,3 +101,9 @@ type BranchImage struct {
 	Branch_Id int
 	Image     string
 }
+type Details struct {
+	gorm.Model
+	Description  string
+	Cancellation string
+	Status       string
+}

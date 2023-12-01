@@ -20,4 +20,5 @@ func SyncDB() {
 	DB.AutoMigrate(&models.Icon{})
 	DB.AutoMigrate(&models.TermsAndConditions{})
 	DB.AutoMigrate(&models.BranchImage{})
+	DB.AutoMigrate(&models.Details{})
 }

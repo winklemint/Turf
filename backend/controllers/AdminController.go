@@ -6010,7 +6010,7 @@ func GetActiveTermAndCondition(c *gin.Context) {
 		"data":    condition,
 	})
 }
-func UpadateTermAndCondition(c *gin.Context) {
+func UpdateTermAndCondition(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
@@ -6104,4 +6104,196 @@ func DeleteTermAndCondition(c *gin.Context) {
 		"message": " Delete TermAndCondition Details successfully",
 		"data":    nil,
 	})
+}
+func AddDescriptionAndCancellation(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var body struct {
+		Description  string
+		Cancellation string
+		Status       string
+	}
+	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to read body",
+			"data":    nil,
+		})
+		return
+	}
+	details := models.Details{Description: body.Description, Cancellation: body.Cancellation, Status: "2"}
+	result := config.DB.Create(&details)
+	if result.Error != nil {
+		logrus.Infof("Failed to add data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Add Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "TermAndCondition Add Details",
+		"data":    details,
+	})
+
+}
+func GetDescriptionAndCancellation(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var details []models.Details
+	result := config.DB.Find(&details)
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Get Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get Details successfully",
+		"data":    details,
+	})
+
+}
+func GetActiveDescriptionAndCancellation(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	var detail models.Details
+	result := config.DB.Find(&detail, "status=1")
+	if result.Error != nil {
+		logrus.Infof("Failed to get  data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Active  Details",
+			"data":    nil,
+		})
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get Active  Details successfully",
+		"data":    detail,
+	})
+
+}
+func UpdateDescriptionAndCancellation(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var body struct {
+		Description  string
+		Cancellation string
+		Status       string
+	}
+	if c.Bind(&body) != nil {
+		logrus.Infof("Failed to read body")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to read body",
+			"data":    nil,
+		})
+		return
+	}
+	details := models.Details{Description: body.Description, Cancellation: body.Cancellation, Status: body.Status}
+	result := config.DB.Model(&details).Where("id=?", id).Updates(&details)
+	if result.Error != nil {
+		logrus.Infof("Failed to update data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Update Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Details Updated successfully",
+		"data":    details,
+	})
+}
+func GetDescriptionAndCancellationById(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var detail models.Details
+	result := config.DB.Find(&detail, "id=?", id)
+	if result.Error != nil {
+		logrus.Infof("Failed to get data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Get Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Get Details successfully",
+		"data":    detail,
+	})
+}
+func DeleteDescriptionAndCancellation(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, HEAD, POST, PATCH, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Accept, Referer, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, User-Agent")
+	if c.Request.Method == "OPTIONS" {
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	id := c.Param("id")
+	var detail models.Details
+	result := config.DB.Model(&detail).Where("id=?", id).Delete(&detail)
+	if result.Error != nil {
+		logrus.Infof("Failed to delete data from DB %v\n", result.Error)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  400,
+			"message": "failed to Delete Details",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": " Delete Details successfully",
+		"data":    nil,
+	})
+
 }

@@ -1,0 +1,306 @@
+{{template "header.html"}}
+        <div class="pd-ltr-20 xs-pd-20-10">
+            <div class="min-height-200px">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="title">
+                                <h4>Form</h4>
+                            </div>
+                            <nav aria-label="breadcrumb" role="navigation">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/dashboard">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        Form Basic
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                     
+                    </div>
+                </div>
+                <!-- Default Basic Forms Start -->
+                <div class="pd-20 card-box mb-30">
+                    <div class="clearfix">
+                        <div class="pull-left">
+                            <h4 class="text-blue h4">Details</h4>
+                            
+                        </div>
+                        <!-- <div class="pull-right">
+                            <a
+                                href="#basic-form1"
+                                class="btn btn-primary btn-sm scroll-click"
+                                rel="content-y"
+                                data-toggle="collapse"
+                                role="button"
+                                ><i class="fa fa-code"></i> Source Code</a
+                            >
+                        </div> -->
+                    </div>
+                    <form  id = "details_form">
+                        
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Description</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                id="name"
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="Description Content Here"
+                                    required onkeydown="checkIconNameValidation()"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Cancellation</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input
+                                    id="link"
+                                    class="form-control"
+                                    placeholder="Cancellation Content Here"
+                                    type="text"
+                                    onkeyup="checkLinkValidation()"
+                                />
+                                <span id="linkError" style="color: red;"></span>
+                            </div>
+                        </div>
+                        
+                        
+                           
+                            <button type="submit" class="btn btn-primary"  id="update">Submit</button>
+                                
+                        </div>
+                    </form>
+                        <div class="card-box pb-10">
+                            <!-- Export Datatable start -->
+                            <div class="card-box mb-30">
+                                <div class="pd-20">
+                                    <!-- <h4 class="text-blue h4">Data Table with Export Buttons</h4> -->
+                                </div>
+                                <div class="pb-20">
+                                    <table class="table hover multiple-select-row data-table-export nowrap" id="all_icon">
+                                        <thead>
+                                            <tr>
+                                                <th>Sn.</th>
+                                                <th>Description</th>
+                                                <th>Cancellation</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        
+                        
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Branch Status</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" value="100" type="number" />
+                            </div>
+                        </div> -->
+        
+                       
+
+                       
+                       
+                    
+                    <div class="collapse collapse-box" id="basic-form1">
+                        <div class="code-box">
+                            <div class="clearfix">
+                                <a
+                                    href="javascript:;"
+                                    class="btn btn-primary btn-sm code-copy pull-left"
+                                    data-clipboard-target="#copy-pre"
+                                    ><i class="fa fa-clipboard"></i> Copy Code</a
+                                >
+                                <a
+                                    href="#basic-form1"
+                                    class="btn btn-primary btn-sm pull-right"
+                                    rel="content-y"
+                                    data-toggle="collapse"
+                                    role="button"
+                                    ><i class="fa fa-eye-slash"></i> Hide Code</a
+                                >
+                            </div>
+                            <pre><code class="xml copy-pre" id="copy-pre">
+
+                        </code></pre>
+                        </div>
+                    </div>
+                </div>
+                <!-- Default Basic Forms End -->
+            </div>
+           
+        </div>
+
+
+   
+    {{template "footer.html"}}
+<script>
+    $(document).ready(function(e) {
+        $("#details_form").submit(function(event) { 
+          event.preventDefault();
+          var formData = {
+            Description : $("#name").val(),
+            Cancellation : $("#link").val(),
+            
+
+            
+          };
+    
+          $.ajax({
+            type: "POST",
+            url: "/admin/details/add",
+            data: formData,
+            dataType: "json",
+        
+          }).done(function(data) {
+            Swal.fire({
+                    title: 'Good job!',
+                    text: 'Content submitted successfully!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Check if the user clicked "OK"
+                    if (result.isConfirmed) {
+                        // Redirect the user to "/user"
+                        window.location.href = "/details";
+                    } else if (result.isDismissed) {
+                        // Handle the case when the user clicks "Cancel"
+                        window.location.href = "/details";
+                    }
+                });
+            }).fail(function (data) {
+                // Trigger SweetAlert error message on AJAX failure
+                console.log(data.responseJSON.message);
+                var message = data.responseJSON.message || 'Something went wrong!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            });
+        });
+    });
+       
+</script>    
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable
+        var table = $('#all_icon').DataTable();
+        // Make an AJAX request to fetch data from the URL
+        $.ajax({
+            url: '/admin/details/get',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                // Iterate through the data and append it to the table
+                $.each(response.data, function (index, packages) {
+                    
+                    // Determine the button content based on the "Status"
+                    var button;
+                    if (packages.Status === "1") {
+                        button = "<button type='button' class='btn btn-outline-success'>Enable</button>";
+                    } else {
+                        button = "<button type='button' class='btn btn-outline-danger'>Disable</button>";
+                    }
+                    var action = '<div class="dropdown">' +
+                        '<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="/update/navbar/' + packages.ID + '" role="button" data-toggle="dropdown">' +
+                        '<i class="dw dw-more"></i>' +
+                        '</a>' +
+                        '<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">' +
+                        '<a class="dropdown-item" href="/update/details?id=' + packages.ID + '"><i class="dw dw-edit2"></i> Edit</a>' +
+                        '<a class="dropdown-item" href="/details" onclick="deleteDetails(' + packages.ID + ');"><i class="dw dw-delete-3"></i> Delete</a>' +
+                        '</div>' +
+                        '</div>'
+
+                       
+                    // Create a new row and append it to the table
+                    table.row.add([
+                        index + 1, // Sn.
+                        packages.Description,
+                        packages.Cancellation, 
+                        button, // Status button
+                        action, // Status
+                        
+
+                    ]);
+                });
+
+                // Refresh the table to apply the changes
+                table.draw();
+            },
+            error: function (error) {
+                console.error('Error fetching data: ' + error);
+            }
+        });
+    });
+    function deleteDetails(Id) {
+        var row_id = Id;
+        $.ajax({
+            url: "/admin/details/delete/" + Id,
+            method: "DELETE",
+            success: function (response) {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: response.message || 'Content Deleted successfully!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    timer: 10000,
+                })
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: message,
+                });
+            }
+        });
+    }
+    function checkIconNameValidation(){
+            var nameInput = document.getElementById('name');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+        function checkLinkValidation() {
+            var nameInput = document.getElementById('link');
+            var nameValue = nameInput.value.trim(); // Trim to remove leading/trailing spaces
+
+            if (nameValue.length > 3) {
+                
+                nameInput.classList.remove('form-control-danger'); // Remove danger class
+                nameInput.classList.add('form-control-success'); // Add success class
+            } else {
+           
+                nameInput.classList.remove('form-control-success'); // Remove success class
+                nameInput.classList.add('form-control-danger'); // Add danger class
+            }
+        }
+
+    
+</script>      
+
+</body>
+</html>
+
+    
