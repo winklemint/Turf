@@ -69,7 +69,7 @@ func AdminSignup(c *gin.Context) {
 		Password:       string(password),
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: uint(BranchID),
+		Turf_branch_id: int(BranchID),
 		Authorization:  body.Authorization,
 	}
 
@@ -140,7 +140,7 @@ func AdminUpdateById(c *gin.Context) {
 	adminToUpdate.Contact = body.Contact
 	adminToUpdate.Email = body.Email
 	adminToUpdate.Role = body.Role
-	adminToUpdate.Turf_branch_id = uint(body.Branch_name)
+	adminToUpdate.Turf_branch_id = int(body.Branch_name)
 	adminToUpdate.Authorization = body.Authorization
 	// Update the admin using the provided 'id'
 	result := config.DB.Model(&models.Admin{}).Where("id = ?", id).Updates(&adminToUpdate)
@@ -160,7 +160,7 @@ func AdminUpdateById(c *gin.Context) {
 		Contact:        body.Contact,
 		Email:          body.Email,
 		Role:           body.Role,
-		Turf_branch_id: uint(body.Branch_name),
+		Turf_branch_id: int(body.Branch_name),
 		Authorization:  body.Authorization,
 	}
 	result = config.DB.Model(&bodys).Where("id=?", id).Updates(&bodys)
