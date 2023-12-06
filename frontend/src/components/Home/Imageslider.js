@@ -5,7 +5,6 @@ const ImageSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [carouselImages, setCarouselImages] = useState([]);
 
-  // Function to fetch carousel images
   const fetchCarouselImages = async () => {
     try {
       const response = await fetch('http://localhost:8080/admin/carousel/active');
@@ -20,17 +19,14 @@ const ImageSlider = () => {
     }
   };
 
-  // Function to advance to the next slide
   const nextSlide = () => {
     setCurrentIndex((currentIndex + 1) % carouselImages.length);
   };
 
-  // UseEffect to fetch images and start the slider
   useEffect(() => {
     fetchCarouselImages();
   }, []);
 
-  // UseEffect for automatic slider
   useEffect(() => {
     const sliderInterval = setInterval(() => {
       nextSlide();

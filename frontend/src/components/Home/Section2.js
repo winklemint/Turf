@@ -34,8 +34,6 @@ function Section2(props) {
                 <div className="swiper-wrapper">
                     <Swiper
                         spaceBetween={50}
-                        onSlideChange={() => console.log('slide change')}
-                        onSwiper={(swiper) => console.log(swiper)}
                         mousewheel={{ forceToAxis: true }}
                         pagination={{ clickable: true }}
                         breakpoints={{

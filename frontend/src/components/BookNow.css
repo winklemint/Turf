@@ -1,66 +1,73 @@
 .booking-form-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #692020;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #abbaca;
-  }
-  
-  .booking-form-container h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .booking-form-container label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  .booking-form-container select,
-  .booking-form-container input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .booking-form-container button[type="submit"] {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .booking-form-container button[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  
-  .booking-form-container button[type="button"] {
-    background-color: #ccc;
-    color: #af2323;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .booking-form-container button[type="button"]:hover {
-    background-color: #999;
-  }
-  .booking-form-container {
-    margin-top: 200px; 
-    margin-bottom: 20px; 
-  }
- .mySwiper2.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden.mySwiper2 {
-    height: 457px;
-    width: 429px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #692020;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #abbaca;
+}
+
+.booking-form-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.booking-form-container label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.booking-form-container select,
+.booking-form-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.booking-form-container button[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.booking-form-container button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.booking-form-container button[type="button"] {
+  background-color: #ccc;
+  color: #af2323;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.booking-form-container button[type="button"]:hover {
+  background-color: #999;
+}
+
+.booking-form-container {
+  margin-top: 200px;
+  margin-bottom: 20px;
+}
+
+ /* .mySwiper2.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden.mySwiper2 {
+  height: 457px;
+  width: 429px;
 } 
+.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden.mySwiper2 {
+  position: relative;
+  top: 24px;
+} */
+
 /*
 .mySwiper2.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
   position: absolute;
@@ -75,15 +82,91 @@ span.swiper-pagination-bullet {
   top: 47px;
   position: relative;
 }
+
 h2.fw-1.float-left.branch-name {
   position: relative;
   right: 170px;
 }
+
 .branch-add {
   position: relative;
-  right: 191px;
+  right: 53px;
+  float: left;
 }
+
 .col-1.location-sign {
   position: relative;
   right: 18px;
+}
+
+h4 {
+  margin-bottom: 40px;
+  font-weight: 700;
+}
+/* .App {
+  font-family: Arial, sans-serif;
+   max-width: 800px; 
+  margin: 0 auto;
+} */
+
+.packages {
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0;
+}
+
+.package {
+  flex: 1;
+  min-width: 150px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.package.selected {
+  background-color: #e0e0e0;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0;
+}
+
+.detail {
+  flex: 1;
+  min-width: 150px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  display: none;
+}
+
+.detail.visible {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .packages, .details {
+    flex-direction: column;
+  }
+
+  .package, .detail {
+    min-width: auto;
+  }
+}
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.navbar-book {
+
+  position: absolute;
+    top: 1px;
+    height: 61px;
+    width: 100%;
+}
+.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden.mySwiper2 {
+  position: relative;
+  top: 50px;
 }

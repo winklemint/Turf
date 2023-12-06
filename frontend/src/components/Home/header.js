@@ -6,7 +6,7 @@
 
 const Header = () => {
   const [NavbarData, setNavbarData] = useState([]);
-  console.log(NavbarData);
+  // console.log(NavbarData);
     useEffect(() => {
         fetch('http://localhost:8080/admin/navbar/active')
           .then((response) => response.json())

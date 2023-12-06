@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
 import Swiper from "swiper";
 import "./section1.css";
+import BookingForm from "../BookNow"
+import Cookies from "js-cookie";
 
 function Section1() {
   // console.log(Heading);
@@ -17,8 +20,6 @@ function Section1() {
   }, []);
 
   useEffect(() => {
-    // Inside your React component's useEffect hook
-    // Fetch data from the API
     const fetchBranchData = async () => {
       try {
         const response = await fetch(
@@ -34,7 +35,9 @@ function Section1() {
       }
     };
 
+
     fetchBranchData();
+    console.log(branchData)
 
     // Inside your React component's useEffect hook
     const mySwiper = new Swiper(".mySwiper", {
@@ -78,6 +81,7 @@ function Section1() {
         mySwiper.slidePrev();
       });
   }, []); // Run this effect only once
+  console.log(branchData)
 
   return (
     <section className="container slider-sec2">
@@ -102,7 +106,7 @@ function Section1() {
                       <div class="content-med ">
                         <div class="swiper-avatar">
                           <img
-                            src={`http://localhost:8080/admin/branch/image/active/${data.ID}`}
+                            src={data.Image}
                             alt={data.Turf_name}
                           />
                         </div>
@@ -121,11 +125,11 @@ function Section1() {
                               </span>
                             </i>
                           </p>
-                          <button class="cite1">
-                            <a href="#" class="btn-link">
+                          <Link to={'/BookNow'} onClick={() => Cookies.set("branchId", data.ID)}><button class="cite1">
+                            <a class="btn-link">
                               Book Now{" "}
                             </a>
-                          </button>
+                          </button></Link>
                         </div>
                         <div class="sports-icon">
                           <span class="material-symbols-outlined tennis">
@@ -172,3 +176,5 @@ function Section1() {
 }
 
 export default Section1;
+
+
